@@ -32,3 +32,4 @@ function calc(){
  const notice=document.getElementById('notice');if(notice)notice.textContent='Aviso de referência: '+diasPrevio+' dias. Ajuste os avos manualmente quando houver projeção do aviso indenizado.';
 }
 setup();document.getElementById('calcular').addEventListener('click',calc);calc();
+const extra=document.createElement('script');extra.src='/labels-simulador.js';document.body.appendChild(extra);
