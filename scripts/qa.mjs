@@ -30,6 +30,7 @@ for(const file of htmlFiles){
   if(/<script\b(?![^>]*\bsrc=)[^>]*>/i.test(html))fail(`${file}: script inline não é permitido pela CSP.`);
   if(/\son[a-z]+\s*=/i.test(html))fail(`${file}: handler JavaScript inline encontrado.`);
   if(/(?:href|src)=["']http:\/\//i.test(html))fail(`${file}: recurso HTTP inseguro encontrado.`);
+  if(/<script[^>]+src=["']https?:\/\//i.test(html))fail(`${file}: script externo exige revisão de segurança e CSP.`);
   for(const m of html.matchAll(/<label[^>]+for=["']([^"']+)["']/gi))if(!unique.has(m[1]))fail(`${file}: label aponta para ID inexistente "${m[1]}".`);
   for(const m of html.matchAll(/<(?:a|link|script)[^>]+(?:href|src)=["']([^"']+)["']/gi))if(!routeExists(m[1]))fail(`${file}: referência local inexistente "${m[1]}".`);
   for(const m of html.matchAll(/<script[^>]+src=["']\/([^"']+\.js)["']/gi)){
@@ -44,9 +45,24 @@ for(const file of htmlFiles){
   }
 }
 
+const browserSecurityPatterns=[
+  [/\beval\s*\(/,'eval()'],
+  [/\bnew\s+Function\s*\(/,'new Function()'],
+  [/\.(?:innerHTML|outerHTML)\s*=/,'HTML dinâmico por innerHTML/outerHTML'],
+  [/\binsertAdjacentHTML\s*\(/,'insertAdjacentHTML()'],
+  [/\bdocument\.write\s*\(/,'document.write()'],
+  [/\blocalStorage\b/,'localStorage'],
+  [/\bsessionStorage\b/,'sessionStorage'],
+  [/\bdocument\.cookie\b/,'document.cookie'],
+  [/\bfetch\s*\(/,'fetch()'],
+  [/\bXMLHttpRequest\b/,'XMLHttpRequest'],
+  [/\bWebSocket\b/,'WebSocket'],
+  [/\bnavigator\.sendBeacon\b/,'sendBeacon()']
+];
 for(const file of jsFiles){
   const js=read(file);
   if(/(?:api[_-]?key|secret|password|bearer\s+[A-Za-z0-9._-]+)/i.test(js))fail(`${file}: possível segredo no JavaScript público.`);
+  for(const [pattern,label] of browserSecurityPatterns)if(pattern.test(js))fail(`${file}: ${label} altera a superfície de segurança/privacidade e exige revisão explícita.`);
 }
 
 const css=read('style.css');
@@ -58,6 +74,18 @@ if(!css.includes('.btn-secondary'))fail('style.css: falta estilo do botão secun
 
 const headers=read('_headers');
 for(const required of ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','X-Frame-Options','Permissions-Policy'])if(!headers.includes(required))fail(`_headers: falta ${required}.`);
+for(const directive of ["script-src 'self'","connect-src 'self'","object-src 'none'","frame-ancestors 'none'"])if(!headers.includes(directive))fail(`_headers: CSP precisa manter ${directive}.`);
+
+if(!fs.existsSync(path.join(root,'.gitignore')))fail('.gitignore: proteção contra commit acidental de segredos ausente.');
+else {
+  const gitignore=read('.gitignore');
+  for(const entry of ['.env','.dev.vars','*.pem','*.key','.wrangler/'])if(!gitignore.includes(entry))fail(`.gitignore: falta proteger ${entry}.`);
+}
+if(!fs.existsSync(path.join(root,'.assetsignore')))fail('.assetsignore: lista de exclusão do bundle estático ausente.');
+else {
+  const assetsignore=read('.assetsignore');
+  for(const entry of ['.github/','scripts/','UX_WRITING.md','.env','.dev.vars','.wrangler/'])if(!assetsignore.includes(entry))fail(`.assetsignore: falta excluir ${entry} do bundle público.`);
+}
 
 const sitemap=read('sitemap.xml');
 if(/<loc>[^<]+\.html<\/loc>/i.test(sitemap))fail('sitemap.xml: contém URL .html em vez da rota canônica.');
@@ -104,4 +132,4 @@ try{
 }catch(err){fail(`Testes de cálculo: ${err.stack||err.message}`);}
 
 if(failures.length){console.error(`QA falhou com ${failures.length} problema(s):`);for(const item of failures)console.error(`- ${item}`);process.exit(1);}
-console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, estrutura responsiva, headers e 5 calculadoras com resultados esperados.`);
+console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, segurança do browser, estrutura responsiva, headers e 5 calculadoras com resultados esperados.`);
