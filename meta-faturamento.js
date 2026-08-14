@@ -1,1 +1,37 @@
-function v(i){return Number(document.getElementById(i).value)||0}function f(n){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(n)}function r(){let a=v('a'),b=v('b'),c=v('c')/100,d=v('d')/100,e=Math.max(v('e'),1),den=1-c-d;if(den<=0)return;let z=(a+b)/den;document.getElementById('principal').textContent=f(z);document.getElementById('liquida').textContent=f(a);document.getElementById('fixos').textContent=f(b);document.getElementById('ticket').textContent=f(z/e)}document.getElementById('calcular').addEventListener('click',r);r();
+const $=id=>document.getElementById(id);
+const num=id=>Math.max(0,Number($(id)?.value)||0);
+const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(v||0);
+
+function reset(message='Preencha os dados para calcular.'){
+  $('principal').textContent='R$ 0';$('porProjeto').textContent='R$ 0';$('porSemana').textContent='R$ 0';$('porAno').textContent='R$ 0';$('pontoEquilibrio').textContent='R$ 0';$('status').textContent=message;
+}
+
+function run(){
+  const renda=num('renda');
+  const custos=num('custos');
+  const impostos=num('impostos')/100;
+  const reserva=num('reserva')/100;
+  const projetos=Math.max(1,Math.floor(num('projetos')||1));
+  const sobra=1-impostos-reserva;
+
+  if(!renda){reset('Informe quanto você quer ter para você no mês.');return;}
+  if(sobra<=.05){reset('Impostos e reserva estão altos demais. Revise os percentuais.');return;}
+
+  const meta=(renda+custos)/sobra;
+  const equilibrio=custos/sobra;
+
+  $('principal').textContent=money(meta);
+  $('porProjeto').textContent=money(meta/projetos);
+  $('porSemana').textContent=money(meta/4.345);
+  $('porAno').textContent=money(meta*12);
+  $('pontoEquilibrio').textContent=money(equilibrio);
+  $('status').textContent='Meta calculada com os percentuais que você informou.';
+}
+
+function clearAll(){
+  $('renda').value='';$('custos').value='1500';$('impostos').value='12';$('reserva').value='10';$('projetos').value='4';reset();
+}
+
+$('calcular').addEventListener('click',run);
+$('limpar').addEventListener('click',clearAll);
+run();
