@@ -1,35 +1,88 @@
-function num(id){return Number(document.getElementById(id).value)||0}
-function brl(v){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:2}).format(v)}
-function setup(){
- document.title='Rescisão CLT | QuantoLab';
- const h=document.querySelector('h1');if(h)h.textContent='Calcule uma rescisão CLT';
- const p=document.querySelector('.lead');if(p)p.textContent='Preencha os dados para ter uma estimativa do valor da rescisão.';
- const labels=['Salário mensal','Como o contrato terminou?','Dias trabalhados no último mês','Meses que entram no 13º','Meses que entram nas férias','Férias completas ainda não tiradas','Férias vencidas','Anos completos na empresa','Como fica o aviso prévio?','Dias de aviso não cumpridos','Saldo do FGTS usado na multa','Outros valores a receber','Outros valores a descontar'];
- document.querySelectorAll('.field label').forEach((el,i)=>{if(labels[i])el.textContent=labels[i]});
- const tipo=document.getElementById('b');
- ['Demissão sem justa causa','Pedido de demissão','Acordo entre as partes','Demissão por justa causa','Rescisão indireta'].forEach((t,i)=>{if(tipo.options[i])tipo.options[i].textContent=t});
- const aviso=document.getElementById('i');
- ['Trabalhado ou não se aplica','Pago sem trabalhar','Não cumprido pelo empregado'].forEach((t,i)=>{if(aviso.options[i])aviso.options[i].textContent=t});
+const $=id=>document.getElementById(id);
+const num=id=>Math.max(0,Number($(id)?.value)||0);
+const brl=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0);
+const round2=v=>Math.round((v+Number.EPSILON)*100)/100;
+
+function parseDate(id){const value=$(id)?.value;if(!value)return null;const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);}
+function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d;}
+function addMonths(date,months){const d=new Date(date);const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+months);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return d;}
+function diffDays(a,b){return Math.floor((b-a)/86400000)+1;}
+function fullYears(a,b){let y=b.getFullYear()-a.getFullYear();if(b.getMonth()<a.getMonth()||(b.getMonth()===a.getMonth()&&b.getDate()<a.getDate()))y--;return Math.max(0,y);}
+function noticeDays(admission,end){const years=fullYears(admission,end);return Math.min(90,30+Math.max(0,years-1)*3);}
+
+function overlapDays(a1,a2,b1,b2){const start=new Date(Math.max(a1,b1));const end=new Date(Math.min(a2,b2));return end<start?0:diffDays(start,end);}
+function months13(admission,end){const year=end.getFullYear();let total=0;for(let m=0;m<12;m++){const ms=new Date(year,m,1,12);const me=new Date(year,m+1,0,12);if(overlapDays(admission,end,ms,me)>=15)total++;}return Math.min(12,total);}
+function vacationMonths(admission,end){let start=new Date(end.getFullYear(),admission.getMonth(),admission.getDate(),12);if(start>end)start.setFullYear(start.getFullYear()-1);if(start<admission)start=new Date(admission);let total=0;for(let i=0;i<12;i++){const a=addMonths(start,i);const next=addMonths(start,i+1);const b=addDays(next,-1);if(a>end)break;if(overlapDays(admission,end,a,b)>=15)total++;}return Math.min(12,total);}
+
+function inss2026(base){base=Math.min(Math.max(0,base),8475.55);const bands=[[1621,0.075],[2902.84,0.09],[4354.27,0.12],[8475.55,0.14]];let prev=0,total=0;for(const [limit,rate] of bands){if(base<=prev)break;const part=Math.min(base,limit)-prev;if(part>0)total+=part*rate;prev=limit;}return round2(total);}
+function irTable2026(base){if(base<=2428.80)return 0;if(base<=2826.65)return base*.075-182.16;if(base<=3751.05)return base*.15-394.16;if(base<=4664.68)return base*.225-675.49;return base*.275-908.73;}
+function irrfMensal2026(gross,inss,dependents){if(gross<=0)return 0;const legal=inss+dependents*189.59;const deduction=Math.max(legal,607.20);const base=Math.max(0,gross-deduction);let tax=Math.max(0,irTable2026(base));let reduction=0;if(gross<=5000)reduction=tax;else if(gross<=7350)reduction=Math.min(tax,Math.max(0,978.62-.133145*gross));return round2(Math.max(0,tax-reduction));}
+function irrf13_2026(gross,inss,dependents){if(gross<=0)return 0;const base=Math.max(0,gross-inss-dependents*189.59);return round2(Math.max(0,irTable2026(base)));}
+
+function resetResults(message='Preencha os dados para calcular.'){
+ $('totalLiquido').textContent='R$ 0,00';$('notice').textContent=message;
+ ['rSaldo','rAviso','rDecimo','rFeriasProp','rFeriasVencidas','rOutras','rFgtsRescisao','rMultaFgts','rSaqueFgts'].forEach(id=>$(id).textContent='R$ 0,00');
+ ['rInss','rIrrf','rDescontos'].forEach(id=>$(id).textContent='− R$ 0,00');
 }
+
 function calc(){
- const salario=num('a'),tipo=num('b'),dias=Math.min(Math.max(num('c'),0),31),avos13=Math.min(Math.max(num('d'),0),12),avosFerias=Math.min(Math.max(num('e'),0),12),feriasIntegrais=Math.max(num('f'),0),feriasVencidas=Math.max(num('g'),0),anos=Math.max(num('h'),0),aviso=num('i'),diasAviso=Math.min(Math.max(num('j'),0),30),baseFgts=Math.max(num('k'),0),creditos=Math.max(num('l'),0),descontos=Math.max(num('m'),0);
- const saldo=salario/30*dias;
- const justa=tipo===4;
- const decimo=justa?0:salario*avos13/12;
- const feriasProp=justa?0:(salario*avosFerias/12)*(4/3);
- const feriasInt=salario*feriasIntegrais*(4/3);
- const feriasDobro=salario*feriasVencidas*2*(4/3);
- const diasPrevio=Math.min(30+3*Math.floor(anos),90);
- let avisoCredito=0,avisoDesconto=0;
- if(aviso===2&&(tipo===1||tipo===5))avisoCredito=salario/30*diasPrevio;
- if(aviso===2&&tipo===3)avisoCredito=(salario/30*diasPrevio)/2;
- if(aviso===3&&tipo===2)avisoDesconto=salario/30*diasAviso;
- let multaFgts=0;if(tipo===1||tipo===5)multaFgts=baseFgts*.40;if(tipo===3)multaFgts=baseFgts*.20;
- const direto=Math.max(0,saldo+decimo+feriasProp+feriasInt+feriasDobro+avisoCredito+creditos-descontos-avisoDesconto);
- const economico=direto+multaFgts;
- const out={r1:saldo,r2:decimo,r3:feriasProp,r4:feriasInt+feriasDobro,r5:avisoCredito,r6:avisoDesconto,r7:multaFgts,r8:direto,r9:economico};
- Object.entries(out).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=brl(v)});
- const notice=document.getElementById('notice');if(notice)notice.textContent='Aviso usado como referência: '+diasPrevio+' dias. Se esse período mudar seus meses de 13º ou férias, ajuste esses campos manualmente.';
+ const admission=parseDate('admissao'),end=parseDate('desligamento'),salary=num('salario');
+ if(!admission||!end||!salary){resetResults('Informe as datas e o salário para calcular.');return;}
+ if(end<admission){resetResults('A data de saída precisa ser posterior à data de entrada.');return;}
+ if(end.getFullYear()!==2026){resetResults('Esta versão usa as tabelas de 2026. Informe uma data de saída em 2026.');return;}
+
+ const type=$('tipo').value,notice=$('aviso').value;
+ const nDays=noticeDays(admission,end);
+ let projectedEnd=new Date(end),noticeCredit=0,noticeDiscount=0;
+ if(notice==='indenizado'&&(type==='sem_justa'||type==='indireta')){noticeCredit=salary/30*nDays;projectedEnd=addDays(end,nDays);}
+ if(notice==='indenizado'&&type==='acordo'){noticeCredit=salary/30*nDays*.5;projectedEnd=addDays(end,Math.ceil(nDays*.5));}
+ if(notice==='descontado'&&type==='pedido')noticeDiscount=salary;
+
+ const monthStart=new Date(end.getFullYear(),end.getMonth(),1,12);const effectiveStart=admission>monthStart?admission:monthStart;
+ let workedDays=Math.max(0,diffDays(effectiveStart,end));
+ const divisor=$('divisorSaldo').value==='calendario'?new Date(end.getFullYear(),end.getMonth()+1,0).getDate():30;
+ if(divisor===30)workedDays=Math.min(workedDays,30);
+ const salaryBalance=salary/divisor*workedDays;
+
+ const justCause=type==='justa';
+ const m13=justCause?0:months13(admission,projectedEnd);
+ const mVac=justCause?0:vacationMonths(admission,projectedEnd);
+ const gross13=justCause?0:salary*m13/12;
+ const advance13=$('decimoAdiantado').value==='sim'?num('valorDecimoAdiantado'):0;
+ const thirteenth=Math.max(0,gross13-Math.min(advance13,gross13));
+ const proportionalVacation=justCause?0:(salary*mVac/12)*(4/3);
+ const vacationPeriods=$('feriasVencidas').value==='sim'?Math.floor(num('periodosFerias')):0;
+ const completedVacation=salary*vacationPeriods*(4/3);
+
+ const otherIncome=num('outrasVerbas');const otherTaxable=$('naturezaOutras').value==='remuneratoria';
+ const otherDiscounts=num('outrosDescontos');const dependents=Math.floor(num('dependentes'));
+ const regularTaxable=salaryBalance+(otherTaxable?otherIncome:0);
+ const inssRegular=inss2026(regularTaxable);const inss13=inss2026(gross13);
+ const irRegular=irrfMensal2026(regularTaxable,inssRegular,dependents);const ir13=irrf13_2026(gross13,inss13,dependents);
+ const totalInss=inssRegular+inss13,totalIrrf=irRegular+ir13;
+
+ const fgtsBase=salaryBalance+thirteenth+noticeCredit+(otherTaxable?otherIncome:0);
+ const fgtsTermination=round2(fgtsBase*.08);const informedFgts=num('saldoFgts');const penaltyBase=informedFgts+fgtsTermination;
+ let fgtsPenalty=0,withdrawal=0;
+ if(type==='sem_justa'||type==='indireta'){fgtsPenalty=penaltyBase*.40;withdrawal=penaltyBase;}
+ else if(type==='acordo'){fgtsPenalty=penaltyBase*.20;withdrawal=penaltyBase*.80;}
+ else if(type==='prazo'){withdrawal=penaltyBase;}
+ fgtsPenalty=round2(fgtsPenalty);withdrawal=round2(withdrawal);
+
+ const grossPay=salaryBalance+noticeCredit+thirteenth+proportionalVacation+completedVacation+otherIncome;
+ const deductions=noticeDiscount+totalInss+totalIrrf+otherDiscounts;
+ const net=Math.max(0,round2(grossPay-deductions));
+
+ $('totalLiquido').textContent=brl(net);$('rSaldo').textContent=brl(salaryBalance);
+ $('rAviso').textContent=noticeDiscount?('− '+brl(noticeDiscount)):brl(noticeCredit);
+ $('rDecimo').textContent=brl(thirteenth);$('rFeriasProp').textContent=brl(proportionalVacation);$('rFeriasVencidas').textContent=brl(completedVacation);$('rOutras').textContent=brl(otherIncome);
+ $('rInss').textContent='− '+brl(totalInss);$('rIrrf').textContent='− '+brl(totalIrrf);$('rDescontos').textContent='− '+brl(otherDiscounts);
+ $('rFgtsRescisao').textContent=brl(fgtsTermination);$('rMultaFgts').textContent=brl(fgtsPenalty);$('rSaqueFgts').textContent=brl(withdrawal);
+ $('notice').textContent=`13º: ${m13} mês(es) · férias: ${mVac} mês(es) · aviso de referência: ${nDays} dias. FGTS e multa ficam separados do valor líquido acima.`;
 }
-setup();document.getElementById('calcular').addEventListener('click',calc);calc();
-const extra=document.createElement('script');extra.src='/labels-simulador.js';document.body.appendChild(extra);
+
+function setSuggestedNotice(){const type=$('tipo').value;if(type==='sem_justa'||type==='indireta'||type==='acordo')$('aviso').value='indenizado';else if(type==='pedido')$('aviso').value='trabalhado';else $('aviso').value='nao_aplica';}
+function syncFields(){const hasVacation=$('feriasVencidas').value==='sim';$('periodosFerias').disabled=!hasVacation;if(!hasVacation)$('periodosFerias').value=0;const has13=$('decimoAdiantado').value==='sim';$('valorDecimoAdiantado').disabled=!has13;if(!has13)$('valorDecimoAdiantado').value=0;}
+function clearAll(){document.querySelectorAll('#rescisao-form input').forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value='';});$('divisorSaldo').value='30';$('tipo').value='sem_justa';$('aviso').value='indenizado';$('feriasVencidas').value='nao';$('periodosFerias').value=0;$('decimoAdiantado').value='nao';$('valorDecimoAdiantado').value=0;$('dependentes').value=0;$('outrasVerbas').value=0;$('naturezaOutras').value='remuneratoria';$('outrosDescontos').value=0;$('saldoFgts').value=0;syncFields();resetResults();}
+
+$('calcular').addEventListener('click',calc);$('limpar').addEventListener('click',clearAll);$('tipo').addEventListener('change',()=>{setSuggestedNotice();calc();});$('feriasVencidas').addEventListener('change',syncFields);$('decimoAdiantado').addEventListener('change',syncFields);syncFields();resetResults();
