@@ -1,0 +1,45 @@
+name: Apply advertising layout v3
+
+on:
+  push:
+    branches:
+      - ads-layout-responsive
+    paths:
+      - .github/workflows/apply-ad-layout-v3-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ads-layout-responsive
+          persist-credentials: true
+          fetch-depth: 1
+
+      - name: Transform and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_ads_temp.py
+          node --check scripts/qa.mjs
+          node scripts/qa.mjs
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f scripts/apply_ads_temp.py
+          rm -f .github/workflows/apply-ad-layout-temp.yml
+          rm -f .github/workflows/apply-ad-layout-v2-temp.yml
+          rm -f .github/workflows/apply-ad-layout-v3-temp.yml
+          git config user.name "Gabriel G. Silva"
+          git config user.email "151961393+GabrielGonzagaSilva@users.noreply.github.com"
+          git add -A
+          git commit -m "Configure responsive advertising inventory"
+          git push origin HEAD:ads-layout-responsive
