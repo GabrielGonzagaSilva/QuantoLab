@@ -108,7 +108,8 @@ function calc(){
   $('rInss').textContent='− '+brl(totalInss);$('rIrrf').textContent='− '+brl(totalIrrf);$('rDescontos').textContent='− '+brl(otherDiscounts);
   $('rFgtsRescisao').textContent=brl(fgtsTermination);$('rMultaFgts').textContent=brl(fgtsPenalty);$('rSaqueFgts').textContent=brl(withdrawal);
   const saqueMsg=saqueAniversario&&(type==='sem_justa'||type==='indireta'||type==='acordo')?' · saque-aniversário: saldo não foi somado como saque disponível':'';
-  $('notice').textContent=`13º: ${m13} mês(es) · férias proporcionais: ${mVac} mês(es) · aviso de referência: ${nDays} dias${saqueMsg}. FGTS e multa ficam separados do valor líquido acima.`;
+  const futureMsg=projectedEnd.getFullYear()>2026?' · atenção: o aviso projeta parte do contrato para 2027; essa parte continua estimada com as tabelas de 2026':'';
+  $('notice').textContent=`13º: ${m13} mês(es) · férias proporcionais: ${mVac} mês(es) · aviso de referência: ${nDays} dias${saqueMsg}${futureMsg}. FGTS e multa ficam separados do valor líquido acima.`;
 }
 
 function setSuggestedNotice(){const type=$('tipo').value;if(type==='sem_justa'||type==='indireta'||type==='acordo')$('aviso').value='indenizado';else if(type==='pedido')$('aviso').value='trabalhado';else $('aviso').value='nao_aplica';}
