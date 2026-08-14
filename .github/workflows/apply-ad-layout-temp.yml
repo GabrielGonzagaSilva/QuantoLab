@@ -1,0 +1,201 @@
+name: Apply advertising layout
+
+on:
+  push:
+    branches: [ads-layout-responsive]
+    paths: [.github/workflows/apply-ad-layout-temp.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ads-layout-responsive
+          persist-credentials: true
+          fetch-depth: 1
+
+      - name: Apply responsive ad inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+
+          def ad(slot, variant='leaderboard', priority='standard'):
+              return (
+                  f'<aside class="ad ad--{variant}" aria-label="Publicidade" '
+                  f'data-ad-slot="{slot}" data-ad-priority="{priority}">'
+                  '<span class="ad-label">Publicidade</span>'
+                  '<div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div>'
+                  '</aside>'
+              )
+
+          old_ad = '<section class="ad"><span class="ad-label">Publicidade</span><div class="ad-box">Espaço preparado para anúncio responsivo</div></section>'
+
+          # Home: alta visibilidade após a proposta de valor + segundo slot depois das ferramentas.
+          p = root / 'index.html'
+          html = p.read_text()
+          if html.count(old_ad) != 1:
+              raise SystemExit('index.html: inventário antigo inesperado')
+          html = html.replace(old_ad, ad('home-top', 'leaderboard', 'high'), 1)
+          marker = '</div></div></section>\n<section class="section"><div class="shell card-grid">'
+          if marker not in html:
+              raise SystemExit('index.html: marcador após ferramentas não encontrado')
+          html = html.replace(
+              marker,
+              '</div></div></section>\n<div class="shell">' + ad('home-after-tools', 'content', 'high') + '</div>\n<section class="section"><div class="shell card-grid">',
+              1,
+          )
+          p.write_text(html)
+
+          # Calculadoras: um slot antes da tarefa e outro somente depois do resultado/fluxo principal.
+          calculators = [
+              'valor-hora.html',
+              'preco-projeto.html',
+              'meta-faturamento.html',
+              'comparador-profissional.html',
+              'simulador.html',
+          ]
+          for filename in calculators:
+              p = root / filename
+              html = p.read_text()
+              if html.count(old_ad) != 2:
+                  raise SystemExit(f'{filename}: esperado 2 espaços antigos, encontrado {html.count(old_ad)}')
+              stem = p.stem
+              html = html.replace(old_ad, ad(f'{stem}-top', 'leaderboard', 'high'), 1)
+              html = html.replace(old_ad, ad(f'{stem}-after-tool', 'content', 'high'), 1)
+              p.write_text(html)
+
+          # Metodologia: conteúdo longo comporta dois slots sem interromper blocos de texto.
+          p = root / 'metodologia.html'
+          html = p.read_text()
+          hero_marker = '</section>\n<article class="article">'
+          if hero_marker not in html:
+              raise SystemExit('metodologia.html: hero marker não encontrado')
+          html = html.replace(hero_marker, '</section>\n' + ad('metodologia-top', 'leaderboard') + '\n<article class="article">', 1)
+          article_marker = '</article>\n</div></main>'
+          if article_marker not in html:
+              raise SystemExit('metodologia.html: fechamento do artigo não encontrado')
+          html = html.replace(article_marker, '</article>\n' + ad('metodologia-bottom', 'content') + '\n</div></main>', 1)
+          p.write_text(html)
+
+          # Institucionais/legais: só um slot depois do conteúdo para preservar confiança e leitura.
+          for filename, slot in [
+              ('sobre.html', 'sobre-bottom'),
+              ('politica-de-privacidade.html', 'privacidade-bottom'),
+              ('termos.html', 'termos-bottom'),
+          ]:
+              p = root / filename
+              html = p.read_text()
+              marker = '</article>\n</div></main>'
+              if marker not in html:
+                  # Algumas páginas fecham tudo na mesma linha.
+                  marker = '</article></div></main>'
+              if marker not in html:
+                  raise SystemExit(f'{filename}: fechamento do artigo não encontrado')
+              if marker == '</article>\n</div></main>':
+                  html = html.replace(marker, '</article>\n' + ad(slot, 'footer', 'low') + '\n</div></main>', 1)
+              else:
+                  html = html.replace(marker, '</article>' + ad(slot, 'footer', 'low') + '</div></main>', 1)
+              p.write_text(html)
+
+          # Contato é noindex e tem pouco conteúdo: sem inventário publicitário por política/qualidade.
+          p = root / 'contato.html'
+          html = p.read_text()
+          if 'data-ad-slot=' in html:
+              raise SystemExit('contato.html: não deve receber anúncios enquanto for noindex/baixo conteúdo')
+          html = html.replace('<main><div class="shell">', '<main><div class="shell"><!-- Sem publicidade enquanto esta página for noindex e tiver conteúdo mínimo. -->', 1)
+          p.write_text(html)
+
+          # CSS: slots responsivos com espaço reservado para reduzir deslocamento de layout.
+          css_path = root / 'style.css'
+          css = css_path.read_text()
+          advertising = r'''/* Advertising inventory */
+          .ad{width:100%;margin:clamp(24px,4vw,42px) 0;clear:both}
+          .ad-label{display:block;margin-bottom:8px;text-align:center;text-transform:uppercase;letter-spacing:.14em;font-size:9px;font-weight:650;color:#98989d;user-select:none}
+          .ad-box{width:100%;max-width:970px;margin-inline:auto;display:grid;place-items:center;overflow:hidden;border:1px dashed rgba(0,0,0,.12);border-radius:var(--radius-md);background:rgba(255,255,255,.48);color:#8c8c92;text-align:center}
+          .ad-placeholder{padding:12px;font-size:11px;line-height:1.35;letter-spacing:.01em}
+          .ad--leaderboard .ad-box{min-height:90px}
+          .ad--content .ad-box{min-height:clamp(140px,16vw,180px)}
+          .ad--footer .ad-box{min-height:90px;max-width:860px}
+
+          @media (max-width:760px){
+            .ad{margin:22px 0 30px}
+            .ad--leaderboard .ad-box{min-height:100px}
+            .ad--content .ad-box{min-height:250px}
+            .ad--footer .ad-box{min-height:100px}
+          }
+
+          @media (max-width:380px){
+            .ad{margin:18px 0 26px}
+            .ad-box{border-radius:13px}
+            .ad-placeholder{font-size:10px}
+          }
+          '''
+          pattern = re.compile(r'/\* Advertising \*/.*?/\* Calculator pages \*/', re.S)
+          if not pattern.search(css):
+              raise SystemExit('style.css: bloco Advertising não encontrado')
+          css = pattern.sub(advertising + '\n/* Calculator pages */', css, count=1)
+          css_path.write_text(css)
+
+          # QA: garante densidade planejada, slots únicos, acessibilidade e exceção de contato.
+          qa_path = root / 'scripts/qa.mjs'
+          qa = qa_path.read_text()
+          anchor = "if(!css.includes('.btn-secondary'))fail('style.css: falta estilo do botão secundário.');"
+          if anchor not in qa:
+              raise SystemExit('qa.mjs: âncora de CSS não encontrada')
+          checks = r'''
+          if(!css.includes('.ad--leaderboard')||!css.includes('.ad--content')||!css.includes('.ad--footer'))fail('style.css: sistema responsivo de publicidade incompleto.');
+          const adMinimums=new Map([
+            ['index.html',2],
+            ['valor-hora.html',2],
+            ['preco-projeto.html',2],
+            ['meta-faturamento.html',2],
+            ['comparador-profissional.html',2],
+            ['simulador.html',2],
+            ['metodologia.html',2],
+            ['sobre.html',1],
+            ['politica-de-privacidade.html',1],
+            ['termos.html',1]
+          ]);
+          const adSlots=new Set();
+          for(const [file,minimum] of adMinimums){
+            const html=read(file);
+            const slots=[...html.matchAll(/\bdata-ad-slot=["']([^"']+)["']/g)].map(m=>m[1]);
+            if(slots.length<minimum)fail(`${file}: inventário publicitário abaixo do planejado (${slots.length}/${minimum}).`);
+            if(!/<aside class=["'][^"']*\bad\b[^"']*["'][^>]+aria-label=["']Publicidade["']/i.test(html))fail(`${file}: espaço publicitário sem identificação acessível.`);
+            for(const slot of slots){if(adSlots.has(slot))fail(`Publicidade: data-ad-slot duplicado "${slot}".`);adSlots.add(slot);}
+          }
+          if(read('contato.html').includes('data-ad-slot='))fail('contato.html: página noindex/baixo conteúdo não deve exibir publicidade.');
+          '''
+          qa = qa.replace(anchor, anchor + checks, 1)
+          qa_path.write_text(qa)
+          PY
+
+      - name: Validate transformed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/qa.mjs
+          node scripts/qa.mjs
+          test "$(grep -Roh 'data-ad-slot="[^"]*"' -- *.html | sort | uniq -d | wc -l)" -eq 0
+
+      - name: Remove temporary workflow and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/apply-ad-layout-temp.yml
+          git config user.name "Gabriel G. Silva"
+          git config user.email "151961393+GabrielGonzagaSilva@users.noreply.github.com"
+          git add index.html valor-hora.html preco-projeto.html meta-faturamento.html comparador-profissional.html simulador.html metodologia.html sobre.html politica-de-privacidade.html termos.html contato.html style.css scripts/qa.mjs .github/workflows/apply-ad-layout-temp.yml
+          git commit -m "Configure responsive advertising inventory"
+          git push origin HEAD:ads-layout-responsive
