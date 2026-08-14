@@ -3,38 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Calculadora CLT x PJ | QuantoLab</title>
-  <meta name="description" content="Compare CLT e PJ usando salário, benefícios, 13º, férias, impostos e gastos mensais.">
+  <title>Calculadora CLT x PJ 2026 | QuantoLab</title>
+  <meta name="description" content="Compare uma proposta CLT e uma proposta PJ com INSS e Imposto de Renda de 2026, benefícios, 13º, férias, impostos e gastos do PJ.">
   <link rel="canonical" href="https://quantolab.com.br/comparador-profissional">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="header"><div class="shell nav"><a class="brand" href="/"><span class="mark">QL</span>QuantoLab</a><nav class="navlinks"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>CLT x PJ</h1><p class="lead">Compare as duas opções usando os valores da sua proposta.</p></div></section>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>CLT ou PJ: qual proposta deixa mais dinheiro?</h1><p class="lead">Compare as duas opções com os valores da sua proposta. O CLT usa as tabelas de INSS e Imposto de Renda de 2026; no PJ, você informa sua taxa média.</p></div></section>
 <div class="shell">
 <section class="calc-grid">
-<div class="panel form">
-<input class="help-check" type="checkbox" id="help-comparador">
-<label class="help-inline-toggle" for="help-comparador"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label>
-<div class="field"><label for="a">Salário mensal CLT</label><span class="field-help">Seu salário bruto por mês na proposta CLT.</span><div class="input-wrap"><span class="prefix">R$</span><input id="a" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
-<div class="field"><label for="b">Benefícios por mês</label><span class="field-help">Some vale-refeição, vale-alimentação, auxílio e outros benefícios que você quer considerar.</span><div class="input-wrap"><span class="prefix">R$</span><input id="b" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
-<div class="field"><label for="c">Bônus no ano</label><span class="field-help">Inclua bônus, PLR ou outro valor extra que você espera receber no ano.</span><div class="input-wrap"><span class="prefix">R$</span><input id="c" type="number" min="0" step="100" value="0" inputmode="decimal"></div></div>
+<div class="panel form" id="clt-pj-form">
+<input class="help-check" type="checkbox" id="help-comparador"><label class="help-inline-toggle" for="help-comparador"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label>
+<h3 class="form-section-title">1. Proposta CLT</h3>
+<div class="field"><label for="cltSalario">Salário bruto por mês</label><span class="field-help">Valor antes dos descontos de INSS e Imposto de Renda.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltSalario" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
+<div class="field"><label for="cltBeneficios">Benefícios por mês</label><span class="field-help">Some vale-refeição, alimentação, auxílio, plano pago pela empresa e outros benefícios que têm valor para você.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltBeneficios" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
 <div class="grid2">
-<div class="field"><label for="d">Somar o 13º?</label><span class="field-help">Se escolher Sim, um salário mensal será somado ao total anual CLT.</span><div class="input-wrap"><select id="d"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
-<div class="field"><label for="e">Somar o adicional de férias?</label><span class="field-help">Se escolher Sim, 1/3 de um salário será somado ao total anual CLT.</span><div class="input-wrap"><select id="e"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
+<div class="field"><label for="dependentes">Dependentes no Imposto de Renda</label><span class="field-help">Quantidade de dependentes que podem ser usados no cálculo do IR.</span><div class="input-wrap"><input id="dependentes" type="number" min="0" max="30" step="1" value="0" inputmode="numeric"></div></div>
+<div class="field"><label for="cltDescontos">Outros descontos por mês</label><span class="field-help">Ex.: plano de saúde descontado em folha, vale-transporte ou outros descontos recorrentes.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltDescontos" type="number" min="0" step="10" value="0" inputmode="decimal"></div></div>
 </div>
-<div class="field"><label for="f">Valor mensal como PJ</label><span class="field-help">Quanto você receberia por mês trabalhando como PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="f" type="number" min="0" step="100" value="10000" inputmode="decimal"></div></div>
+<div class="field"><label for="cltBonus">Bônus ou PLR líquido no ano</label><span class="field-help">Se souber o valor que realmente recebe depois dos descontos, coloque aqui. Se não tiver, deixe 0.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltBonus" type="number" min="0" step="100" value="0" inputmode="decimal"></div></div>
+<h3 class="form-section-title">2. Proposta PJ</h3>
+<div class="field"><label for="pjMensal">Valor bruto por mês como PJ</label><span class="field-help">Valor que você emitiria em nota no mês.</span><div class="input-wrap"><span class="prefix">R$</span><input id="pjMensal" type="number" min="0" step="100" value="10000" inputmode="decimal"></div></div>
 <div class="grid2">
-<div class="field"><label for="g">Meses recebendo como PJ</label><span class="field-help">Use 11, por exemplo, se quiser deixar um mês do ano sem receber.</span><div class="input-wrap"><input id="g" type="number" min="1" max="12" step="1" value="11" inputmode="numeric"><span class="suffix">meses</span></div></div>
-<div class="field"><label for="h">Impostos e taxas do PJ</label><span class="field-help">Percentual que você quer descontar para impostos e outras taxas.</span><div class="input-wrap"><input id="h" type="number" min="0" max="99" step="0.1" value="10" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="pjMeses">Quantos meses vai receber no ano?</label><span class="field-help">Use 11 se quiser reservar um mês sem faturar, por exemplo.</span><div class="input-wrap"><input id="pjMeses" type="number" min="1" max="12" step="1" value="11" inputmode="numeric"><span class="suffix">meses</span></div></div>
+<div class="field"><label for="pjImpostos">Impostos e taxas do PJ</label><span class="field-help">Use a taxa efetiva média informada pelo seu contador ou uma estimativa realista para o seu caso.</span><div class="input-wrap"><input id="pjImpostos" type="number" min="0" max="95" step="0.1" value="10" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
-<div class="field"><label for="i">Gastos mensais como PJ</label><span class="field-help">Contabilidade, ferramentas, plano de saúde e outros gastos mensais do PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="i" type="number" min="0" step="50" value="500" inputmode="decimal"></div></div>
-<button id="calcular" class="btn" type="button">Comparar →</button>
+<div class="grid2">
+<div class="field"><label for="pjContador">Contador por mês</label><span class="field-help">Mensalidade da contabilidade do seu CNPJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="pjContador" type="number" min="0" step="10" value="200" inputmode="decimal"></div></div>
+<div class="field"><label for="pjOutros">Outros gastos do PJ por mês</label><span class="field-help">Plano de saúde, previdência, ferramentas, seguros e outros gastos que você passa a pagar por conta própria.</span><div class="input-wrap"><span class="prefix">R$</span><input id="pjOutros" type="number" min="0" step="50" value="500" inputmode="decimal"></div></div>
 </div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Comparação do ano</div><div id="winner" class="result-value">—</div><p class="result-sub">Opção com maior valor anual usando os dados que você informou.</p></div><div class="result-body"><div class="row"><span>Total CLT no ano</span><strong id="r1">R$ 0</strong></div><div class="row"><span>Total PJ no ano</span><strong id="r2">R$ 0</strong></div><div class="row"><span>Diferença no ano</span><strong id="r3">R$ 0</strong></div><div class="highlight"><span>Valor PJ para ficar igual ao CLT</span><strong id="r4">R$ 0</strong></div></div></aside>
+<div class="grid2 action-grid"><button id="calcular" class="btn" type="button">Comparar propostas →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
+</div>
+<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Maior valor disponível no ano</div><div id="winner" class="result-value">—</div><p id="status" class="result-sub">Preencha os dados para comparar.</p></div><div class="result-body"><div class="highlight"><span>Diferença no ano</span><strong id="diferenca">R$ 0</strong></div><div class="row"><span>CLT disponível no ano</span><strong id="cltAno">R$ 0</strong></div><div class="row"><span>PJ disponível no ano</span><strong id="pjAno">R$ 0</strong></div><div class="row"><span>CLT líquido em um mês normal</span><strong id="cltMes">R$ 0</strong></div><div class="row"><span>PJ médio por mês no ano</span><strong id="pjMes">R$ 0</strong></div><div class="row"><span>FGTS CLT estimado no ano</span><strong id="fgtsAno">R$ 0</strong></div><div class="row"><span>PJ mensal para ficar igual ao CLT</span><strong id="pjEquivalente">R$ 0</strong></div></div></aside>
 </section>
-<article class="article"><h2>Como interpretar</h2><p>O resultado faz uma comparação simples com os valores que você informou. Ele não inclui automaticamente todos os impostos, descontos, FGTS, previdência ou regras específicas do seu contrato.</p><p class="notice">Use como referência para comparar as propostas. Para uma decisão final, confira os valores do seu caso.</p></article>
+<article class="article"><h2>O que entra na comparação</h2><p>No CLT, a calculadora estima o salário líquido mensal com INSS e Imposto de Renda de 2026, soma benefícios, 13º líquido estimado, o ganho extra das férias e o bônus líquido informado. O FGTS aparece separado porque normalmente não fica disponível para uso mensal.</p><p>No PJ, são descontados o percentual de impostos e taxas informado e os gastos mensais de contador e outros custos. Se quiser reservar um mês sem faturar, use 11 meses de recebimento.</p><div class="notice"><strong>Importante:</strong> o regime tributário do PJ, pró-labore, previdência, convenções coletivas e situações individuais podem mudar o resultado. Use a comparação como referência e valide os percentuais do PJ com seu contador.</div></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><strong>QuantoLab</strong><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
