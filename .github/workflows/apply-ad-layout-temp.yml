@@ -67,12 +67,16 @@ jobs:
           ]
           for filename in calculators:
               p = root / filename
-              html = p.read_text()
-              if html.count(old_ad) != 2:
-                  raise SystemExit(f'{filename}: esperado 2 espaços antigos, encontrado {html.count(old_ad)}')
+              html = p.read_text().replace(old_ad, '')
               stem = p.stem
-              html = html.replace(old_ad, ad(f'{stem}-top', 'leaderboard', 'high'), 1)
-              html = html.replace(old_ad, ad(f'{stem}-after-tool', 'content', 'high'), 1)
+              calc = re.search(r'<section(?:\s+id="calc")?\s+class="calc-grid">', html)
+              if not calc:
+                  raise SystemExit(f'{filename}: início da calculadora não encontrado')
+              html = html[:calc.start()] + ad(f'{stem}-top', 'leaderboard', 'high') + '\n' + html[calc.start():]
+              marker = '</section>\n<article class="article">'
+              if marker not in html:
+                  raise SystemExit(f'{filename}: fim da calculadora não encontrado')
+              html = html.replace(marker, '</section>\n' + ad(f'{stem}-after-tool', 'content', 'high') + '\n<article class="article">', 1)
               p.write_text(html)
 
           # Metodologia: conteúdo longo comporta dois slots sem interromper blocos de texto.
@@ -98,7 +102,6 @@ jobs:
               html = p.read_text()
               marker = '</article>\n</div></main>'
               if marker not in html:
-                  # Algumas páginas fecham tudo na mesma linha.
                   marker = '</article></div></main>'
               if marker not in html:
                   raise SystemExit(f'{filename}: fechamento do artigo não encontrado')
