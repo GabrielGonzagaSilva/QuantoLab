@@ -7,11 +7,11 @@ function setupHelp(){
   const old=form.querySelector('.help-details');
   if(old)old.remove();
   const tips=[
-    'Quanto vale uma hora do seu trabalho.',
-    'Tempo total que você prevê gastar no projeto.',
-    'Folga para alterações e rodadas de feedback.',
-    'Reserva para gastos que não estão nas horas.',
-    'Margem para imprevistos e variações de escopo.'
+    'Quanto você cobra por uma hora do seu trabalho.',
+    'Tempo total que você acha que vai gastar no projeto.',
+    'Valor extra para mudanças e rodadas de feedback.',
+    'Reserva para gastos que não estão nas horas de trabalho.',
+    'Reserva para imprevistos e mudanças no projeto.'
   ];
   const fields=[...form.querySelectorAll('.field')];
   fields.forEach((field,index)=>{
