@@ -1,0 +1,88 @@
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - '*.js'
+      - 'style.css'
+      - 'sitemap.xml'
+      - 'robots.txt'
+      - 'favicon.svg'
+      - 'quantolab-logo.svg'
+      - '54b967966f714fbb3be34ca2b1113ef2.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-main
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Wait for production and submit sitemap URLs
+        env:
+          INDEXNOW_KEY: 54b967966f714fbb3be34ca2b1113ef2
+          SITE: https://quantolab.com.br
+        run: |
+          set -euo pipefail
+
+          key_url="$SITE/$INDEXNOW_KEY.txt"
+          ready=0
+          for attempt in $(seq 1 36); do
+            body="$(curl -fsSL --max-time 10 "$key_url" 2>/dev/null || true)"
+            if [ "$body" = "$INDEXNOW_KEY" ]; then
+              ready=1
+              break
+            fi
+            sleep 5
+          done
+
+          if [ "$ready" -ne 1 ]; then
+            echo "Production did not expose the IndexNow key in time."
+            exit 1
+          fi
+
+          curl -fsSL --max-time 20 "$SITE/sitemap.xml" -o /tmp/sitemap.xml
+          python3 - <<'PY'
+          import json
+          import os
+          import xml.etree.ElementTree as ET
+
+          key = os.environ['INDEXNOW_KEY']
+          site = os.environ['SITE']
+          root = ET.parse('/tmp/sitemap.xml').getroot()
+          ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+          urls = [node.text.strip() for node in root.findall('sm:url/sm:loc', ns) if node.text]
+          if not urls:
+              raise SystemExit('No URLs found in sitemap.xml')
+          if len(urls) > 10000:
+              raise SystemExit('IndexNow payload exceeds 10,000 URLs')
+          payload = {
+              'host': 'quantolab.com.br',
+              'key': key,
+              'keyLocation': f'{site}/{key}.txt',
+              'urlList': urls,
+          }
+          with open('/tmp/indexnow.json', 'w', encoding='utf-8') as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          print(f'Prepared {len(urls)} URL(s) for IndexNow.')
+          PY
+
+          status="$(curl -sS --max-time 30 -o /tmp/indexnow-response.txt -w '%{http_code}' \
+            -X POST 'https://api.indexnow.org/indexnow' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            --data-binary @/tmp/indexnow.json)"
+
+          cat /tmp/indexnow-response.txt || true
+          echo "IndexNow HTTP status: $status"
+          case "$status" in
+            200|202) ;;
+            *) exit 1 ;;
+          esac

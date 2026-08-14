@@ -27,7 +27,7 @@ for(const file of htmlFiles){
   if(!/<html[^>]+lang=["']pt-BR["']/i.test(html))fail(`${file}: falta lang="pt-BR".`);
   if(!/<meta[^>]+name=["']viewport["']/i.test(html))fail(`${file}: falta meta viewport.`);
   if((html.match(/<h1\b/gi)||[]).length!==1)fail(`${file}: deve ter exatamente um h1.`);
-  if(/<script\b(?![^>]*\bsrc=)[^>]*>/i.test(html))fail(`${file}: script inline não é permitido pela CSP.`);
+  if(/<script\b(?![^>]*\bsrc=)(?![^>]*\btype=["']application\/ld\+json["'])[^>]*>/i.test(html))fail(`${file}: script inline executável não é permitido pela CSP.`);
   if(/\son[a-z]+\s*=/i.test(html))fail(`${file}: handler JavaScript inline encontrado.`);
   if(/(?:href|src)=["']http:\/\//i.test(html))fail(`${file}: recurso HTTP inseguro encontrado.`);
   if(/<script[^>]+src=["']https?:\/\//i.test(html))fail(`${file}: script externo exige revisão de segurança e CSP.`);
@@ -99,9 +99,35 @@ else {
   for(const entry of ['.github/','scripts/','UX_WRITING.md','.env','.dev.vars','.wrangler/'])if(!assetsignore.includes(entry))fail(`.assetsignore: falta excluir ${entry} do bundle público.`);
 }
 
+const indexablePages=['index.html','valor-hora.html','preco-projeto.html','meta-faturamento.html','comparador-profissional.html','simulador.html','sobre.html','metodologia.html','politica-de-privacidade.html','termos.html'];
+for(const file of indexablePages){
+  const html=read(file);
+  for(const requirement of [
+    ['meta robots',/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*index/i],
+    ['title',/<title>[^<]+<\/title>/i],
+    ['description',/<meta[^>]+name=["']description["']/i],
+    ['canonical',/<link[^>]+rel=["']canonical["']/i],
+    ['favicon',/<link[^>]+rel=["']icon["'][^>]+href=["']\/favicon\.svg["']/i],
+    ['Open Graph site name',/<meta[^>]+property=["']og:site_name["'][^>]+content=["']QuantoLab["']/i],
+    ['Open Graph title',/<meta[^>]+property=["']og:title["']/i],
+    ['Open Graph description',/<meta[^>]+property=["']og:description["']/i],
+    ['Open Graph URL',/<meta[^>]+property=["']og:url["']/i],
+    ['Twitter card',/<meta[^>]+name=["']twitter:card["']/i],
+    ['JSON-LD',/<script[^>]+type=["']application\/ld\+json["']/i]
+  ]) if(!requirement[1].test(html)) fail('SEO técnico: '+file+' sem '+requirement[0]+'.');
+}
+if(!read('index.html').includes('"@type":"WebSite"'))fail('SEO técnico: home sem WebSite structured data.');
+const contact=read('contato.html');
+if(!/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(contact))fail('SEO técnico: contato deve permanecer noindex.');
+if(!css.includes('.ads-ready .ad{display:block}')||!css.includes('.ad{display:none;'))fail('Publicidade: placeholders vazios devem ficar ocultos antes da ativação da rede.');
+if(!fs.existsSync(path.join(root,'54b967966f714fbb3be34ca2b1113ef2.txt')))fail('IndexNow: arquivo de validação ausente.');
+if(!fs.existsSync(path.join(root,'.github/workflows/indexnow.yml')))fail('IndexNow: workflow de submissão ausente.');
+
 const sitemap=read('sitemap.xml');
 if(/<loc>[^<]+\.html<\/loc>/i.test(sitemap))fail('sitemap.xml: contém URL .html em vez da rota canônica.');
 for(const m of sitemap.matchAll(/<loc>https:\/\/quantolab\.com\.br([^<]*)<\/loc>/g))if(!routeExists(m[1]||'/'))fail(`sitemap.xml: rota inexistente ${m[1]||'/'}.`);
+if((sitemap.match(/<lastmod>2026-08-14<\/lastmod>/g)||[]).length<10)fail('sitemap.xml: lastmod ausente nas URLs indexáveis.');
+if(/<loc>https:\/\/quantolab\.com\.br\/contato<\/loc>/.test(sitemap))fail('sitemap.xml: contato noindex não deve constar no sitemap.');
 
 function element(value=''){
   return {value:String(value),textContent:'',disabled:false,listeners:{},addEventListener(type,cb){this.listeners[type]=cb;}};
