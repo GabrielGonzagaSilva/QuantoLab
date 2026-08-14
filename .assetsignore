@@ -4,6 +4,7 @@ scripts/
 UX_WRITING.md
 .gitignore
 .assetsignore
+wrangler.jsonc
 
 # Local/dev files (defense in depth)
 .env
