@@ -71,6 +71,18 @@ if(balance!==0)fail('style.css: chaves desbalanceadas.');
 if(!css.includes('@media (max-width:380px)'))fail('style.css: falta proteção para telas muito estreitas.');
 if(!css.includes(':focus-visible'))fail('style.css: falta estado de foco acessível.');
 if(!css.includes('.btn-secondary'))fail('style.css: falta estilo do botão secundário.');
+if(!css.includes('.ad--leaderboard')||!css.includes('.ad--content')||!css.includes('.ad--footer'))fail('style.css: sistema responsivo de publicidade incompleto.');
+const adMinimums=new Map([['index.html',2],['valor-hora.html',2],['preco-projeto.html',2],['meta-faturamento.html',2],['comparador-profissional.html',2],['simulador.html',2],['metodologia.html',2],['sobre.html',1],['politica-de-privacidade.html',1],['termos.html',1]]);
+const adSlots=new Set();
+for(const [file,minimum] of adMinimums){
+  const html=read(file);
+  const slots=[...html.matchAll(/\bdata-ad-slot=["']([^"']+)["']/g)].map(m=>m[1]);
+  if(slots.length<minimum)fail(`${file}: inventário publicitário abaixo do planejado (${slots.length}/${minimum}).`);
+  if(!/<aside class=["'][^"']*\bad\b[^"']*["'][^>]+aria-label=["']Publicidade["']/i.test(html))fail(`${file}: espaço publicitário sem identificação acessível.`);
+  for(const slot of slots){if(adSlots.has(slot))fail(`Publicidade: data-ad-slot duplicado "${slot}".`);adSlots.add(slot);}
+}
+if(read('contato.html').includes('data-ad-slot='))fail('contato.html: página noindex/baixo conteúdo não deve exibir publicidade.');
+
 
 const headers=read('_headers');
 for(const required of ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','X-Frame-Options','Permissions-Policy'])if(!headers.includes(required))fail(`_headers: falta ${required}.`);
