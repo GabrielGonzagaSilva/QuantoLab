@@ -8,7 +8,7 @@ function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);r
 function addMonths(date,months){const d=new Date(date);const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+months);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return d;}
 function diffDays(a,b){return Math.floor((b-a)/86400000)+1;}
 function fullYears(a,b){let y=b.getFullYear()-a.getFullYear();if(b.getMonth()<a.getMonth()||(b.getMonth()===a.getMonth()&&b.getDate()<a.getDate()))y--;return Math.max(0,y);}
-function noticeDays(admission,end){const years=fullYears(admission,end);return Math.min(90,30+Math.max(0,years-1)*3);}
+function noticeDays(admission,end){const years=fullYears(admission,end);return Math.min(90,30+years*3);}
 
 function overlapDays(a1,a2,b1,b2){const start=new Date(Math.max(a1,b1));const end=new Date(Math.min(a2,b2));return end<start?0:diffDays(start,end);}
 function months13(admission,end){const year=end.getFullYear();let total=0;for(let m=0;m<12;m++){const ms=new Date(year,m,1,12);const me=new Date(year,m+1,0,12);if(overlapDays(admission,end,ms,me)>=15)total++;}return Math.min(12,total);}
