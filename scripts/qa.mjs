@@ -8,9 +8,7 @@ const fail=m=>failures.push(m);
 const files=fs.readdirSync(root,{withFileTypes:true});
 const htmlFiles=files.filter(f=>f.isFile()&&f.name.endsWith('.html')).map(f=>f.name);
 const jsFiles=files.filter(f=>f.isFile()&&f.name.endsWith('.js')).map(f=>f.name);
-
 const read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const idsOf=html=>new Set([...html.matchAll(/\bid=["']([^"']+)["']/g)].map(m=>m[1]));
 
 function routeExists(href){
   if(!href||href.startsWith('#')||/^(https?:|mailto:|tel:)/i.test(href))return true;
@@ -32,10 +30,8 @@ for(const file of htmlFiles){
   if(/<script\b(?![^>]*\bsrc=)[^>]*>/i.test(html))fail(`${file}: script inline não é permitido pela CSP.`);
   if(/\son[a-z]+\s*=/i.test(html))fail(`${file}: handler JavaScript inline encontrado.`);
   if(/(?:href|src)=["']http:\/\//i.test(html))fail(`${file}: recurso HTTP inseguro encontrado.`);
-
   for(const m of html.matchAll(/<label[^>]+for=["']([^"']+)["']/gi))if(!unique.has(m[1]))fail(`${file}: label aponta para ID inexistente "${m[1]}".`);
   for(const m of html.matchAll(/<(?:a|link|script)[^>]+(?:href|src)=["']([^"']+)["']/gi))if(!routeExists(m[1]))fail(`${file}: referência local inexistente "${m[1]}".`);
-
   for(const m of html.matchAll(/<script[^>]+src=["']\/([^"']+\.js)["']/gi)){
     const script=m[1];
     if(!fs.existsSync(path.join(root,script))){fail(`${file}: script ${script} não existe.`);continue;}
@@ -58,6 +54,7 @@ let balance=0;for(const ch of css){if(ch==='{')balance++;if(ch==='}')balance--;i
 if(balance!==0)fail('style.css: chaves desbalanceadas.');
 if(!css.includes('@media (max-width:380px)'))fail('style.css: falta proteção para telas muito estreitas.');
 if(!css.includes(':focus-visible'))fail('style.css: falta estado de foco acessível.');
+if(!css.includes('.btn-secondary'))fail('style.css: falta estilo do botão secundário.');
 
 const headers=read('_headers');
 for(const required of ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','X-Frame-Options','Permissions-Policy'])if(!headers.includes(required))fail(`_headers: falta ${required}.`);
@@ -77,23 +74,34 @@ function runCalculator(scriptName,values,click=false){
   if(click&&els.calcular?.listeners.click)els.calcular.listeners.click();
   return els;
 }
+const expectIncludes=(label,text,expected)=>{if(!String(text).includes(expected))fail(`${label}: esperado "${expected}" em "${text}".`);};
 
 try{
   let e=runCalculator('valor-hora.js',{renda:6000,custos:1200,horasDia:8,diasSemana:5,ferias:4,naoFaturavel:30,impostos:12,margem:20,calcular:'',limpar:'',recomendado:'',faturamento:'',minimo:'',horasMes:'',diaria:'',projeto:'',status:''});
-  if(e.recomendado.textContent==='R$ 0/h'||!e.recomendado.textContent.includes('/h'))fail('Valor por hora: smoke test não produziu resultado.');
+  expectIncludes('Valor por hora',e.recomendado.textContent,'88');
+  expectIncludes('Valor por hora / horas cobradas',e.horasMes.textContent,'112,0');
+  expectIncludes('Valor por hora / projeto 20h',e.projeto.textContent,'1.753');
 
   e=runCalculator('preco-projeto.js',{valorHora:100,horas:20,custos:200,revisoes:15,complexidade:10,calcular:'',limpar:'',principal:'',base:'',custosResultado:'',reservaResultado:'',complexidadeResultado:'',entrada:'',status:''});
-  if(!e.principal.textContent||e.principal.textContent.includes('R$ 0'))fail('Preço de projeto: smoke test não produziu resultado.');
+  expectIncludes('Preço de projeto',e.principal.textContent,'2.700');
+  expectIncludes('Preço de projeto / entrada',e.entrada.textContent,'1.350');
 
   e=runCalculator('meta-faturamento.js',{renda:8000,custos:1500,impostos:12,reserva:10,projetos:4,calcular:'',limpar:'',principal:'',porProjeto:'',porSemana:'',porAno:'',pontoEquilibrio:'',status:''});
-  if(!e.principal.textContent||e.principal.textContent.includes('R$ 0'))fail('Meta mensal: smoke test não produziu resultado.');
+  expectIncludes('Meta mensal',e.principal.textContent,'12.179');
+  expectIncludes('Meta mensal / por projeto',e.porProjeto.textContent,'3.045');
 
   e=runCalculator('clt-pj.js',{cltSalario:7000,cltBeneficios:1200,dependentes:0,cltDescontos:0,cltBonus:0,pjMensal:10000,pjMeses:11,pjImpostos:10,pjContador:200,pjOutros:500,calcular:'',limpar:'',winner:'',diferenca:'',cltAno:'',pjAno:'',cltMes:'',pjMes:'',fgtsAno:'',pjEquivalente:'',status:''});
-  if(!['CLT','PJ','Empate'].includes(e.winner.textContent))fail('CLT x PJ: smoke test não definiu resultado.');
+  if(e.winner.textContent!=='PJ')fail(`CLT x PJ: esperado PJ, recebido ${e.winner.textContent}.`);
+  expectIncludes('CLT x PJ / CLT anual',e.cltAno.textContent,'86.924');
+  expectIncludes('CLT x PJ / PJ anual',e.pjAno.textContent,'90.600');
+  expectIncludes('CLT x PJ / equivalência',e.pjEquivalente.textContent,'9.629');
 
   e=runCalculator('desligamento.js',{admissao:'2024-01-10',desligamento:'2026-08-10',salario:5000,divisorSaldo:'30',tipo:'sem_justa',aviso:'indenizado',feriasVencidas:'nao',periodosFerias:0,decimoAdiantado:'nao',valorDecimoAdiantado:0,saldoFgts:12000,saqueAniversario:'nao',dependentes:0,outrasVerbas:0,naturezaOutras:'remuneratoria',outrosDescontos:0,calcular:'',limpar:'',totalLiquido:'',notice:'',rSaldo:'',rAviso:'',rDecimo:'',rFeriasProp:'',rFeriasVencidas:'',rOutras:'',rFgtsRescisao:'',rMultaFgts:'',rSaqueFgts:'',rInss:'',rIrrf:'',rDescontos:''},true);
-  if(!e.totalLiquido.textContent||e.totalLiquido.textContent.includes('R$ 0,00'))fail('Rescisão CLT: smoke test não produziu resultado.');
-}catch(err){fail(`Smoke tests: ${err.stack||err.message}`);}
+  expectIncludes('Rescisão / 13º projetado',e.notice.textContent,'13º: 9');
+  expectIncludes('Rescisão / aviso proporcional',e.notice.textContent,'36 dias');
+  if(e.totalLiquido.textContent.includes('R$ 0,00'))fail('Rescisão CLT: total líquido ficou zerado no cenário de referência.');
+  if(e.rMultaFgts.textContent.includes('R$ 0,00'))fail('Rescisão CLT: multa do FGTS ficou zerada na demissão sem justa causa.');
+}catch(err){fail(`Testes de cálculo: ${err.stack||err.message}`);}
 
 if(failures.length){console.error(`QA falhou com ${failures.length} problema(s):`);for(const item of failures)console.error(`- ${item}`);process.exit(1);}
-console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts e 5 calculadoras verificadas.`);
+console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, estrutura responsiva, headers e 5 calculadoras com resultados esperados.`);
