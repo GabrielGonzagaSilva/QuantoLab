@@ -127,7 +127,7 @@ const sitemap=read('sitemap.xml');
 if(/<loc>[^<]+\.html<\/loc>/i.test(sitemap))fail('sitemap.xml: contém URL .html em vez da rota canônica.');
 for(const m of sitemap.matchAll(/<loc>https:\/\/quantolab\.com\.br([^<]*)<\/loc>/g))if(!routeExists(m[1]||'/'))fail(`sitemap.xml: rota inexistente ${m[1]||'/'}.`);
 if((sitemap.match(/<lastmod>2026-08-14<\/lastmod>/g)||[]).length<10)fail('sitemap.xml: lastmod ausente nas URLs indexáveis.');
-if(sitemap.includes('https://quantolab.com.br/contato'))fail('sitemap.xml: contato noindex não deve constar no sitemap.');
+if(/<loc>https:\/\/quantolab\.com\.br\/contato<\/loc>/.test(sitemap))fail('sitemap.xml: contato noindex não deve constar no sitemap.');
 
 function element(value=''){
   return {value:String(value),textContent:'',disabled:false,listeners:{},addEventListener(type,cb){this.listeners[type]=cb;}};
