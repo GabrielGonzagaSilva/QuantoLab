@@ -1,0 +1,35 @@
+name: Apply launch SEO
+
+on:
+  push:
+    branches: [launch-seo-indexnow]
+    paths:
+      - 'scripts/apply-launch-seo-temp.mjs'
+      - '.github/workflows/apply-launch-seo-temp.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: true
+      - name: Apply SEO launch changes
+        run: node scripts/apply-launch-seo-temp.mjs
+      - name: Commit changes
+        run: |
+          set -euo pipefail
+          git config user.name "Gabriel G. Silva"
+          git config user.email "151961393+GabrielGonzagaSilva@users.noreply.github.com"
+          git add index.html valor-hora.html preco-projeto.html meta-faturamento.html comparador-profissional.html simulador.html sobre.html metodologia.html politica-de-privacidade.html termos.html sitemap.xml style.css scripts/qa.mjs
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Prepare QuantoLab for search launch"
+          git push
