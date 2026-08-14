@@ -1,1 +1,0 @@
-document.addEventListener('DOMContentLoaded',()=>{const g=document.querySelector('.tool-grid');if(!g)return;const data=[[3,'/comparador-profissional.html'],[4,'/simulador.html']];data.forEach(([i,href])=>{const old=g.children[i];if(!old)return;const a=document.createElement('a');a.className=old.className;a.href=href;a.innerHTML=old.innerHTML;old.replaceWith(a);});});
