@@ -19,6 +19,15 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: true
+      - name: Patch temporary applicator
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/apply-launch-seo-temp.mjs')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace("fail(\\`SEO técnico: ${file} sem ${requirement[0]}.\\`);", "fail('SEO técnico: '+file+' sem '+requirement[0]+'.');")
+          p.write_text(s, encoding='utf-8')
+          PY
       - name: Apply SEO launch changes
         run: node scripts/apply-launch-seo-temp.mjs
       - name: Commit changes
