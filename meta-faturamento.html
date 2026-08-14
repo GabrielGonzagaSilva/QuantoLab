@@ -1,1 +1,39 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meta mensal | QuantoLab</title><link rel="stylesheet" href="/style.css"></head><body><header class="header"><div class="shell nav"><a class="brand" href="/"><span class="mark">QL</span>QuantoLab</a></div></header><main><section class="calc-hero"><div class="shell"><h1>Planeje quanto precisa entrar no mês.</h1><p class="lead">Informe quanto você quer receber, seus gastos e os percentuais que deseja descontar.</p></div></section><div class="shell"><section class="calc-grid"><div class="panel form"><input class="help-check" type="checkbox" id="help-meta"><label class="help-inline-toggle" for="help-meta"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label><div class="field"><label>Quanto você quer receber no mês</label><span class="field-help">Valor que você quer ter disponível no mês.</span><div class="input-wrap"><span class="prefix">R$</span><input id="a" type="number" value="8000"></div></div><div class="field"><label>Gastos fixos do mês</label><span class="field-help">Gastos recorrentes que precisam ser pagos.</span><div class="input-wrap"><span class="prefix">R$</span><input id="b" type="number" value="1500"></div></div><div class="grid2"><div class="field"><label>Percentual 1</label><span class="field-help">Primeiro percentual que será descontado do total. Ex.: impostos e taxas.</span><div class="input-wrap"><input id="c" type="number" value="12"><span class="suffix">%</span></div></div><div class="field"><label>Percentual 2</label><span class="field-help">Segundo percentual que será descontado do total. Ex.: outra taxa ou reserva.</span><div class="input-wrap"><input id="d" type="number" value="10"><span class="suffix">%</span></div></div></div><div class="field"><label>Em quantas partes dividir o mês?</label><span class="field-help">Use este campo se quiser saber quanto cada parte da sua meta precisa valer.</span><div class="input-wrap"><input id="e" type="number" value="4"></div></div><button id="calcular" class="btn">Calcular →</button></div><aside class="panel result"><div class="result-top"><div class="result-kicker">Quanto precisa entrar no mês</div><div id="principal" class="result-value">R$ 0</div></div><div class="result-body"><div class="row"><span>Quanto você quer receber</span><strong id="liquida">R$ 0</strong></div><div class="row"><span>Gastos fixos</span><strong id="fixos">R$ 0</strong></div><div class="row"><span>Valor de cada parte</span><strong id="ticket">R$ 0</strong></div></div></aside></section><article class="article"><h2>Como usar</h2><p>Informe quanto você quer receber, seus gastos fixos e os percentuais que deseja descontar. O resultado mostra quanto precisa entrar no mês para cobrir esses valores.</p></article></div></main><script src="/meta-faturamento.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Calculadora de meta mensal | QuantoLab</title>
+  <meta name="description" content="Descubra quanto precisa entrar por mês para cobrir quanto você quer receber, seus gastos, impostos e uma reserva.">
+  <link rel="canonical" href="https://quantolab.com.br/meta-faturamento">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="header"><div class="shell nav"><a class="brand" href="/"><span class="mark">QL</span>QuantoLab</a><nav class="navlinks"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
+<main>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Meta mensal</div><h1>Quanto precisa entrar no mês?</h1><p class="lead">Transforme o valor que você quer receber em uma meta mensal que também cubra seus gastos, impostos e uma reserva.</p></div></section>
+<div class="shell">
+<section class="calc-grid">
+<div class="panel form" id="meta-form">
+<input class="help-check" type="checkbox" id="help-meta"><label class="help-inline-toggle" for="help-meta"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label>
+<h3 class="form-section-title">1. Sua meta</h3>
+<div class="field"><label for="renda">Quanto você quer ter para você no mês?</label><span class="field-help">Valor que você quer ter disponível depois de pagar os gastos e separar os percentuais informados.</span><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="8000" inputmode="decimal"></div></div>
+<div class="field"><label for="custos">Gastos fixos do mês</label><span class="field-help">Contador, ferramentas, aluguel, internet, equipe e outros gastos que acontecem todo mês.</span><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="1500" inputmode="decimal"></div></div>
+<h3 class="form-section-title">2. O que sai do valor recebido</h3>
+<div class="grid2">
+<div class="field"><label for="impostos">Impostos e taxas</label><span class="field-help">Percentual médio que sai do que você recebe. Inclua impostos, taxas de plataforma e meios de pagamento.</span><div class="input-wrap"><input id="impostos" type="number" min="0" max="95" step="0.1" value="12" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="reserva">Quanto você quer guardar</label><span class="field-help">Percentual da receita que você quer separar para caixa, investimento ou segurança. Se não quiser reservar nada, use 0%.</span><div class="input-wrap"><input id="reserva" type="number" min="0" max="95" step="0.1" value="10" inputmode="decimal"><span class="suffix">%</span></div></div>
+</div>
+<h3 class="form-section-title">3. Divida a meta</h3>
+<div class="field"><label for="projetos">Quantos projetos ou clientes espera no mês?</label><span class="field-help">A calculadora usa esse número para mostrar quanto cada projeto ou cliente precisa representar, em média.</span><div class="input-wrap"><input id="projetos" type="number" min="1" max="1000" step="1" value="4" inputmode="numeric"><span class="suffix">no mês</span></div></div>
+<div class="grid2 action-grid"><button id="calcular" class="btn" type="button">Calcular meta →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
+</div>
+<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Meta de entrada no mês</div><div id="principal" class="result-value">R$ 0</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body"><div class="highlight"><span>Por projeto ou cliente</span><strong id="porProjeto">R$ 0</strong></div><div class="row"><span>Meta por semana</span><strong id="porSemana">R$ 0</strong></div><div class="row"><span>Meta no ano</span><strong id="porAno">R$ 0</strong></div><div class="row"><span>Mínimo para pagar só os gastos fixos</span><strong id="pontoEquilibrio">R$ 0</strong></div></div></aside>
+</section>
+<article class="article"><h2>Como esta conta funciona</h2><p>A calculadora encontra uma receita mensal que, depois dos impostos, taxas e da reserva escolhida, ainda deixa dinheiro suficiente para pagar seus gastos fixos e alcançar o valor que você quer ter para você.</p><p>Depois ela divide essa meta pelo número de projetos ou clientes que você espera ter no mês.</p><div class="notice"><strong>Importante:</strong> use percentuais médios realistas. Se impostos e reserva juntos chegarem perto de 100%, a meta deixa de ser viável.</div></article>
+</div>
+</main>
+<footer class="footer"><div class="shell footer-grid"><strong>QuantoLab</strong><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
+<script src="/meta-faturamento.js"></script>
+</body>
+</html>
