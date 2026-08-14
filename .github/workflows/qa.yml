@@ -37,6 +37,12 @@ jobs:
             node --check "$file"
           done
 
+      - name: Validate production security config
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/security-config.mjs
+
       - name: Run static and calculator QA
         shell: bash
         run: |
