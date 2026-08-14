@@ -4,37 +4,37 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Calculadora CLT x PJ | QuantoLab</title>
-  <meta name="description" content="Compare CLT e PJ com salário, benefícios, bônus, 13º, férias, meses faturados, taxas e custos mensais.">
+  <meta name="description" content="Compare CLT e PJ usando salário, benefícios, 13º, férias, impostos e gastos mensais.">
   <link rel="canonical" href="https://quantolab.com.br/comparador-profissional">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="header"><div class="shell nav"><a class="brand" href="/"><span class="mark">QL</span>QuantoLab</a><nav class="navlinks"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>CLT x PJ</h1><p class="lead">Compare os dois formatos com valores da sua proposta e veja a diferença anual estimada.</p></div></section>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>CLT x PJ</h1><p class="lead">Compare as duas opções usando os valores da sua proposta.</p></div></section>
 <div class="shell">
 <section class="calc-grid">
 <div class="panel form">
 <input class="help-check" type="checkbox" id="help-comparador">
 <label class="help-inline-toggle" for="help-comparador"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label>
-<div class="field"><label for="a">Salário mensal CLT</label><span class="field-help">Salário bruto mensal informado na proposta CLT.</span><div class="input-wrap"><span class="prefix">R$</span><input id="a" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
-<div class="field"><label for="b">Benefícios mensais CLT</label><span class="field-help">Valor mensal estimado de benefícios que você considera parte da remuneração.</span><div class="input-wrap"><span class="prefix">R$</span><input id="b" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
-<div class="field"><label for="c">Bônus anual CLT</label><span class="field-help">Bônus, PLR ou outro valor anual que você queira incluir na comparação.</span><div class="input-wrap"><span class="prefix">R$</span><input id="c" type="number" min="0" step="100" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="a">Salário mensal CLT</label><span class="field-help">Seu salário bruto por mês na proposta CLT.</span><div class="input-wrap"><span class="prefix">R$</span><input id="a" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
+<div class="field"><label for="b">Benefícios por mês</label><span class="field-help">Some vale-refeição, vale-alimentação, auxílio e outros benefícios que você quer considerar.</span><div class="input-wrap"><span class="prefix">R$</span><input id="b" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
+<div class="field"><label for="c">Bônus no ano</label><span class="field-help">Inclua bônus, PLR ou outro valor extra que você espera receber no ano.</span><div class="input-wrap"><span class="prefix">R$</span><input id="c" type="number" min="0" step="100" value="0" inputmode="decimal"></div></div>
 <div class="grid2">
-<div class="field"><label for="d">Considerar 13º?</label><span class="field-help">Adiciona um salário mensal ao total anual CLT.</span><div class="input-wrap"><select id="d"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
-<div class="field"><label for="e">Considerar 1/3 de férias?</label><span class="field-help">Adiciona o terço constitucional de férias ao total anual CLT.</span><div class="input-wrap"><select id="e"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
+<div class="field"><label for="d">Somar o 13º?</label><span class="field-help">Se escolher Sim, um salário mensal será somado ao total anual CLT.</span><div class="input-wrap"><select id="d"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
+<div class="field"><label for="e">Somar o adicional de férias?</label><span class="field-help">Se escolher Sim, 1/3 de um salário será somado ao total anual CLT.</span><div class="input-wrap"><select id="e"><option value="1" selected>Sim</option><option value="0">Não</option></select></div></div>
 </div>
-<div class="field"><label for="f">Faturamento mensal PJ</label><span class="field-help">Valor mensal bruto previsto na contratação PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="f" type="number" min="0" step="100" value="10000" inputmode="decimal"></div></div>
+<div class="field"><label for="f">Valor mensal como PJ</label><span class="field-help">Quanto você receberia por mês trabalhando como PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="f" type="number" min="0" step="100" value="10000" inputmode="decimal"></div></div>
 <div class="grid2">
-<div class="field"><label for="g">Meses faturados no ano</label><span class="field-help">Use 11, por exemplo, se quiser reservar um mês sem faturamento.</span><div class="input-wrap"><input id="g" type="number" min="1" max="12" step="1" value="11" inputmode="numeric"><span class="suffix">meses</span></div></div>
-<div class="field"><label for="h">Taxas estimadas PJ</label><span class="field-help">Percentual total que você quer reservar para tributos e taxas do PJ.</span><div class="input-wrap"><input id="h" type="number" min="0" max="99" step="0.1" value="10" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="g">Meses recebendo como PJ</label><span class="field-help">Use 11, por exemplo, se quiser deixar um mês do ano sem receber.</span><div class="input-wrap"><input id="g" type="number" min="1" max="12" step="1" value="11" inputmode="numeric"><span class="suffix">meses</span></div></div>
+<div class="field"><label for="h">Impostos e taxas do PJ</label><span class="field-help">Percentual que você quer descontar para impostos e outras taxas.</span><div class="input-wrap"><input id="h" type="number" min="0" max="99" step="0.1" value="10" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
-<div class="field"><label for="i">Custos mensais PJ</label><span class="field-help">Contabilidade, ferramentas, plano de saúde ou outros custos recorrentes do formato PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="i" type="number" min="0" step="50" value="500" inputmode="decimal"></div></div>
+<div class="field"><label for="i">Gastos mensais como PJ</label><span class="field-help">Contabilidade, ferramentas, plano de saúde e outros gastos mensais do PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="i" type="number" min="0" step="50" value="500" inputmode="decimal"></div></div>
 <button id="calcular" class="btn" type="button">Comparar →</button>
 </div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Comparação anual estimada</div><div id="winner" class="result-value">—</div><p class="result-sub">Formato com maior valor econômico nas premissas preenchidas.</p></div><div class="result-body"><div class="row"><span>CLT anual estimado</span><strong id="r1">R$ 0</strong></div><div class="row"><span>PJ anual estimado</span><strong id="r2">R$ 0</strong></div><div class="row"><span>Diferença anual</span><strong id="r3">R$ 0</strong></div><div class="highlight"><span>PJ mensal para empatar</span><strong id="r4">R$ 0</strong></div></div></aside>
+<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Comparação do ano</div><div id="winner" class="result-value">—</div><p class="result-sub">Opção com maior valor anual usando os dados que você informou.</p></div><div class="result-body"><div class="row"><span>Total CLT no ano</span><strong id="r1">R$ 0</strong></div><div class="row"><span>Total PJ no ano</span><strong id="r2">R$ 0</strong></div><div class="row"><span>Diferença no ano</span><strong id="r3">R$ 0</strong></div><div class="highlight"><span>Valor PJ para ficar igual ao CLT</span><strong id="r4">R$ 0</strong></div></div></aside>
 </section>
-<article class="article"><h2>Como interpretar</h2><p>O comparador transforma os valores informados em uma referência anual. Ele não calcula automaticamente INSS, IRRF, regime tributário específico, FGTS, previdência, direitos previstos em convenção coletiva ou outros efeitos individuais.</p><p class="notice">Use o resultado como referência de comparação, não como orientação contábil, tributária, trabalhista ou financeira.</p></article>
+<article class="article"><h2>Como interpretar</h2><p>O resultado faz uma comparação simples com os valores que você informou. Ele não inclui automaticamente todos os impostos, descontos, FGTS, previdência ou regras específicas do seu contrato.</p><p class="notice">Use como referência para comparar as propostas. Para uma decisão final, confira os valores do seu caso.</p></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><strong>QuantoLab</strong><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
