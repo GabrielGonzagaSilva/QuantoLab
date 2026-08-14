@@ -1,0 +1,18 @@
+# Internal repository files that must never be published as site assets
+.github/
+scripts/
+UX_WRITING.md
+.gitignore
+.assetsignore
+
+# Local/dev files (defense in depth)
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
+node_modules/
+*.pem
+*.key
+*.p12
+*.pfx
