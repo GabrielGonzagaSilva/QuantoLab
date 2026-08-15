@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Calculadora de valor por hora | QuantoLab</title>
-  <meta name="description" content="Descubra quanto cobrar por hora considerando quanto você quer receber, seus gastos, impostos, tempo disponível e períodos sem trabalho.">
+  <meta name="description" content="Descubra quanto cobrar por hora de forma simples. Informe quanto quer receber, seus gastos e sua rotina de trabalho.">
   <link rel="canonical" href="https://quantolab.com.br/valor-hora">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <!-- SEO:START -->
@@ -14,47 +14,54 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="QuantoLab">
 <meta property="og:title" content="Calculadora de valor por hora | QuantoLab">
-<meta property="og:description" content="Descubra quanto cobrar por hora considerando quanto você quer receber, seus gastos, impostos, tempo disponível e períodos sem trabalho.">
+<meta property="og:description" content="Descubra quanto cobrar por hora de forma simples. Informe quanto quer receber, seus gastos e sua rotina de trabalho.">
 <meta property="og:url" content="https://quantolab.com.br/valor-hora">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"QuantoLab","item":"https://quantolab.com.br/"},{"@type":"ListItem","position":2,"name":"Valor por hora","item":"https://quantolab.com.br/valor-hora"}]}</script>
 <!-- SEO:END -->
 <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/calculator-simple.css">
 </head>
-<body>
+<body class="calculator-simple">
 <header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Valor por hora</div><h1>Quanto cobrar por hora?</h1><p class="lead">Informe quanto você quer receber e quanto tempo realmente consegue vender. O QuantoLab faz o restante da conta.</p></div></section>
-<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Cálculo transparente</span><span>Sem cadastro</span><span>Dados processados no navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Valor por hora</div><h1>Quanto cobrar por hora?</h1><p class="lead">Coloque o valor que quer receber e sua rotina. A resposta aparece direto.</p></div></section>
+<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no seu navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
 <div class="shell">
-
 <aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="valor-hora-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section id="calc" class="calc-grid">
 <div class="panel form" id="valor-hora-form">
-<input class="help-check" type="checkbox" id="help-valor-hora"><label class="help-inline-toggle" for="help-valor-hora"><span>Entenda os valores</span><span class="help-symbol" aria-hidden="true"></span></label>
-<h3 class="form-section-title">1. Quanto você quer receber</h3>
-<div class="field"><label for="renda">Quanto você quer ter para você por mês?</label><span class="field-help">Valor que você quer ter disponível depois dos gastos e impostos considerados aqui.</span><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="6000" inputmode="decimal"></div></div>
-<div class="field"><label for="custos">Gastos fixos para trabalhar</label><span class="field-help">Some softwares, internet, contador, coworking, equipamentos e outros gastos mensais.</span><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
-<h3 class="form-section-title">2. Seu tempo</h3>
+<p class="simple-start"><strong>Preencha só o básico.</strong> Se quiser uma conta mais detalhada, abra os ajustes opcionais.</p>
+<h3 class="simple-section">O básico</h3>
+<div class="field"><label for="renda">Quanto você quer receber por mês?</label><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="6000" inputmode="decimal"></div></div>
+<div class="field"><label for="custos">Quanto você gasta por mês para trabalhar?</label><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
 <div class="grid2">
-<div class="field"><label for="horasDia">Quantas horas você trabalha por dia?</label><span class="field-help">Considere sua rotina normal de trabalho.</span><div class="input-wrap"><input id="horasDia" type="number" min="1" max="24" step="0.5" value="8" inputmode="decimal"><span class="suffix">h</span></div></div>
-<div class="field"><label for="diasSemana">Quantos dias trabalha por semana?</label><span class="field-help">Use a quantidade média de dias trabalhados em uma semana.</span><div class="input-wrap"><input id="diasSemana" type="number" min="1" max="7" step="1" value="5" inputmode="numeric"><span class="suffix">dias</span></div></div>
+<div class="field"><label for="horasDia">Horas de trabalho por dia</label><div class="input-wrap"><input id="horasDia" type="number" min="1" max="24" step="0.5" value="8" inputmode="decimal"><span class="suffix">h</span></div></div>
+<div class="field"><label for="diasSemana">Dias de trabalho por semana</label><div class="input-wrap"><input id="diasSemana" type="number" min="1" max="7" step="1" value="5" inputmode="numeric"><span class="suffix">dias</span></div></div>
+</div>
+<details class="simple-details">
+<summary>Ajustes opcionais</summary>
+<div class="simple-details-body">
+<div class="grid2">
+<div class="field"><label for="ferias">Semanas sem trabalhar no ano</label><div class="input-wrap"><input id="ferias" type="number" min="0" max="40" step="1" value="0" inputmode="numeric"><span class="suffix">sem.</span></div></div>
+<div class="field"><label for="naoFaturavel">Tempo de trabalho que você não consegue cobrar</label><div class="input-wrap"><input id="naoFaturavel" type="number" min="0" max="95" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
 <div class="grid2">
-<div class="field"><label for="ferias">Semanas sem trabalhar no ano</label><span class="field-help">Férias, pausas e outros períodos em que você não pretende trabalhar.</span><div class="input-wrap"><input id="ferias" type="number" min="0" max="40" step="1" value="4" inputmode="numeric"><span class="suffix">sem.</span></div></div>
-<div class="field"><label for="naoFaturavel">Tempo que você não consegue cobrar</label><span class="field-help">Reuniões internas, propostas, organização, estudo e tarefas administrativas. Ex.: 30% significa que 70% do seu tempo pode ser cobrado.</span><div class="input-wrap"><input id="naoFaturavel" type="number" min="0" max="95" step="1" value="30" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="impostos">Impostos e taxas</label><div class="input-wrap"><input id="impostos" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="margem">Reserva de segurança</label><div class="input-wrap"><input id="margem" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
-<h3 class="form-section-title">3. Ajustes</h3>
-<div class="grid2">
-<div class="field"><label for="impostos">Impostos e taxas</label><span class="field-help">Percentual médio do que entra que você separa para impostos, plataformas e meios de pagamento.</span><div class="input-wrap"><input id="impostos" type="number" min="0" max="95" step="0.1" value="12" inputmode="decimal"><span class="suffix">%</span></div></div>
-<div class="field"><label for="margem">Reserva de segurança</label><span class="field-help">Valor extra para negociação, atrasos, inadimplência e pequenas variações. Se não quiser usar, coloque 0%.</span><div class="input-wrap"><input id="margem" type="number" min="0" max="200" step="1" value="20" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
-<div class="grid2 action-grid"><button id="calcular" class="btn" type="button">Calcular valor por hora →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
+</details>
+<details class="simple-help">
+<summary>Entenda os valores</summary>
+<div class="simple-help-body"><p><strong>Gastos:</strong> ferramentas, contador, internet, aluguel ou outros custos para trabalhar.</p><p><strong>Tempo não cobrado:</strong> reuniões, propostas, estudo e tarefas administrativas.</p><p><strong>Reserva:</strong> um valor extra para imprevistos ou negociação.</p></div>
+</details>
+<div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Ver meu valor por hora →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
 </div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Valor sugerido por hora</div><div id="recomendado" class="result-value">R$ 0/h</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body"><div class="highlight"><span>Quanto precisa entrar por mês</span><strong id="faturamento">R$ 0</strong></div><div class="row"><span>Valor mínimo por hora</span><strong id="minimo">R$ 0/h</strong></div><div class="row"><span>Horas que você consegue cobrar por mês</span><strong id="horasMes">0 h</strong></div><div class="row"><span>Diária de trabalho</span><strong id="diaria">R$ 0</strong></div><div class="row"><span>Projeto de 20 horas</span><strong id="projeto">R$ 0</strong></div></div></aside>
+<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Você pode usar como referência</div><div id="recomendado" class="result-value">R$ 0/h</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>Uma diária de trabalho</span><strong id="diaria">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body"><div class="row"><span>Quanto precisa entrar por mês</span><strong id="faturamento">R$ 0</strong></div><div class="row"><span>Valor sem reserva de segurança</span><strong id="minimo">R$ 0/h</strong></div><div class="row"><span>Horas cobradas por mês</span><strong id="horasMes">0 h</strong></div><div class="row"><span>Projeto de 20 horas</span><strong id="projeto">R$ 0</strong></div></div></details></div></aside>
 </section>
 <aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="valor-hora-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>Como esta conta funciona</h2><p>Primeiro, a calculadora estima quantas horas do mês você realmente consegue cobrar. Depois calcula quanto precisa entrar para cobrir o valor que você quer receber, seus gastos e os percentuais informados.</p><p>O valor mínimo cobre os números informados. O valor sugerido acrescenta somente a reserva de segurança que você escolheu — sem percentuais extras escondidos.</p><div class="notice"><strong>Importante:</strong> este é um valor de referência para precificação. Impostos e custos reais variam conforme sua situação.</div></article>
+<article class="article"><h2>Use como ponto de partida</h2><p>A calculadora transforma sua meta mensal em um valor por hora. Se quiser uma estimativa mais realista, use os ajustes opcionais para incluir impostos, pausas e tempo que não pode ser cobrado.</p><div class="notice"><strong>Importante:</strong> o resultado é uma referência de precificação, não uma regra obrigatória.</div></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
