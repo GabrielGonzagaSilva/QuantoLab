@@ -57,8 +57,9 @@ function calcular(){
   const pjMedio=pjAno/12;
   const equivalente=(cltAno+custosPjAno)/(pjMeses*(1-pjImpostos));
   const diff=Math.abs(cltAno-pjAno);
+  const winner=cltAno>pjAno?'CLT':pjAno>cltAno?'PJ':'Empate';
 
-  $('winner').textContent=cltAno>pjAno?'CLT':pjAno>cltAno?'PJ':'Empate';
+  $('winner').textContent=winner;
   $('diferenca').textContent=money(diff);
   $('cltAno').textContent=money(cltAno);
   $('pjAno').textContent=money(pjAno);
@@ -66,11 +67,11 @@ function calcular(){
   $('pjMes').textContent=money(pjMedio);
   $('fgtsAno').textContent=money(fgtsAno);
   $('pjEquivalente').textContent=money(equivalente);
-  $('status').textContent='Comparação anual com regras de INSS e IR de 2026 no CLT. O FGTS aparece separado.';
+  $('status').textContent=winner==='Empate'?'As duas propostas ficam praticamente iguais nesta estimativa.':`${winner} deixa ${money(diff)} a mais disponível no ano nesta estimativa.`;
 }
 
 function clearAll(){
-  $('cltSalario').value='';$('cltBeneficios').value='0';$('dependentes').value='0';$('cltDescontos').value='0';$('cltBonus').value='0';$('pjMensal').value='';$('pjMeses').value='11';$('pjImpostos').value='10';$('pjContador').value='200';$('pjOutros').value='500';reset();
+  $('cltSalario').value='';$('cltBeneficios').value='0';$('dependentes').value='0';$('cltDescontos').value='0';$('cltBonus').value='0';$('pjMensal').value='';$('pjMeses').value='12';$('pjImpostos').value='10';$('pjContador').value='0';$('pjOutros').value='0';reset();
 }
 
 $('calcular').addEventListener('click',calcular);

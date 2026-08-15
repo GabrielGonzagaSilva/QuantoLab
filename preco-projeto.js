@@ -25,11 +25,12 @@ function run(){
   $('reservaResultado').textContent=money(reserva);
   $('complexidadeResultado').textContent=money(extraComplexidade);
   $('entrada').textContent=money(final*.5);
-  $('status').textContent='Resultado formado somente pelos valores e percentuais informados.';
+  const hasAdjustments=custos>0||revisoes>0||complexidade>0;
+  $('status').textContent=hasAdjustments?'Preço com os ajustes opcionais que você informou.':'Preço básico: valor da hora × horas do projeto.';
 }
 
 function clearAll(){
-  $('valorHora').value='';$('horas').value='';$('custos').value='0';$('revisoes').value='15';$('complexidade').value='0';reset();
+  $('valorHora').value='';$('horas').value='';$('custos').value='0';$('revisoes').value='0';$('complexidade').value='0';reset();
 }
 
 $('calcular').addEventListener('click',run);

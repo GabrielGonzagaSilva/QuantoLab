@@ -163,8 +163,8 @@ try{
   expectIncludes('CLT x PJ / equivalência',e.pjEquivalente.textContent,'9.629');
 
   e=runCalculator('desligamento.js',{admissao:'2024-01-10',desligamento:'2026-08-10',salario:5000,divisorSaldo:'30',tipo:'sem_justa',aviso:'indenizado',feriasVencidas:'nao',periodosFerias:0,decimoAdiantado:'nao',valorDecimoAdiantado:0,saldoFgts:12000,saqueAniversario:'nao',dependentes:0,outrasVerbas:0,naturezaOutras:'remuneratoria',outrosDescontos:0,calcular:'',limpar:'',totalLiquido:'',notice:'',rSaldo:'',rAviso:'',rDecimo:'',rFeriasProp:'',rFeriasVencidas:'',rOutras:'',rFgtsRescisao:'',rMultaFgts:'',rSaqueFgts:'',rInss:'',rIrrf:'',rDescontos:''},true);
-  expectIncludes('Rescisão / 13º projetado',e.notice.textContent,'13º: 9');
-  expectIncludes('Rescisão / aviso proporcional',e.notice.textContent,'36 dias');
+  expectIncludes('Rescisão / 13º projetado',e.rDecimo.textContent,'3.750');
+  expectIncludes('Rescisão / aviso proporcional',e.rAviso.textContent,'6.000');
   if(e.totalLiquido.textContent.includes('R$ 0,00'))fail('Rescisão CLT: total líquido ficou zerado no cenário de referência.');
   if(e.rMultaFgts.textContent.includes('R$ 0,00'))fail('Rescisão CLT: multa do FGTS ficou zerada na demissão sem justa causa.');
 }catch(err){fail(`Testes de cálculo: ${err.stack||err.message}`);}

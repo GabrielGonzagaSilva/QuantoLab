@@ -23,7 +23,7 @@ function run(){
   const margem=num('margem')/100;
 
   if(!renda||!horasDia||!diasSemana){reset('Informe quanto quer receber e sua rotina de trabalho.');return;}
-  if(impostos>=.95||naoFaturavel>=.95){reset('Revise os percentuais informados.');return;}
+  if(impostos>=.95||naoFaturavel>=.95){reset('Revise os percentuais dos ajustes opcionais.');return;}
 
   const semanasTrabalho=Math.max(1,52-ferias);
   const horasAno=horasDia*diasSemana*semanasTrabalho;
@@ -42,11 +42,12 @@ function run(){
   $('horasMes').textContent=horasCobraveisMes.toFixed(1).replace('.',',')+' h';
   $('diaria').textContent=money(valorSugerido*horasDia);
   $('projeto').textContent=money(valorSugerido*20);
-  $('status').textContent='Valor calculado somente com os percentuais que você informou.';
+  const hasAdjustments=ferias>0||naoFaturavel>0||impostos>0||margem>0;
+  $('status').textContent=hasAdjustments?'Estimativa com os ajustes opcionais que você informou.':'Estimativa básica. Use os ajustes opcionais se quiser refinar.';
 }
 
 function clearAll(){
-  $('renda').value='';$('custos').value='0';$('horasDia').value='8';$('diasSemana').value='5';$('ferias').value='4';$('naoFaturavel').value='30';$('impostos').value='12';$('margem').value='20';reset();
+  $('renda').value='';$('custos').value='0';$('horasDia').value='8';$('diasSemana').value='5';$('ferias').value='0';$('naoFaturavel').value='0';$('impostos').value='0';$('margem').value='0';reset();
 }
 
 $('calcular').addEventListener('click',run);
