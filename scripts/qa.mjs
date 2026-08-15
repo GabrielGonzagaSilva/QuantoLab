@@ -31,6 +31,8 @@ for(const file of htmlFiles){
   if(/\son[a-z]+\s*=/i.test(html))fail(`${file}: handler JavaScript inline encontrado.`);
   if(/(?:href|src)=["']http:\/\//i.test(html))fail(`${file}: recurso HTTP inseguro encontrado.`);
   if(/<script[^>]+src=["']https?:\/\//i.test(html))fail(`${file}: script externo exige revisão de segurança e CSP.`);
+  if(!html.includes('<script src="/theme.js"></script>'))fail(`${file}: controle global de tema ausente.`);
+  if(!html.includes('<link rel="stylesheet" href="/theme.css">'))fail(`${file}: estilos globais de tema ausentes.`);
   for(const m of html.matchAll(/<label[^>]+for=["']([^"']+)["']/gi))if(!unique.has(m[1]))fail(`${file}: label aponta para ID inexistente "${m[1]}".`);
   for(const m of html.matchAll(/<(?:a|link|script)[^>]+(?:href|src)=["']([^"']+)["']/gi))if(!routeExists(m[1]))fail(`${file}: referência local inexistente "${m[1]}".`);
   for(const m of html.matchAll(/<script[^>]+src=["']\/([^"']+\.js)["']/gi)){
@@ -51,7 +53,6 @@ const browserSecurityPatterns=[
   [/\.(?:innerHTML|outerHTML)\s*=/,'HTML dinâmico por innerHTML/outerHTML'],
   [/\binsertAdjacentHTML\s*\(/,'insertAdjacentHTML()'],
   [/\bdocument\.write\s*\(/,'document.write()'],
-  [/\blocalStorage\b/,'localStorage'],
   [/\bsessionStorage\b/,'sessionStorage'],
   [/\bdocument\.cookie\b/,'document.cookie'],
   [/\bfetch\s*\(/,'fetch()'],
@@ -62,7 +63,23 @@ const browserSecurityPatterns=[
 for(const file of jsFiles){
   const js=read(file);
   if(/(?:api[_-]?key|secret|password|bearer\s+[A-Za-z0-9._-]+)/i.test(js))fail(`${file}: possível segredo no JavaScript público.`);
+  if(/\blocalStorage\b/.test(js)&&file!=='theme.js')fail(`${file}: localStorage só é permitido para a preferência de tema revisada.`);
   for(const [pattern,label] of browserSecurityPatterns)if(pattern.test(js))fail(`${file}: ${label} altera a superfície de segurança/privacidade e exige revisão explícita.`);
+}
+
+if(!fs.existsSync(path.join(root,'theme.js')))fail('Tema: theme.js ausente.');
+else {
+  const themeJs=read('theme.js');
+  if(!themeJs.includes('quantolab-theme'))fail('Tema: chave local de preferência não está explícita.');
+  if(!themeJs.includes("['system','light','dark']"))fail('Tema: estados sistema, claro e escuro incompletos.');
+}
+if(!fs.existsSync(path.join(root,'theme.css')))fail('Tema: theme.css ausente.');
+else {
+  const themeCss=read('theme.css');
+  let themeBalance=0;for(const ch of themeCss){if(ch==='{')themeBalance++;if(ch==='}')themeBalance--;if(themeBalance<0)break;}
+  if(themeBalance!==0)fail('theme.css: chaves desbalanceadas.');
+  if(!themeCss.includes('.theme-toggle'))fail('Tema: estilo do controle ausente.');
+  if(!themeCss.includes('[data-resolved-theme="dark"]'))fail('Tema: paleta escura ausente.');
 }
 
 const css=read('style.css');
@@ -82,7 +99,6 @@ for(const [file,minimum] of adMinimums){
   for(const slot of slots){if(adSlots.has(slot))fail(`Publicidade: data-ad-slot duplicado "${slot}".`);adSlots.add(slot);}
 }
 if(read('contato.html').includes('data-ad-slot='))fail('contato.html: página noindex/baixo conteúdo não deve exibir publicidade.');
-
 
 const headers=read('_headers');
 for(const required of ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','X-Frame-Options','Permissions-Policy'])if(!headers.includes(required))fail(`_headers: falta ${required}.`);
@@ -170,4 +186,4 @@ try{
 }catch(err){fail(`Testes de cálculo: ${err.stack||err.message}`);}
 
 if(failures.length){console.error(`QA falhou com ${failures.length} problema(s):`);for(const item of failures)console.error(`- ${item}`);process.exit(1);}
-console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, segurança do browser, estrutura responsiva, headers e 5 calculadoras com resultados esperados.`);
+console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, segurança do browser, estrutura responsiva, tema persistente, headers e 5 calculadoras com resultados esperados.`);
