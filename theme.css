@@ -7,6 +7,12 @@
 .theme-toggle__label{font-size:11.5px;font-weight:680;line-height:1;white-space:nowrap}
 @media (hover:hover){.theme-toggle:hover{transform:translateY(-1px);border-color:var(--border-strong)}}
 
+/* Institutional footer */
+.footer-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(29,29,31,.07);color:#85858b;font-size:10.5px;line-height:1.55}
+.footer-meta small{display:block;font-size:inherit;line-height:inherit;overflow-wrap:break-word}
+.footer-meta__copyright{flex:0 1 auto;color:#707076;font-weight:650;white-space:nowrap}
+.footer-meta__disclaimer{max-width:620px;text-align:right}
+
 /* Dark palette */
 :root[data-resolved-theme="dark"]{
   --bg:#101012;
@@ -43,7 +49,9 @@
 :root[data-resolved-theme="dark"] .article p,
 :root[data-resolved-theme="dark"] .article li,
 :root[data-resolved-theme="dark"] .footer-brand span,
-:root[data-resolved-theme="dark"] .footer-links{color:var(--muted)}
+:root[data-resolved-theme="dark"] .footer-links,
+:root[data-resolved-theme="dark"] .footer-meta{color:var(--muted)}
+:root[data-resolved-theme="dark"] .footer-meta__copyright{color:#d0d0d5}
 :root[data-resolved-theme="dark"] .field label{color:#e2e2e6}
 :root[data-resolved-theme="dark"] .eyebrow,
 :root[data-resolved-theme="dark"] .hero-note,
@@ -74,6 +82,7 @@
 :root[data-resolved-theme="dark"] .help-item{background:var(--surface);border-color:var(--border)}
 :root[data-resolved-theme="dark"] .notice{color:var(--muted)}
 :root[data-resolved-theme="dark"] .footer{border-top-color:var(--border)}
+:root[data-resolved-theme="dark"] .footer-meta{border-top-color:var(--border)}
 
 /* Calculator surfaces loaded after the global stylesheet */
 :root[data-resolved-theme="dark"] .simple-start{background:rgba(217,255,102,.10);color:#d7d7dc}
@@ -100,6 +109,9 @@
 @media (max-width:700px){
   .theme-toggle{width:44px;min-width:44px;padding:0}
   .theme-toggle__label{display:none}
+  .footer-meta{display:grid;grid-template-columns:1fr;gap:7px;margin-top:22px;padding-top:18px}
+  .footer-meta__copyright{white-space:normal}
+  .footer-meta__disclaimer{max-width:100%;text-align:left}
 }
 @media (max-width:380px){
   .brand{max-width:calc(100% - 60px)}
