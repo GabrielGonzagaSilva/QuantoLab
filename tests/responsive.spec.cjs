@@ -90,6 +90,9 @@ for (const [viewportName, viewport] of viewports) {
             }
           }
 
+          const footerMeta = document.querySelector('.footer-meta');
+          const footerMetaText = footerMeta?.textContent?.replace(/\s+/g, ' ').trim() || '';
+
           return {
             viewportWidth,
             documentWidth: doc.scrollWidth,
@@ -98,6 +101,8 @@ for (const [viewportName, viewport] of viewports) {
             brandOutsideHeader,
             headerCollision,
             smallControls: smallControls.slice(0, 15),
+            footerMetaVisible: Boolean(footerMeta && isVisible(footerMeta)),
+            footerMetaText,
           };
         });
 
@@ -107,6 +112,9 @@ for (const [viewportName, viewport] of viewports) {
         expect(audit.brandOutsideHeader, JSON.stringify(audit, null, 2)).toBe(false);
         expect(audit.headerCollision, JSON.stringify(audit, null, 2)).toBe(false);
         expect(audit.smallControls, JSON.stringify(audit, null, 2)).toEqual([]);
+        expect(audit.footerMetaVisible, JSON.stringify(audit, null, 2)).toBe(true);
+        expect(audit.footerMetaText, JSON.stringify(audit, null, 2)).toContain('QuantoLab. Todos os direitos reservados.');
+        expect(audit.footerMetaText, JSON.stringify(audit, null, 2)).toContain('Não substituem orientação profissional.');
 
         if (['home', 'valor-hora', 'rescisao'].includes(routeName) && ['320', '390', '768', '1440'].includes(viewportName)) {
           await page.screenshot({ path: `responsive-artifacts/${routeName}-${viewportName}.png`, fullPage: true });
