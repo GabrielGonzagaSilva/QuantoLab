@@ -31,35 +31,32 @@
 <aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="preco-projeto-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section id="calc" class="calc-grid">
 <div class="panel form" id="preco-projeto-form">
-<p class="simple-start"><strong>Só dois dados são obrigatórios.</strong> Custos extras, revisões e urgência começam em zero.</p>
+<p class="simple-start"><strong>Só dois dados são necessários.</strong> Os extras entram apenas se você decidir informar.</p>
 <h3 class="simple-section">O básico</h3>
 <div class="grid2">
-<div class="field"><label for="valorHora">Quanto vale sua hora?</label><div class="input-wrap"><span class="prefix">R$</span><input id="valorHora" type="number" min="0" step="1" value="100" inputmode="decimal"></div></div>
-<div class="field"><label for="horas">Quantas horas o projeto deve levar?</label><div class="input-wrap"><input id="horas" type="number" min="0" step="0.5" value="20" inputmode="decimal"><span class="suffix">h</span></div></div>
+<div class="field"><label for="valorHora">Quanto vale sua hora?</label><span class="field-help">Use o valor que você costuma cobrar por uma hora do seu trabalho.</span><div class="input-wrap"><span class="prefix">R$</span><input id="valorHora" type="number" min="0" step="1" value="100" inputmode="decimal"></div></div>
+<div class="field"><label for="horas">Quantas horas o projeto deve levar?</label><span class="field-help">Inclua execução, reuniões, ajustes e entrega para não subestimar o tempo.</span><div class="input-wrap"><input id="horas" type="number" min="0" step="0.5" value="20" inputmode="decimal"><span class="suffix">h</span></div></div>
 </div>
 <details class="simple-details">
 <summary>Ajustes opcionais</summary>
 <div class="simple-details-body">
-<div class="field"><label for="custos">Gastos extras deste projeto</label><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="10" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="custosModo">Gastos extras deste projeto</label><span class="field-help">Ex.: deslocamento, impressão, banco de imagens, material ou contratação de terceiros.</span><div class="optional-choice"><div class="input-wrap"><select id="custosModo" data-optional-target="custos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="custos" hidden><span class="prefix">R$</span><input id="custos" type="number" min="0" step="10" value="0" inputmode="decimal" aria-label="Gastos extras do projeto" disabled></div></div></div>
 <div class="grid2">
-<div class="field"><label for="revisoes">Reserva para revisões ou imprevistos</label><div class="input-wrap"><input id="revisoes" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
-<div class="field"><label for="complexidade">Urgência ou dificuldade extra</label><div class="input-wrap"><input id="complexidade" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="revisoes">Reserva para revisões ou imprevistos</label><span class="field-help">Percentual extra para pequenas mudanças ou imprevistos. Se não quiser acrescentar, deixe 0.</span><div class="input-wrap"><input id="revisoes" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="complexidade">Urgência ou dificuldade extra</label><span class="field-help">Use somente se o projeto exigir mais esforço, risco ou prazo muito curto. Caso contrário, deixe 0.</span><div class="input-wrap"><input id="complexidade" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
 </div>
-</details>
-<details class="simple-help">
-<summary>Entenda os valores</summary>
-<div class="simple-help-body"><p><strong>Valor da hora:</strong> quanto você cobra por uma hora do seu trabalho.</p><p><strong>Horas:</strong> inclua reuniões, execução, ajustes e entrega.</p><p><strong>Ajustes:</strong> use apenas se o projeto realmente tiver gastos, risco ou urgência extra.</p></div>
 </details>
 <div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Ver preço do projeto →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
 </div>
 <aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Preço de referência</div><div id="principal" class="result-value">R$ 0</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>Se cobrar 50% para começar</span><strong id="entrada">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body"><div class="row"><span>Seu trabalho</span><strong id="base">R$ 0</strong></div><div class="row"><span>Gastos extras</span><strong id="custosResultado">R$ 0</strong></div><div class="row"><span>Revisões e imprevistos</span><strong id="reservaResultado">R$ 0</strong></div><div class="row"><span>Urgência ou dificuldade</span><strong id="complexidadeResultado">R$ 0</strong></div></div></details></div></aside>
 </section>
 <aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="preco-projeto-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>Uma conta simples</h2><p>O preço básico é seu valor por hora multiplicado pelo tempo previsto. Use os ajustes opcionais somente quando houver um custo ou risco real no projeto.</p><div class="notice"><strong>Dica:</strong> antes de fechar, combine por escrito entregas, revisões, prazo e forma de pagamento.</div></article>
+<article class="article"><h2>Uma conta simples</h2><p>O preço básico é seu valor por hora multiplicado pelo tempo previsto. Os ajustes opcionais só entram quando você realmente precisar deles.</p><div class="notice"><strong>Dica:</strong> antes de fechar, combine por escrito entregas, revisões, prazo e forma de pagamento.</div></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
 <script src="/preco-projeto.js"></script>
+<script src="/optional-fields.js"></script>
 </body>
 </html>
