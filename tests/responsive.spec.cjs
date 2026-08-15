@@ -115,3 +115,33 @@ for (const [viewportName, viewport] of viewports) {
     }
   });
 }
+
+test.describe('theme control', () => {
+  test.use({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
+
+  test('follows the device, cycles themes and persists the choice', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
+    const html = page.locator('html');
+    const toggle = page.locator('.theme-toggle');
+
+    await expect(toggle).toBeVisible();
+    await expect(html).toHaveAttribute('data-theme', 'system');
+    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+
+    await toggle.click();
+    await expect(html).toHaveAttribute('data-theme', 'light');
+    await expect(html).toHaveAttribute('data-resolved-theme', 'light');
+
+    await toggle.click();
+    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(html).toHaveAttribute('data-theme', 'dark');
+    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+
+    await page.locator('.theme-toggle').click();
+    await expect(html).toHaveAttribute('data-theme', 'system');
+    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+  });
+});
