@@ -266,7 +266,7 @@ h3{letter-spacing:-.018em;overflow-wrap:normal}
 }
 
 /* Narrow phones */
-@media (max-width:360px){
+@media (max-width:380px){
   .shell{width:calc(100% - 20px)}
   .nav{min-height:56px}
   .brand{max-width:100%}
