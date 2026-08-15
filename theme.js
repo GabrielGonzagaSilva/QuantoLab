@@ -70,9 +70,35 @@
     updateButton();
   }
 
+  function mountFooterMeta(){
+    const footer=document.querySelector('.footer');
+    const shell=footer?.querySelector('.shell');
+    if(!shell||shell.querySelector('.footer-meta'))return;
+
+    const meta=document.createElement('div');
+    meta.className='footer-meta';
+    meta.setAttribute('aria-label','Informações legais');
+
+    const copyright=document.createElement('small');
+    copyright.className='footer-meta__copyright';
+    copyright.textContent=`© ${new Date().getFullYear()} QuantoLab. Todos os direitos reservados.`;
+
+    const disclaimer=document.createElement('small');
+    disclaimer.className='footer-meta__disclaimer';
+    disclaimer.textContent='As ferramentas e conteúdos têm caráter informativo e fornecem estimativas. Não substituem orientação profissional.';
+
+    meta.append(copyright,disclaimer);
+    shell.appendChild(meta);
+  }
+
+  function mountUI(){
+    mountToggle();
+    mountFooterMeta();
+  }
+
   applyTheme();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountToggle,{once:true});
-  else mountToggle();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});
+  else mountUI();
 
   const onSystemChange=()=>{if(selected==='system')applyTheme();};
   if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);
