@@ -5,9 +5,12 @@
     const targetId=control.dataset.optionalTarget;
     const input=document.getElementById(targetId);
     const valueWrap=document.querySelector(`[data-optional-value="${targetId}"]`);
+    const dependents=[...document.querySelectorAll(`[data-optional-dependent="${targetId}"]`)];
     if(!input||!valueWrap)return;
 
     const shouldInform=control.value==='informar';
+    dependents.forEach(item=>{item.hidden=!shouldInform;});
+
     if(shouldInform){
       input.disabled=false;
       valueWrap.hidden=false;
