@@ -31,40 +31,37 @@
 <aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="valor-hora-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section id="calc" class="calc-grid">
 <div class="panel form" id="valor-hora-form">
-<p class="simple-start"><strong>Preencha só o básico.</strong> Se quiser uma conta mais detalhada, abra os ajustes opcionais.</p>
+<p class="simple-start"><strong>Preencha só o que você souber.</strong> Quando uma informação não se aplicar, escolha essa opção no próprio campo.</p>
 <h3 class="simple-section">O básico</h3>
-<div class="field"><label for="renda">Quanto você quer receber por mês?</label><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="6000" inputmode="decimal"></div></div>
-<div class="field"><label for="custos">Quanto você gasta por mês para trabalhar?</label><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="1200" inputmode="decimal"></div></div>
+<div class="field"><label for="renda">Quanto você quer receber por mês?</label><span class="field-help">É o valor que você gostaria de ter disponível para você depois dos custos do trabalho.</span><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="6000" inputmode="decimal"></div></div>
+<div class="field"><label for="custosModo">Quanto você gasta por mês para trabalhar?</label><span class="field-help">Ex.: ferramentas, internet, contador, aluguel ou equipe. Se não tiver ou não souber, o cálculo pode seguir sem esse valor.</span><div class="optional-choice"><div class="input-wrap"><select id="custosModo" data-optional-target="custos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="custos" hidden><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="0" inputmode="decimal" aria-label="Gastos mensais para trabalhar" disabled></div></div></div>
 <div class="grid2">
-<div class="field"><label for="horasDia">Horas de trabalho por dia</label><div class="input-wrap"><input id="horasDia" type="number" min="1" max="24" step="0.5" value="8" inputmode="decimal"><span class="suffix">h</span></div></div>
-<div class="field"><label for="diasSemana">Dias de trabalho por semana</label><div class="input-wrap"><input id="diasSemana" type="number" min="1" max="7" step="1" value="5" inputmode="numeric"><span class="suffix">dias</span></div></div>
+<div class="field"><label for="horasDia">Horas de trabalho por dia</label><span class="field-help">Use uma média de quantas horas você realmente pretende trabalhar em um dia.</span><div class="input-wrap"><input id="horasDia" type="number" min="1" max="24" step="0.5" value="8" inputmode="decimal"><span class="suffix">h</span></div></div>
+<div class="field"><label for="diasSemana">Dias de trabalho por semana</label><span class="field-help">Informe quantos dias por semana você pretende trabalhar normalmente.</span><div class="input-wrap"><input id="diasSemana" type="number" min="1" max="7" step="1" value="5" inputmode="numeric"><span class="suffix">dias</span></div></div>
 </div>
 <details class="simple-details">
 <summary>Ajustes opcionais</summary>
 <div class="simple-details-body">
 <div class="grid2">
-<div class="field"><label for="ferias">Semanas sem trabalhar no ano</label><div class="input-wrap"><input id="ferias" type="number" min="0" max="40" step="1" value="0" inputmode="numeric"><span class="suffix">sem.</span></div></div>
-<div class="field"><label for="naoFaturavel">Tempo de trabalho que você não consegue cobrar</label><div class="input-wrap"><input id="naoFaturavel" type="number" min="0" max="95" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="ferias">Semanas sem trabalhar no ano</label><span class="field-help">Inclua férias ou pausas planejadas. Se não quiser considerar isso, deixe 0.</span><div class="input-wrap"><input id="ferias" type="number" min="0" max="40" step="1" value="0" inputmode="numeric"><span class="suffix">sem.</span></div></div>
+<div class="field"><label for="naoFaturavelModo">Tempo de trabalho que você não consegue cobrar</label><span class="field-help">Ex.: reuniões, propostas, estudo e tarefas administrativas. Se não souber estimar, ignore este item.</span><div class="optional-choice"><div class="input-wrap"><select id="naoFaturavelModo" data-optional-target="naoFaturavel"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um percentual</option></select></div><div class="input-wrap optional-value" data-optional-value="naoFaturavel" hidden><input id="naoFaturavel" type="number" min="0" max="95" step="1" value="0" inputmode="decimal" aria-label="Percentual de tempo não faturável" disabled><span class="suffix">%</span></div></div></div>
 </div>
 <div class="grid2">
-<div class="field"><label for="impostos">Impostos e taxas</label><div class="input-wrap"><input id="impostos" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
-<div class="field"><label for="margem">Reserva de segurança</label><div class="input-wrap"><input id="margem" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="impostosModo">Impostos e taxas</label><span class="field-help">Use o percentual médio que sai do que você recebe. Se não souber, ignore este item e veja a estimativa antes dos impostos.</span><div class="optional-choice"><div class="input-wrap"><select id="impostosModo" data-optional-target="impostos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um percentual</option></select></div><div class="input-wrap optional-value" data-optional-value="impostos" hidden><input id="impostos" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal" aria-label="Percentual de impostos e taxas" disabled><span class="suffix">%</span></div></div></div>
+<div class="field"><label for="margem">Reserva de segurança</label><span class="field-help">Percentual extra para imprevistos ou negociação. Se não quiser acrescentar uma reserva, deixe 0.</span><div class="input-wrap"><input id="margem" type="number" min="0" max="200" step="1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
 </div>
 </div>
-</details>
-<details class="simple-help">
-<summary>Entenda os valores</summary>
-<div class="simple-help-body"><p><strong>Gastos:</strong> ferramentas, contador, internet, aluguel ou outros custos para trabalhar.</p><p><strong>Tempo não cobrado:</strong> reuniões, propostas, estudo e tarefas administrativas.</p><p><strong>Reserva:</strong> um valor extra para imprevistos ou negociação.</p></div>
 </details>
 <div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Ver meu valor por hora →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
 </div>
 <aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Você pode usar como referência</div><div id="recomendado" class="result-value">R$ 0/h</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>Uma diária de trabalho</span><strong id="diaria">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body"><div class="row"><span>Quanto precisa entrar por mês</span><strong id="faturamento">R$ 0</strong></div><div class="row"><span>Valor sem reserva de segurança</span><strong id="minimo">R$ 0/h</strong></div><div class="row"><span>Horas cobradas por mês</span><strong id="horasMes">0 h</strong></div><div class="row"><span>Projeto de 20 horas</span><strong id="projeto">R$ 0</strong></div></div></details></div></aside>
 </section>
 <aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="valor-hora-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>Use como ponto de partida</h2><p>A calculadora transforma sua meta mensal em um valor por hora. Se quiser uma estimativa mais realista, use os ajustes opcionais para incluir impostos, pausas e tempo que não pode ser cobrado.</p><div class="notice"><strong>Importante:</strong> o resultado é uma referência de precificação, não uma regra obrigatória.</div></article>
+<article class="article"><h2>Use como ponto de partida</h2><p>A calculadora transforma sua meta mensal em um valor por hora. Os ajustes opcionais só entram quando você escolher informar esses valores.</p><div class="notice"><strong>Importante:</strong> o resultado é uma referência de precificação, não uma regra obrigatória.</div></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
 <script src="/valor-hora.js"></script>
+<script src="/optional-fields.js"></script>
 </body>
 </html>

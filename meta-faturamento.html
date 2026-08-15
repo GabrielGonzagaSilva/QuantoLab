@@ -25,39 +25,36 @@
 <body class="calculator-simple">
 <header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Meta mensal</div><h1>Quanto precisa entrar no mês?</h1><p class="lead">Informe quanto quer ter para você, seus gastos e seus impostos.</p></div></section>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Meta mensal</div><h1>Quanto precisa entrar no mês?</h1><p class="lead">Informe quanto quer ter para você. Gastos e impostos só entram se você souber informar.</p></div></section>
 <div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no seu navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
 <div class="shell">
 <aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="meta-faturamento-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section class="calc-grid">
 <div class="panel form" id="meta-form">
-<p class="simple-start"><strong>Três números resolvem a conta.</strong> Você pode dividir a meta por clientes depois, se quiser.</p>
+<p class="simple-start"><strong>Comece pelo valor que você quer ter no mês.</strong> Os demais campos podem ser ignorados se não se aplicarem ou se você ainda não souber.</p>
 <h3 class="simple-section">O básico</h3>
-<div class="field"><label for="renda">Quanto você quer ter para você no mês?</label><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="8000" inputmode="decimal"></div></div>
-<div class="field"><label for="custos">Quanto você gasta por mês para trabalhar?</label><div class="input-wrap"><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="1500" inputmode="decimal"></div></div>
-<div class="field"><label for="impostos">Quanto sai em impostos e taxas?</label><div class="input-wrap"><input id="impostos" type="number" min="0" max="95" step="0.1" value="12" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="renda">Quanto você quer ter para você no mês?</label><span class="field-help">É o valor que você quer que sobre para uso pessoal depois dos gastos do trabalho.</span><div class="input-wrap"><span class="prefix">R$</span><input id="renda" type="number" min="0" step="100" value="8000" inputmode="decimal"></div></div>
+<div class="field"><label for="custosModo">Quanto você gasta por mês para trabalhar?</label><span class="field-help">Ex.: contador, ferramentas, aluguel, internet, equipe ou outros custos fixos.</span><div class="optional-choice"><div class="input-wrap"><select id="custosModo" data-optional-target="custos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="custos" hidden><span class="prefix">R$</span><input id="custos" type="number" min="0" step="50" value="0" inputmode="decimal" aria-label="Gastos mensais do trabalho" disabled></div></div></div>
+<div class="field"><label for="impostosModo">Quanto sai em impostos e taxas?</label><span class="field-help">Use o percentual médio que sai do seu faturamento. Se não souber, ignore este item e veja a meta antes dos impostos.</span><div class="optional-choice"><div class="input-wrap"><select id="impostosModo" data-optional-target="impostos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um percentual</option></select></div><div class="input-wrap optional-value" data-optional-value="impostos" hidden><input id="impostos" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal" aria-label="Percentual de impostos e taxas" disabled><span class="suffix">%</span></div></div></div>
 <details class="simple-details">
 <summary>Ajustes opcionais</summary>
 <div class="simple-details-body">
 <div class="grid2">
-<div class="field"><label for="reserva">Quanto quer guardar como reserva?</label><div class="input-wrap"><input id="reserva" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
-<div class="field"><label for="projetos">Quantos clientes ou projetos espera no mês?</label><div class="input-wrap"><input id="projetos" type="number" min="1" max="1000" step="1" value="4" inputmode="numeric"><span class="suffix">no mês</span></div></div>
+<div class="field"><label for="reserva">Quanto quer guardar como reserva?</label><span class="field-help">Percentual que você quer guardar além do valor que deseja ter para você. Se não quiser reserva, deixe 0.</span><div class="input-wrap"><input id="reserva" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal"><span class="suffix">%</span></div></div>
+<div class="field"><label for="projetos">Quantos clientes ou projetos espera no mês?</label><span class="field-help">Serve apenas para dividir a meta. Se não quiser dividir, deixe 1.</span><div class="input-wrap"><input id="projetos" type="number" min="1" max="1000" step="1" value="1" inputmode="numeric"><span class="suffix">no mês</span></div></div>
 </div>
 </div>
-</details>
-<details class="simple-help">
-<summary>Entenda os valores</summary>
-<div class="simple-help-body"><p><strong>Gastos:</strong> contador, ferramentas, aluguel, internet, equipe e outros custos fixos.</p><p><strong>Impostos e taxas:</strong> use uma média do percentual que sai do que você recebe.</p><p><strong>Reserva:</strong> dinheiro que você quer guardar além do valor que deseja ter para você.</p></div>
 </details>
 <div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Ver minha meta mensal →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
 </div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Você precisa faturar por mês</div><div id="principal" class="result-value">R$ 0</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>Média por cliente ou projeto</span><strong id="porProjeto">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body"><div class="row"><span>Meta por semana</span><strong id="porSemana">R$ 0</strong></div><div class="row"><span>Meta no ano</span><strong id="porAno">R$ 0</strong></div><div class="row"><span>Mínimo para cobrir os gastos fixos</span><strong id="pontoEquilibrio">R$ 0</strong></div></div></details></div></aside>
+<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Você precisa faturar por mês</div><div id="principal" class="result-value">R$ 0</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>Meta por cliente ou projeto</span><strong id="porProjeto">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body"><div class="row"><span>Meta por semana</span><strong id="porSemana">R$ 0</strong></div><div class="row"><span>Meta no ano</span><strong id="porAno">R$ 0</strong></div><div class="row"><span>Mínimo para cobrir os gastos fixos</span><strong id="pontoEquilibrio">R$ 0</strong></div></div></details></div></aside>
 </section>
 <aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="meta-faturamento-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>O objetivo é simples</h2><p>A meta mostra quanto precisa entrar para pagar seus gastos, impostos e ainda deixar o valor que você quer para você.</p><div class="notice"><strong>Importante:</strong> use uma taxa de impostos próxima da sua realidade para não subestimar a meta.</div></article>
+<article class="article"><h2>O objetivo é simples</h2><p>A meta mostra quanto precisa entrar para deixar o valor que você quer para você. Gastos, impostos e reserva só são adicionados quando você informar esses dados.</p><div class="notice"><strong>Importante:</strong> se você não informar impostos ou custos, eles não serão considerados na estimativa.</div></article>
 </div>
 </main>
 <footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
 <script src="/meta-faturamento.js"></script>
+<script src="/optional-fields.js"></script>
 </body>
 </html>
