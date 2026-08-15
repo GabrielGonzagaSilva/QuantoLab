@@ -25,11 +25,11 @@ function run(){
   $('porSemana').textContent=money(meta/4.345);
   $('porAno').textContent=money(meta*12);
   $('pontoEquilibrio').textContent=money(equilibrio);
-  $('status').textContent='Meta calculada com os percentuais que você informou.';
+  $('status').textContent=reserva>0?'Meta com a reserva opcional que você informou.':'Meta mensal com seus gastos e impostos.';
 }
 
 function clearAll(){
-  $('renda').value='';$('custos').value='1500';$('impostos').value='12';$('reserva').value='10';$('projetos').value='4';reset();
+  $('renda').value='';$('custos').value='1500';$('impostos').value='12';$('reserva').value='0';$('projetos').value='4';reset();
 }
 
 $('calcular').addEventListener('click',run);
