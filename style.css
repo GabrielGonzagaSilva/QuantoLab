@@ -241,3 +241,186 @@ h3{letter-spacing:0}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+/* QuantoLab Professional UI v2 */
+:root{
+  --bg:#f6f6f8;
+  --surface:#fff;
+  --surface-soft:#f8f8fa;
+  --surface-muted:#fbfbfc;
+  --text:#1d1d1f;
+  --muted:#69696f;
+  --muted-2:#8a8a91;
+  --border:rgba(29,29,31,.09);
+  --border-strong:rgba(29,29,31,.20);
+  --accent:#d9ff66;
+  --dark:#1d1d1f;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.035),0 8px 24px rgba(0,0,0,.025);
+  --shadow-lg:0 24px 64px rgba(0,0,0,.13);
+  --radius-xl:24px;
+  --radius-lg:19px;
+  --radius-md:14px;
+}
+
+body{background:var(--bg);font-feature-settings:"kern" 1,"tnum" 0}
+.shell{width:min(1160px,calc(100% - clamp(24px,5vw,64px)))}
+
+/* Brand and navigation */
+.header{background:rgba(250,250,252,.92);border-bottom:1px solid rgba(29,29,31,.065);box-shadow:0 1px 0 rgba(255,255,255,.7)}
+.nav{min-height:64px;gap:28px}
+.brand{display:inline-flex!important;align-items:center;width:auto!important;max-width:58vw;aspect-ratio:auto!important;flex:0 0 auto;background:none!important;font-size:0!important;line-height:0!important;white-space:nowrap;overflow:hidden}
+.brand img{display:block;width:clamp(158px,18vw,188px);height:auto;max-width:100%}
+.mark{display:none!important}
+.navlinks{gap:26px;color:var(--muted);font-size:13px;font-weight:590;letter-spacing:-.005em}
+.navlinks a{position:relative;color:var(--muted);transition:color .16s ease}
+.navlinks a:not(.nav-cta)::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:1px;background:var(--text);transform:scaleX(0);transform-origin:right;transition:transform .18s ease}
+
+/* Type hierarchy */
+h1{font-weight:760;letter-spacing:-.045em;line-height:.98;text-wrap:balance}
+h2{font-weight:730;letter-spacing:-.032em;text-wrap:balance}
+h3{letter-spacing:-.018em}
+.lead{max-width:700px;color:#6b6b71;line-height:1.52}
+.eyebrow{margin-bottom:20px;padding:7px 11px;border-color:rgba(29,29,31,.08);background:#fff;color:#68686e;font-size:11.5px;font-weight:650;letter-spacing:.005em;box-shadow:0 1px 1px rgba(0,0,0,.02)}
+
+/* Home */
+.hero{padding:clamp(78px,9vw,118px) 0 clamp(34px,4.8vw,58px)}
+.hero-grid{grid-template-columns:minmax(0,1.45fr) minmax(250px,.55fr);gap:clamp(40px,7vw,82px);align-items:end}
+.hero-note{padding:23px 24px;border-color:rgba(29,29,31,.08);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:none}
+.hero-note strong{font-size:14px;letter-spacing:-.01em}
+.hero-note span{display:inline-block;margin-top:5px;color:#77777d;font-size:12.5px;line-height:1.5}
+.section{padding:clamp(38px,5vw,66px) 0}
+.section-head{margin-bottom:26px}
+.section-head p{color:#77777d;line-height:1.55}
+.tool-grid,.card-grid{gap:14px}
+.tool-card,.card{border-color:rgba(29,29,31,.08);background:#fff;box-shadow:var(--shadow-sm)}
+.tool-card{position:relative;min-height:238px;padding:28px;border-radius:19px;overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.tool-card::after{content:"↗";position:absolute;top:24px;right:25px;color:#a0a0a6;font-size:16px;line-height:1;transition:transform .18s ease,color .18s ease}
+.tool-card h3{margin:24px 0 9px;font-size:21px;font-weight:720}
+.tool-card p,.card p{color:#727278;line-height:1.6}
+.tool-link{padding-top:26px;font-size:12.5px;font-weight:700;letter-spacing:-.005em}
+.num{width:auto;min-width:34px;height:27px;padding:0 9px;border:1px solid rgba(94,113,25,.14);border-radius:999px;background:rgba(217,255,102,.40);color:#34400e;font-size:10px;letter-spacing:.04em}
+.card{min-height:150px;padding:25px;border-radius:18px;box-shadow:none}
+.card h3{margin:0 0 9px;font-size:17px;font-weight:700}
+
+/* Trust and credibility */
+.trust-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 22px;margin:0 0 clamp(18px,3vw,30px);padding:13px 0;border-top:1px solid rgba(29,29,31,.07);border-bottom:1px solid rgba(29,29,31,.07);color:#717177;font-size:11.5px;line-height:1.35}
+.trust-row span,.trust-row a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.trust-row span::before{content:"";width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(217,255,102,.22)}
+.trust-row a{margin-left:auto;color:var(--text);font-weight:680}
+.trust-row--compact{margin-top:-2px;margin-bottom:24px}
+
+/* Calculators */
+.calc-hero,.legal-hero{padding:clamp(58px,7vw,88px) 0 clamp(24px,3vw,34px)}
+.calc-hero h1,.legal-hero h1{font-weight:760;letter-spacing:-.04em}
+.breadcrumbs{margin-bottom:20px;color:#85858b;font-size:11.5px}
+.breadcrumbs a{color:#66666c}
+.calc-grid{gap:28px}
+.panel{border-color:rgba(29,29,31,.085);border-radius:24px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.025),0 12px 34px rgba(0,0,0,.035)}
+.form{padding:clamp(28px,3.2vw,38px)}
+.form-section-title{margin:34px 0 17px;font-size:13px;font-weight:730;letter-spacing:-.005em;color:#404045}
+.help-inline-toggle,.help-details{border-color:rgba(29,29,31,.08);background:#fafafc}
+.help-inline-toggle{min-height:50px;margin-bottom:28px;padding:11px 13px;color:#505056;font-size:12.5px}
+.help-symbol,.help-toggle:after{background:#2b2b2e;color:var(--accent)}
+.field{margin-bottom:20px}
+.field label{margin-bottom:8px;color:#3e3e43;font-size:12.5px;font-weight:650}
+.field-help{color:#7a7a80;line-height:1.52}
+.input-wrap{min-height:58px;border:1px solid rgba(29,29,31,.09);background:#f8f8fa;border-radius:14px;transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease}
+.input-wrap:focus-within{background:#fff;border-color:rgba(29,29,31,.34);box-shadow:0 0 0 4px rgba(217,255,102,.32)}
+.input-wrap input,.input-wrap select{padding:17px 14px;font-weight:610}
+.prefix,.suffix{color:#808087;font-size:12.5px}
+.btn{min-height:58px;border-radius:14px;font-size:13.5px;font-weight:720;box-shadow:0 1px 1px rgba(0,0,0,.05);transition:transform .15s ease,background-color .15s ease,box-shadow .15s ease}
+.btn-secondary{border-color:rgba(29,29,31,.10);background:#f5f5f7;color:#3c3c41;box-shadow:none}
+.result{top:88px;border-radius:24px;background:#1d1d1f;box-shadow:var(--shadow-lg);overflow:hidden}
+.result-top{padding:clamp(30px,3.2vw,39px)}
+.result-kicker{color:#a9a9af;font-size:10px;font-weight:720;letter-spacing:.12em}
+.result-value{margin-top:14px;font-weight:760;letter-spacing:-.04em}
+.result-sub{color:#b8b8bd;line-height:1.55}
+.result-body{padding:clamp(24px,3vw,34px);background:#28282b}
+.highlight{padding:17px;border-color:rgba(217,255,102,.16);background:rgba(217,255,102,.055);border-radius:14px}
+.highlight span{color:#b7b7bd}
+.row{padding:14px 0;border-bottom-color:rgba(255,255,255,.07)}
+.row span{color:#b9b9bf}
+
+/* Long-form content */
+.article{width:min(790px,100%);margin:clamp(42px,6vw,72px) auto;padding:0;border:0;background:transparent;box-shadow:none}
+.article h2{font-size:clamp(26px,3vw,34px);letter-spacing:-.03em}
+.article h3{font-size:17px}
+.article p,.article li{color:#696970;line-height:1.72}
+.notice{margin-top:22px;padding:17px 18px;border-color:rgba(29,29,31,.08);background:#fff;border-radius:14px;color:#66666c;box-shadow:0 1px 2px rgba(0,0,0,.025)}
+
+/* Advertising stays clearly separated from product UI */
+.ad{margin:clamp(28px,4vw,46px) 0}
+.ad-label{margin-bottom:9px;color:#9a9aa0;font-size:8.5px;font-weight:680}
+.ad-box{border-color:rgba(29,29,31,.08);background:rgba(255,255,255,.34)}
+
+/* Footer */
+.footer{margin-top:clamp(64px,8vw,96px);padding:38px 0 calc(38px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(29,29,31,.07);background:#fff}
+.footer-grid{align-items:flex-start;gap:36px}
+.footer-brand img{width:140px;height:auto}
+.footer-brand span{display:block;max-width:285px;margin-top:10px;color:#85858b;font-size:11.5px;line-height:1.5}
+.footer-links{gap:7px 20px;color:#707076;font-size:11.5px}
+.footer-links a{min-height:32px}
+
+@media (hover:hover){
+  .navlinks a:hover{color:var(--text)}
+  .navlinks a:not(.nav-cta):hover::after{transform:scaleX(1);transform-origin:left}
+  .tool-card:hover{transform:translateY(-2px);border-color:rgba(29,29,31,.14);box-shadow:0 2px 3px rgba(0,0,0,.035),0 18px 44px rgba(0,0,0,.06)}
+  .tool-card:hover::after{color:var(--text);transform:translate(2px,-2px)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(0,0,0,.10)}
+  .btn-secondary:hover{background:#eeeef1;box-shadow:none}
+}
+
+@media (max-width:980px){
+  .hero-grid{gap:30px}
+  .trust-row a{margin-left:0}
+}
+
+@media (max-width:760px){
+  .header{background:rgba(250,250,252,.96)}
+  .nav{min-height:60px}
+  .brand{max-width:70vw}
+  .brand img{width:158px}
+  .hero{padding:58px 0 30px}
+  .hero-grid{display:block}
+  .hero-note{display:none}
+  .trust-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 16px;padding:14px 0}
+  .trust-row span,.trust-row a{white-space:normal}
+  .trust-row a{grid-column:1/-1;padding-top:3px}
+  .tool-card{min-height:210px}
+  .calc-grid{gap:18px}
+  .result{border-radius:22px}
+  .footer-grid{display:grid;gap:24px}
+  .footer-links{margin-top:0}
+}
+
+@media (max-width:560px){
+  .shell{width:calc(100% - 28px)}
+  .nav{min-height:58px}
+  .brand{width:auto!important;max-width:72vw;font-size:0!important}
+  .brand img{width:150px}
+  h1{font-size:clamp(39px,11.8vw,50px);line-height:1;letter-spacing:-.042em}
+  .calc-hero,.legal-hero{padding:44px 0 21px}
+  .calc-hero h1,.legal-hero h1{font-size:clamp(35px,10.5vw,45px);letter-spacing:-.038em}
+  .lead{font-size:16px;line-height:1.52}
+  .trust-row{grid-template-columns:1fr;font-size:11.5px}
+  .trust-row a{grid-column:auto}
+  .tool-card,.card{padding:23px;border-radius:18px}
+  .tool-card{min-height:0}
+  .tool-card::after{top:21px;right:22px}
+  .panel{border-radius:20px}
+  .form,.result-top,.result-body{padding:22px}
+  .input-wrap{min-height:56px}
+  .btn{min-height:56px}
+  .article{margin:42px auto;padding:0}
+  .footer{margin-top:60px;padding-top:32px}
+}
+
+@media (max-width:380px){
+  .shell{width:calc(100% - 20px)}
+  .brand img{width:142px}
+  h1{font-size:34px}
+  .calc-hero h1,.legal-hero h1{font-size:32px}
+  .form,.result-top,.result-body{padding:18px}
+  .tool-card,.card{padding:20px}
+}
