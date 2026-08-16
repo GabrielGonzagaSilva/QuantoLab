@@ -153,3 +153,27 @@ test.describe('theme control', () => {
     await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
   });
 });
+
+test.describe('decision support', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  for (const route of ['/valor-hora.html','/preco-projeto.html','/meta-faturamento.html','/comparador-profissional.html','/simulador.html']) {
+    test(`${route} explains the result and offers a coherent next decision`, async ({ page }) => {
+      await page.goto(`http://127.0.0.1:4173${route}`, { waitUntil: 'networkidle' });
+      await expect(page.locator('.result-details > summary')).toContainText('Como chegamos');
+      await expect(page.locator('.source-note')).toBeVisible();
+      await expect(page.locator('.source-note')).toContainText('Atualizado em agosto de 2026');
+      await expect(page.locator('.next-decision')).toBeVisible();
+      expect(await page.locator('.next-decision .decision-card').count()).toBeGreaterThanOrEqual(2);
+    });
+  }
+
+  test('CLT x PJ can test another PJ proposal without rebuilding the simulation', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/comparador-profissional.html', { waitUntil: 'networkidle' });
+    await page.locator('[data-pj-value="12000"]').click();
+    await expect(page.locator('#pjMensal')).toHaveValue('12000');
+    await expect(page.locator('[data-pj-value="12000"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#status')).toContainText('%');
+    await expect(page.locator('#difPercentual')).not.toHaveText('0%');
+  });
+});
