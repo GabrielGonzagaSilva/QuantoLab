@@ -3,6 +3,7 @@ const num=id=>Math.max(0,Number($(id)?.value)||0);
 const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(v||0);
 const percent=v=>`${new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1}).format(v||0)}%`;
 const round2=v=>Math.round((v+Number.EPSILON)*100)/100;
+const setText=(id,value)=>{const el=$(id);if(el)el.textContent=value;};
 
 function inss2026(base){
   base=Math.min(Math.max(0,base),8475.55);
@@ -23,7 +24,7 @@ function updateScenarioState(value){
 }
 
 function reset(message='Preencha os dados para comparar.'){
-  $('winner').textContent='—';$('diferenca').textContent='R$ 0';$('difMensal').textContent='R$ 0';$('difPercentual').textContent='0%';$('cltAno').textContent='R$ 0';$('pjAno').textContent='R$ 0';$('cltMes').textContent='R$ 0';$('pjMes').textContent='R$ 0';$('fgtsAno').textContent='R$ 0';$('pjEquivalente').textContent='R$ 0';$('status').textContent=message;
+  setText('winner','—');setText('diferenca','R$ 0');setText('difMensal','R$ 0');setText('difPercentual','0%');setText('cltAno','R$ 0');setText('pjAno','R$ 0');setText('cltMes','R$ 0');setText('pjMes','R$ 0');setText('fgtsAno','R$ 0');setText('pjEquivalente','R$ 0');setText('status',message);
 }
 
 function calcular(){
@@ -64,24 +65,23 @@ function calcular(){
   const pjAno=Math.max(0,pjMensal*pjMeses*(1-pjImpostos)-custosPjAno);
   const pjMedio=pjAno/12;
   const equivalente=(cltAno+custosPjAno)/(pjMeses*(1-pjImpostos));
-  const rawDiff=pjAno-cltAno;
-  const diff=Math.abs(rawDiff);
+  const diff=Math.abs(pjAno-cltAno);
   const diffMensal=diff/12;
   const winner=cltAno>pjAno?'CLT':pjAno>cltAno?'PJ':'Empate';
   const comparisonBase=winner==='PJ'?cltAno:winner==='CLT'?pjAno:Math.max(cltAno,pjAno);
   const diffPct=comparisonBase>0?diff/comparisonBase*100:0;
 
-  $('winner').textContent=winner==='Empate'?'Empate':`${winner} +${percent(diffPct)}`;
-  $('diferenca').textContent=money(diff);
-  $('difMensal').textContent=money(diffMensal);
-  $('difPercentual').textContent=percent(diffPct);
-  $('cltAno').textContent=money(cltAno);
-  $('pjAno').textContent=money(pjAno);
-  $('cltMes').textContent=money(cltLiquidoMes);
-  $('pjMes').textContent=money(pjMedio);
-  $('fgtsAno').textContent=money(fgtsAno);
-  $('pjEquivalente').textContent=money(equivalente);
-  $('status').textContent=winner==='Empate'?'As duas propostas ficam praticamente iguais nesta estimativa.':`A proposta ${winner} deixa aproximadamente ${money(diff)} a mais disponível no ano.`;
+  setText('winner',winner);
+  setText('diferenca',money(diff));
+  setText('difMensal',money(diffMensal));
+  setText('difPercentual',percent(diffPct));
+  setText('cltAno',money(cltAno));
+  setText('pjAno',money(pjAno));
+  setText('cltMes',money(cltLiquidoMes));
+  setText('pjMes',money(pjMedio));
+  setText('fgtsAno',money(fgtsAno));
+  setText('pjEquivalente',money(equivalente));
+  setText('status',winner==='Empate'?'As duas propostas ficam praticamente iguais nesta estimativa.':`A proposta ${winner} é aproximadamente ${percent(diffPct)} melhor financeiramente e deixa ${money(diff)} a mais disponível no ano.`);
 }
 
 function clearAll(){
