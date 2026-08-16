@@ -153,6 +153,32 @@ test.describe('terms consent', () => {
     await expect(page.locator('.terms-consent')).toHaveCount(0);
   });
 
+  test('keeps the local-storage note separated from the CTA and the dialog inside the viewport', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
+      const layout = await page.evaluate(() => {
+        const dialog = document.querySelector('.terms-consent__dialog').getBoundingClientRect();
+        const note = document.querySelector('.terms-consent__local').getBoundingClientRect();
+        const cta = document.querySelector('[data-accept-terms]').getBoundingClientRect();
+        return {
+          dialog: { top: dialog.top, right: dialog.right, bottom: dialog.bottom, left: dialog.left },
+          noteBottom: note.bottom,
+          ctaTop: cta.top,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      });
+
+      expect(layout.ctaTop - layout.noteBottom, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(12);
+      expect(layout.dialog.top, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
+      expect(layout.dialog.left, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
+      expect(layout.dialog.right, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.width + 1);
+      expect(layout.dialog.bottom, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.height + 1);
+      await page.screenshot({ path: `responsive-artifacts/terms-consent-${viewport.width}.png`, fullPage: true });
+    }
+  });
+
   test('keeps terms and privacy readable before acceptance', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/termos.html', { waitUntil: 'networkidle' });
     await expect(page.locator('.terms-consent')).toHaveCount(0);
