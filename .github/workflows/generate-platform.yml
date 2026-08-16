@@ -1,0 +1,38 @@
+name: Generate QuantoLab platform pages
+
+on:
+  push:
+    branches: [agent/complete-roadmap-consent]
+    paths:
+      - 'scripts/generate-platform.py'
+      - 'tools-core.js'
+      - 'tools-clt.js'
+      - 'tools-pj.js'
+      - 'tools-freela.js'
+      - 'tools-finance.js'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/complete-roadmap-consent
+      - name: Generate pages
+        run: python scripts/generate-platform.py
+      - name: Commit generated pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html' 'valor-hora/*.html'
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git commit -m 'Gera páginas das novas ferramentas e jornadas'
+          git push origin HEAD:agent/complete-roadmap-consent
