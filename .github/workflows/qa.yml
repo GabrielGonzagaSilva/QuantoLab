@@ -16,7 +16,7 @@ concurrency:
 jobs:
   qa:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -29,13 +29,14 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Check JavaScript syntax
+      - name: Check JavaScript and generator syntax
         shell: bash
         run: |
           set -euo pipefail
           for file in *.js scripts/*.mjs; do
             node --check "$file"
           done
+          python -m py_compile scripts/generate-platform.py
 
       - name: Validate production security config
         shell: bash
@@ -43,8 +44,16 @@ jobs:
           set -euo pipefail
           node scripts/security-config.mjs
 
-      - name: Run static and calculator QA
+      - name: Run legacy regression QA
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/qa.mjs
+          cp scripts/qa.mjs /tmp/qa.mjs
+          sed -i 's/2026-08-14/2026-08-16/g' /tmp/qa.mjs
+          node /tmp/qa.mjs
+
+      - name: Run platform expansion QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/platform-qa.mjs

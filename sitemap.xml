@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://quantolab.com.br/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://quantolab.com.br/valor-hora</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://quantolab.com.br/preco-projeto</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://quantolab.com.br/meta-faturamento</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://quantolab.com.br/comparador-profissional</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://quantolab.com.br/simulador</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://quantolab.com.br/sobre</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://quantolab.com.br/metodologia</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://quantolab.com.br/politica-de-privacidade</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://quantolab.com.br/termos</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+<url><loc>https://quantolab.com.br/</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/ferramentas</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/preco-projeto</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/meta-faturamento</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/comparador-profissional</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/simulador</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/salario-liquido</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/ferias</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/decimo-terceiro</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/fgts</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/seguro-desemprego</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/hora-extra</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/inss</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/irrf</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/pj-clt-equivalente</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/impostos-pj</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/mei-das</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/pro-labore</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/custo-funcionario</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/clientes-necessarios</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/margem-lucro</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/renda-anual</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/faturamento-anual</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/reserva-emergencia</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/juros-compostos</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/rendimento-cdi</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/comparar-investimentos</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/metas-financeiras</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/inflacao</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/meus-numeros</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/incorporar</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/designer</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/desenvolvedor</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/copywriter</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/social-media</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/fotografo</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/valor-hora/arquiteto</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/sobre</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/metodologia</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/politica-de-privacidade</loc><lastmod>2026-08-16</lastmod></url>
+<url><loc>https://quantolab.com.br/termos</loc><lastmod>2026-08-16</lastmod></url>
 </urlset>
