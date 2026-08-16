@@ -26,6 +26,15 @@ const viewports = [
   ['1440', { width: 1440, height: 900 }],
 ];
 
+async function acceptTermsIfNeeded(page) {
+  const accept = page.locator('[data-accept-terms]');
+  if (await accept.count()) {
+    await expect(accept).toBeVisible();
+    await accept.click();
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+  }
+}
+
 for (const [viewportName, viewport] of viewports) {
   test.describe(`viewport ${viewportName}`, () => {
     test.use({ viewport });
@@ -33,6 +42,7 @@ for (const [viewportName, viewport] of viewports) {
     for (const [routeName, route] of routes) {
       test(`${routeName} has no responsive breakage`, async ({ page }) => {
         await page.goto(`http://127.0.0.1:4173${route}`, { waitUntil: 'networkidle' });
+        await acceptTermsIfNeeded(page);
 
         const audit = await page.evaluate(() => {
           const viewportWidth = window.innerWidth;
@@ -124,11 +134,41 @@ for (const [viewportName, viewport] of viewports) {
   });
 }
 
+test.describe('terms consent', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('requires explicit acceptance, exposes legal links and persists locally', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
+    const dialog = page.locator('.terms-consent__dialog');
+    const accept = page.locator('[data-accept-terms]');
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toHaveAttribute('role', 'dialog');
+    await expect(dialog).toHaveAttribute('aria-modal', 'true');
+    await expect(page.locator('.terms-consent__links a[href="/termos"]')).toBeVisible();
+    await expect(page.locator('.terms-consent__links a[href="/politica-de-privacidade"]')).toBeVisible();
+    await expect(accept).toBeFocused();
+    await accept.click();
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+  });
+
+  test('keeps terms and privacy readable before acceptance', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/termos.html', { waitUntil: 'networkidle' });
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+    await expect(page.locator('h1')).toHaveText('Termos de uso');
+    await page.goto('http://127.0.0.1:4173/politica-de-privacidade.html', { waitUntil: 'networkidle' });
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+    await expect(page.locator('h1')).toHaveText('Política de privacidade');
+  });
+});
+
 test.describe('theme control', () => {
   test.use({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
 
   test('follows the device, cycles themes and persists the choice', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
+    await acceptTermsIfNeeded(page);
     const html = page.locator('html');
     const toggle = page.locator('.theme-toggle');
 
@@ -160,6 +200,7 @@ test.describe('decision support', () => {
   for (const route of ['/valor-hora.html','/preco-projeto.html','/meta-faturamento.html','/comparador-profissional.html','/simulador.html']) {
     test(`${route} explains the result and offers a coherent next decision`, async ({ page }) => {
       await page.goto(`http://127.0.0.1:4173${route}`, { waitUntil: 'networkidle' });
+      await acceptTermsIfNeeded(page);
       await expect(page.locator('.result-details > summary')).toContainText('Como chegamos');
       await expect(page.locator('.source-note')).toBeVisible();
       await expect(page.locator('.source-note')).toContainText('Atualizado em agosto de 2026');
@@ -170,6 +211,7 @@ test.describe('decision support', () => {
 
   test('CLT x PJ can test another PJ proposal without rebuilding the simulation', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/comparador-profissional.html', { waitUntil: 'networkidle' });
+    await acceptTermsIfNeeded(page);
     await page.locator('[data-pj-value="12000"]').click();
     await expect(page.locator('#pjMensal')).toHaveValue('12000');
     await expect(page.locator('[data-pj-value="12000"]')).toHaveAttribute('aria-pressed','true');
