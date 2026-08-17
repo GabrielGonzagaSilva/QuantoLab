@@ -47,8 +47,8 @@ jobs:
           cat /tmp/quantolab-http.log
           exit 1
 
-      - name: Audit all responsive layouts and UX writing
-        run: npx playwright test tests/responsive.spec.cjs tests/no-dashes.spec.cjs --reporter=line --workers=4
+      - name: Audit all responsive layouts and calculator flows
+        run: npx playwright test tests/responsive.spec.cjs tests/no-dashes.spec.cjs tests/calculator-model.spec.cjs --reporter=line --workers=4
 
       - name: Upload responsive screenshots
         if: always()
