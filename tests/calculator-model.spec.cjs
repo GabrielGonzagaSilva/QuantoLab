@@ -36,6 +36,25 @@ test.describe('calculator result flow on mobile', () => {
     await expect(form).toBeVisible();
   });
 
+  test('original freelancer calculator uses the same mobile result stages', async ({ page }) => {
+    await open(page, '/valor-hora.html');
+    const form = page.locator('#valor-hora-form');
+    const result = page.locator('.panel.result');
+    await expect(form).toBeVisible();
+    await expect(result).toBeHidden();
+    await page.locator('#renda').fill('6000');
+    await page.locator('#horasDia').fill('8');
+    await page.locator('#diasSemana').fill('5');
+    await form.getByRole('button', { name: 'Calcular', exact: true }).click();
+    await expect(form).toBeHidden();
+    await expect(result).toBeVisible();
+    await expect(result.getByText('Meu cálculo', { exact: true })).toBeVisible();
+    await expect(result.locator('.calculator-table')).toContainText('Valor por hora');
+    await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
+    await expect(form).toBeVisible();
+    await expect(result).toBeHidden();
+  });
+
   test('juros compostos exposes graph and table result views', async ({ page }) => {
     await open(page, '/juros-compostos.html');
     const form = page.locator('[data-tool-form]');
