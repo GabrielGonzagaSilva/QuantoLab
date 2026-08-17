@@ -41,17 +41,17 @@ function irrfThirteenth(gross,dependents=0){
 function salaryNet(gross,dependents=0,otherDeductions=0){const inss=inssEmployee(gross);const ir=irrfMonthly(gross,{inss,dependents});return {gross,inss,irrf:ir.tax,net:Math.max(0,round2(gross-inss-ir.tax-Math.max(0,otherDeductions))),ir};}
 function monthlyEquivalentRate(rate,kind='annual'){const value=Number(rate)||0;return kind==='monthly'?value/100:Math.pow(1+value/100,1/12)-1;}
 function compoundSeries(initial,monthly,rate,rateKind,months){
-  const r=monthlyEquivalentRate(rate,rateKind);let balance=Math.max(0,Number(initial)||0);let invested=balance;const out=[];
+  const start=Math.max(0,Number(initial)||0),contribution=Math.max(0,Number(monthly)||0),r=monthlyEquivalentRate(rate,rateKind);let balance=start,invested=start;const out=[];
   for(let month=1;month<=Math.max(0,Math.floor(months));month++){
-    const interest=balance*r;balance+=interest;balance+=Math.max(0,Number(monthly)||0);invested+=Math.max(0,Number(monthly)||0);
-    out.push({month,interest:round2(interest),invested:round2(invested),totalInterest:round2(balance-invested),balance:round2(balance)});
+    const interest=balance*r;balance+=interest;balance+=contribution;invested+=contribution;
+    out.push({month,start:round2(start),interest:round2(interest),invested:round2(invested),totalInterest:round2(balance-invested),balance:round2(balance)});
   }
   return out;
 }
 function compoundFuture(initial,monthly,annualRate,months){const series=compoundSeries(initial,monthly,annualRate,'annual',months);return series.length?series.at(-1).balance:Number(initial)||0;}
 function cltPackageApprox(monthlyGross){const gross=Math.max(0,monthlyGross),annualSalary=gross*12,thirteenth=gross,vacationBonus=gross/3,fgts=(annualSalary+thirteenth+vacationBonus)*.08;return annualSalary+thirteenth+vacationBonus+fgts;}
 function pjEquivalentClt(annualPj){let lo=0,hi=Math.max(5000,annualPj/8);while(cltPackageApprox(hi)<annualPj)hi*=1.5;for(let i=0;i<50;i++){const mid=(lo+hi)/2;if(cltPackageApprox(mid)<annualPj)lo=mid;else hi=mid;}return (lo+hi)/2;}
-function monthsBetween(start,end){if(!(start instanceof Date)||!(end instanceof Date)||end<start)return 0;let months=(end.getFullYear()-start.getFullYear())*12+(end.getMonth()-start.getMonth())+1;return Math.max(0,months);}
+function monthsBetween(start,end){if(!(start instanceof Date)||!(end instanceof Date)||end<start)return 0;return Math.max(0,(end.getFullYear()-start.getFullYear())*12+(end.getMonth()-start.getMonth())+1);}
 
 const SOURCES={
   inss:['INSS, tabela de contribuição mensal 2026','https://www.gov.br/inss/pt-br/direitos-e-deveres/inscricao-e-contribuicao/tabela-de-contribuicao-mensal'],
@@ -86,8 +86,14 @@ function ensureModel(result){
   const mine=make('section','calculator-model__section');mine.append(make('h3','','Meu cálculo'),make('div','calculator-model__summary'));const outcome=make('section','calculator-model__section');outcome.append(make('h3','','Resultado'),make('div','calculator-table-wrap'));const visual=make('section','calculator-model__section calculator-model__visual');visual.hidden=true;model.append(redo,mine,outcome,visual);body.prepend(model);return model;
 }
 function renderTable(host,last){host.replaceChildren();const table=document.createElement('table');table.className='calculator-table';const thead=document.createElement('thead'),tbody=document.createElement('tbody');const spec=last.table||{headers:['Item','Valor'],rows:last.rows||[]};const trh=document.createElement('tr');for(const h of spec.headers){const th=make('th','',h);trh.appendChild(th);}thead.appendChild(trh);for(const rowData of spec.rows){const tr=document.createElement('tr');for(let i=0;i<spec.headers.length;i++){const cell=i===0?document.createElement('th'):document.createElement('td');if(i===0)cell.scope='row';cell.textContent=rowData[i]??'';tr.appendChild(cell);}tbody.appendChild(tr);}table.append(thead,tbody);host.appendChild(table);}
-function renderSeries(host,series){host.replaceChildren();if(!Array.isArray(series)||!series.length){host.hidden=true;return;}host.hidden=false;const tabs=make('div','calculator-tabs');const chartBtn=make('button','is-active','Gráfico'),tableBtn=make('button','','Tabela');chartBtn.type=tableBtn.type='button';chartBtn.setAttribute('aria-pressed','true');tableBtn.setAttribute('aria-pressed','false');tabs.append(chartBtn,tableBtn);const chart=make('div','calculator-chart'),tableWrap=make('div','calculator-table-wrap');tableWrap.hidden=true;host.append(tabs,chart,tableWrap);
-  const values=series.map(x=>x.balance),max=Math.max(...values,1),w=640,h=220,p=18;const points=series.map((x,i)=>`${p+(i/(Math.max(1,series.length-1)))*(w-p*2)},${h-p-(x.balance/max)*(h-p*2)}`).join(' ');chart.innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Evolução do valor acumulado"><polyline fill="none" stroke="currentColor" stroke-width="4" points="${points}" /></svg><div class="calculator-chart__legend"><span>Início: ${money(series[0].invested-series[0].interest-(series[0].invested>0?0:0))}</span><strong>Final: ${money(series.at(-1).balance)}</strong></div>`;
+function renderSeries(host,series){
+  host.replaceChildren();if(!Array.isArray(series)||!series.length){host.hidden=true;return;}host.hidden=false;
+  const tabs=make('div','calculator-tabs'),chartBtn=make('button','is-active','Gráfico'),tableBtn=make('button','','Tabela');chartBtn.type=tableBtn.type='button';chartBtn.setAttribute('aria-pressed','true');tableBtn.setAttribute('aria-pressed','false');tabs.append(chartBtn,tableBtn);
+  const chart=make('div','calculator-chart'),tableWrap=make('div','calculator-table-wrap');tableWrap.hidden=true;host.append(tabs,chart,tableWrap);
+  const values=series.map(x=>x.balance),max=Math.max(...values,1),w=640,h=220,p=18,points=series.map((x,i)=>`${p+(i/Math.max(1,series.length-1))*(w-p*2)},${h-p-(x.balance/max)*(h-p*2)}`).join(' ');
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${w} ${h}`);svg.setAttribute('role','img');svg.setAttribute('aria-label','Evolução do valor acumulado');
+  const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('fill','none');line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','4');line.setAttribute('points',points);svg.appendChild(line);
+  const legend=make('div','calculator-chart__legend');legend.append(make('span','',`Valor inicial: ${money(series[0].start)}`),make('strong','',`Valor final: ${money(series.at(-1).balance)}`));chart.append(svg,legend);
   renderTable(tableWrap,{table:{headers:['Mês','Juros','Total investido','Total em juros','Total acumulado'],rows:series.map(x=>[String(x.month),money(x.interest),money(x.invested),money(x.totalInterest),money(x.balance)])}});
   const select=showChart=>{chart.hidden=!showChart;tableWrap.hidden=showChart;chartBtn.classList.toggle('is-active',showChart);tableBtn.classList.toggle('is-active',!showChart);chartBtn.setAttribute('aria-pressed',String(showChart));tableBtn.setAttribute('aria-pressed',String(!showChart));};chartBtn.addEventListener('click',()=>select(true));tableBtn.addEventListener('click',()=>select(false));
 }
