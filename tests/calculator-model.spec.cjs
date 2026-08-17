@@ -14,56 +14,77 @@ async function open(page, route) {
   await acceptTermsIfNeeded(page);
 }
 
-test.describe('calculator result flow on mobile', () => {
+test.describe('calculator result preview on mobile', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('salário líquido uses calculate, meu cálculo, result and redo stages', async ({ page }) => {
+  test('salário líquido keeps preview and form visible before and after calculation', async ({ page }) => {
     await open(page, '/salario-liquido.html');
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
     await expect(form).toBeVisible();
-    await expect(result).toBeHidden();
+    await expect(result).toBeVisible();
+    await expect(result.locator('[data-result-headline]')).toHaveText('Aguardando cálculo');
+    await expect(result.locator('.calculator-model')).toBeHidden();
     await page.locator('#tool-salario').fill('7000');
     await page.locator('#tool-outros').fill('200');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
-    await expect(form).toBeHidden();
+    await expect(form).toBeVisible();
     await expect(result).toBeVisible();
     await expect(result.getByText('Meu cálculo', { exact: true })).toBeVisible();
     await expect(result.getByText('Resultado', { exact: true })).toBeVisible();
     await expect(result.locator('.calculator-table')).toContainText('Salário líquido');
-    await expect(result.locator('[data-result-headline]')).not.toHaveText('R$ 0,00');
+    await expect(result.locator('[data-result-headline]')).not.toHaveText('Aguardando cálculo');
     await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
     await expect(form).toBeVisible();
+    await expect(result).toBeVisible();
+    await expect(result.locator('.calculator-model')).toBeHidden();
   });
 
-  test('original freelancer calculator uses the same mobile result stages', async ({ page }) => {
+  test('clear keeps the dynamic result preview visible in its neutral state', async ({ page }) => {
+    await open(page, '/salario-liquido.html');
+    const form = page.locator('[data-tool-form]');
+    const result = page.locator('[data-tool-result]');
+    await form.getByRole('button', { name: 'Calcular', exact: true }).click();
+    await expect(result.locator('.calculator-model')).toBeVisible();
+    await form.getByRole('button', { name: 'Limpar', exact: true }).click();
+    await expect(form).toBeVisible();
+    await expect(result).toBeVisible();
+    await expect(result.locator('[data-result-headline]')).toHaveText('Aguardando cálculo');
+    await expect(result.locator('.calculator-model')).toBeHidden();
+  });
+
+  test('original freelancer calculator keeps the preview visible through the flow', async ({ page }) => {
     await open(page, '/valor-hora.html');
     const form = page.locator('#valor-hora-form');
     const result = page.locator('.panel.result');
     await expect(form).toBeVisible();
-    await expect(result).toBeHidden();
+    await expect(result).toBeVisible();
+    await expect(result.locator('.calculator-model')).toBeHidden();
     await page.locator('#renda').fill('6000');
     await page.locator('#horasDia').fill('8');
     await page.locator('#diasSemana').fill('5');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
-    await expect(form).toBeHidden();
+    await expect(form).toBeVisible();
     await expect(result).toBeVisible();
     await expect(result.getByText('Meu cálculo', { exact: true })).toBeVisible();
     await expect(result.locator('.calculator-table')).toContainText('Valor por hora');
     await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
     await expect(form).toBeVisible();
-    await expect(result).toBeHidden();
+    await expect(result).toBeVisible();
+    await expect(result.locator('.calculator-model')).toBeHidden();
   });
 
   test('juros compostos exposes graph and table result views', async ({ page }) => {
     await open(page, '/juros-compostos.html');
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
+    await expect(result).toBeVisible();
     await page.locator('#tool-inicial').fill('10000');
     await page.locator('#tool-aporte').fill('500');
     await page.locator('#tool-taxa').fill('10');
     await page.locator('#tool-periodo').fill('2');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
+    await expect(form).toBeVisible();
     await expect(result).toBeVisible();
     const visual = result.locator('.calculator-model__visual');
     await expect(visual).toBeVisible();
@@ -74,18 +95,21 @@ test.describe('calculator result flow on mobile', () => {
     await expect(visual.locator('.calculator-table')).toContainText('Total acumulado');
   });
 
-  test('CLT x PJ follows the equivalent PJ input model', async ({ page }) => {
+  test('CLT x PJ keeps its preview visible before and after calculation', async ({ page }) => {
     await open(page, '/comparador-profissional.html');
     const form = page.locator('#clt-pj-form');
     const result = page.locator('#clt-pj-result');
-    await expect(result).toBeHidden();
+    await expect(form).toBeVisible();
+    await expect(result).toBeVisible();
+    await expect(page.locator('#pjEquivalente')).toHaveText('Aguardando cálculo');
+    await expect(result.locator('.calculator-model')).toBeHidden();
     await page.locator('#cltSalario').fill('7000');
     await page.locator('#valeTransporte').fill('0');
     await page.locator('#valeRefeicao').fill('800');
     await page.locator('#outrosBeneficios').fill('300');
     await page.locator('#simples').fill('6');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
-    await expect(form).toBeHidden();
+    await expect(form).toBeVisible();
     await expect(result).toBeVisible();
     await expect(page.locator('#pjEquivalente')).toContainText('R$');
     await expect(page.locator('#tabelaClt')).toContainText('Vale transporte');
@@ -94,10 +118,14 @@ test.describe('calculator result flow on mobile', () => {
     await expect(page.locator('#meuCalculo')).toContainText('Alíquota do Simples Nacional');
   });
 
-  test('rescisão uses the reduced reference field set and returns FGTS separately', async ({ page }) => {
+  test('rescisão keeps its preview visible and returns FGTS separately', async ({ page }) => {
     await open(page, '/simulador.html');
     const form = page.locator('#rescisao-form');
     const result = page.locator('#rescisao-result');
+    await expect(form).toBeVisible();
+    await expect(result).toBeVisible();
+    await expect(page.locator('#totalLiquido')).toHaveText('Aguardando cálculo');
+    await expect(result.locator('.calculator-model')).toBeHidden();
     await page.locator('#salario').fill('5000');
     await page.locator('#admissao').fill('2024-01-10');
     await page.locator('#desligamento').fill('2026-08-10');
@@ -105,7 +133,7 @@ test.describe('calculator result flow on mobile', () => {
     await page.locator('#aviso').selectOption('indenizado');
     await page.locator('#saldoFgts').fill('12000');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
-    await expect(form).toBeHidden();
+    await expect(form).toBeVisible();
     await expect(result).toBeVisible();
     await expect(page.locator('#totalLiquido')).toContainText('R$');
     await expect(page.locator('#resultadoTabela')).toContainText('Multa do FGTS');
@@ -117,17 +145,22 @@ test.describe('calculator result flow on mobile', () => {
 test.describe('calculator layout on desktop', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('salary form and result remain side by side after calculation', async ({ page }) => {
+  test('salary form and preview remain side by side before and after calculation', async ({ page }) => {
     await open(page, '/salario-liquido.html');
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
+    await expect(form).toBeVisible();
+    await expect(result).toBeVisible();
+    let formBox = await form.boundingBox();
+    let resultBox = await result.boundingBox();
+    expect(formBox).not.toBeNull();
+    expect(resultBox).not.toBeNull();
+    expect(resultBox.x).toBeGreaterThan(formBox.x);
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeVisible();
     await expect(result).toBeVisible();
-    const formBox = await form.boundingBox();
-    const resultBox = await result.boundingBox();
-    expect(formBox).not.toBeNull();
-    expect(resultBox).not.toBeNull();
+    formBox = await form.boundingBox();
+    resultBox = await result.boundingBox();
     expect(resultBox.x).toBeGreaterThan(formBox.x);
   });
 });

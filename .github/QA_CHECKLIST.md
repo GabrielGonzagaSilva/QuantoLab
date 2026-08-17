@@ -21,6 +21,11 @@ Usar antes de publicar qualquer evolução relevante.
 - controles de toque adequados;
 - não depender apenas de cor;
 - resultado dinâmico compreensível;
+- preview principal de resultado visível antes do primeiro cálculo;
+- estado vazio do preview é neutro e não mostra tabela ou compartilhamento sem resultado válido;
+- no mobile, formulário e preview permanecem visíveis no fluxo da página;
+- calcular pode rolar até o resultado, mas não esconde o formulário;
+- limpar mantém o preview visível e retorna ao estado neutro;
 - 320, 360, 375, 390, 430, 768, 1024, 1280 e 1440 px verificados;
 - `prefers-reduced-motion` preservado.
 

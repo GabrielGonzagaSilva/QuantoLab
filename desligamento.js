@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 const num=id=>Math.max(0,Number($(id)?.value)||0);
 const form=$('rescisao-form');
 const result=$('rescisao-result');
+const model=result.querySelector('.calculator-model');
 const summary=$('meuCalculo');
 const table=$('resultadoTabela');
 let last=null;
@@ -22,17 +23,18 @@ function addSummary(label,value){const row=document.createElement('div');row.cla
 function addRow(label,value){const tr=document.createElement('tr'),th=document.createElement('th'),td=document.createElement('td');th.scope='row';th.textContent=label;td.textContent=value;tr.append(th,td);table.appendChild(tr);}
 function typeLabel(){return $('tipo').selectedOptions[0]?.textContent||'';}
 function noticeLabel(){return $('aviso').selectedOptions[0]?.textContent||'';}
-function showForm(){form.hidden=false;document.body.classList.remove('calculator-result-mode');if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});$('salario').focus({preventScroll:true});}}
-function showResult(){result.hidden=false;if(matchMedia('(max-width:760px)').matches){form.hidden=true;document.body.classList.add('calculator-result-mode');result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
+function showForm(){form.hidden=false;document.body.classList.remove('calculator-result-mode');model.hidden=true;if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});$('salario').focus({preventScroll:true});}}
+function showResult(){result.hidden=false;form.hidden=false;if(matchMedia('(max-width:760px)').matches){result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
+function resetPreview(){result.hidden=false;model.hidden=true;$('totalLiquido').textContent='Aguardando cálculo';$('notice').textContent='Preencha os campos e toque em Calcular para ver a estimativa.';summary.replaceChildren();table.replaceChildren();}
 function encodeState(){const state={salario:num('salario'),admissao:$('admissao').value,desligamento:$('desligamento').value,tipo:$('tipo').value,aviso:$('aviso').value,feriasAdquiridas:$('feriasAdquiridas').checked,dependentes:num('dependentes'),saldoFgts:num('saldoFgts'),feriasVencidasDias:num('feriasVencidasDias')};try{return btoa(encodeURIComponent(JSON.stringify(state)));}catch{return '';}}
 function restore(){if(!location.hash.startsWith('#s='))return;try{const state=JSON.parse(decodeURIComponent(atob(location.hash.slice(3))));for(const key of ['salario','admissao','desligamento','tipo','aviso','dependentes','saldoFgts','feriasVencidasDias'])if(state[key]!==undefined&&$(key))$(key).value=state[key];if(state.feriasAdquiridas!==undefined)$('feriasAdquiridas').checked=Boolean(state.feriasAdquiridas);}catch{}}
 function calculate(event){
   event?.preventDefault();
   const admission=parseDate('admissao'),end=parseDate('desligamento'),salary=num('salario'),dependents=Math.floor(num('dependentes'));
   showResult();
-  if(!salary||!admission||!end){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Informe salário, data de contratação e data de demissão.';return;}
-  if(end<admission){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='A data de demissão precisa ser posterior à contratação.';return;}
-  if(end.getFullYear()!==2026){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Esta versão usa as tabelas tributárias de 2026. Informe uma demissão em 2026.';return;}
+  if(!salary||!admission||!end){model.hidden=true;$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Informe salário, data de contratação e data de demissão.';return;}
+  if(end<admission){model.hidden=true;$('totalLiquido').textContent='Revise os dados';$('notice').textContent='A data de demissão precisa ser posterior à contratação.';return;}
+  if(end.getFullYear()!==2026){model.hidden=true;$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Esta versão usa as tabelas tributárias de 2026. Informe uma demissão em 2026.';return;}
   const type=$('tipo').value,notice=$('aviso').value,noticeLength=noticeDays(admission,end);let projectedEnd=new Date(end),noticeCredit=0,noticeDiscount=0;
   if(notice==='indenizado'&&(type==='sem_justa'||type==='indireta')){noticeCredit=salary/30*noticeLength;projectedEnd=addDays(end,noticeLength);}
   else if(notice==='indenizado'&&type==='acordo'){noticeCredit=salary/30*noticeLength*.5;projectedEnd=addDays(end,Math.ceil(noticeLength*.5));}
@@ -61,15 +63,16 @@ function calculate(event){
   const fgtsAvailable=round2(withdrawal+penalty);
 
   last={salary,admission,end,type,notice,noticeLength,workedDays,salaryBalance,noticeCredit,noticeDiscount,months13,gross13,vacationMonths,proportionalVacation,acquiredVacation,overdueDays,overdueVacation,totalInss,totalIrrf,directNet,terminationFgts,previousFgts,penalty,withdrawal,fgtsAvailable};
+  model.hidden=false;
   $('totalLiquido').textContent=money(directNet);
   $('notice').textContent=fgtsAvailable>0?`Além do acerto, a estimativa indica ${money(fgtsAvailable)} entre saldo de FGTS disponível e multa.`:'FGTS e multa são mostrados separadamente quando houver direito de saque.';
   summary.replaceChildren();addSummary('Salário bruto',money(salary));addSummary('Data de contratação',fmtDate(admission));addSummary('Data de demissão',fmtDate(end));addSummary('Motivo',typeLabel());addSummary('Aviso prévio',noticeLabel());addSummary('Férias adquiridas no ano anterior',$('feriasAdquiridas').checked?'Sim':'Não');addSummary('Número de dependentes',String(dependents));addSummary('Saldo do FGTS',money(previousFgts));addSummary('Férias vencidas',`${overdueDays} dias`);
   table.replaceChildren();addRow('Salário pelos dias trabalhados',money(salaryBalance));addRow('Aviso prévio',noticeDiscount?`Desconto de ${money(noticeDiscount)}`:money(noticeCredit));addRow('13º proporcional',money(gross13));addRow('Férias proporcionais e 1/3',money(proportionalVacation));addRow('Férias adquiridas e 1/3',money(acquiredVacation));addRow('Férias vencidas informadas e 1/3',money(overdueVacation));addRow('INSS estimado',money(totalInss));addRow('IRRF estimado',money(totalIrrf));addRow('Valor líquido do acerto',money(directNet));addRow('FGTS calculado na rescisão',money(terminationFgts));addRow('Saldo de FGTS considerado',money(fgtsBase));addRow('Multa do FGTS',money(penalty));addRow('FGTS disponível para saque',money(withdrawal));addRow('FGTS mais multa',money(fgtsAvailable));
   window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:'simulador'});
 }
-function clearAll(){form.reset();$('salario').value='';$('dependentes').value='0';$('saldoFgts').value='0';$('feriasVencidasDias').value='0';$('tipo').value='sem_justa';$('aviso').value='indenizado';result.hidden=true;last=null;showForm();}
+function clearAll(){form.reset();$('salario').value='';$('dependentes').value='0';$('saldoFgts').value='0';$('feriasVencidasDias').value='0';$('tipo').value='sem_justa';$('aviso').value='indenizado';last=null;resetPreview();showForm();}
 form.addEventListener('submit',calculate);$('limpar').addEventListener('click',clearAll);$('refazer').addEventListener('click',showForm);
 $('copiar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}. ${url}`:url;try{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Link copiado.';setTimeout(()=>$('shareStatus').textContent='',1800);}catch{$('shareStatus').textContent='Não foi possível copiar o link.';}});
 $('compartilhar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}`:'Calculadora de rescisão';if(navigator.share){try{await navigator.share({title:'Calculadora de rescisão',text,url});}catch{}}else $('copiar').click();});
-restore();result.hidden=true;
+restore();resetPreview();
 })();

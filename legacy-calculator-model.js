@@ -42,7 +42,7 @@ function buildModel(){
   const outcome=make('section','calculator-model__section');outcome.append(make('h3','','Resultado'),make('div','calculator-table-wrap'));
   const share=make('div','result-share'),shareButton=make('button','btn btn-secondary','Compartilhar resultado'),copyButton=make('button','btn btn-secondary','Copiar link'),status=make('p','result-share__status');shareButton.type=copyButton.type='button';status.setAttribute('aria-live','polite');share.append(shareButton,copyButton,status);
   model.append(redo,mine,outcome,share);body.appendChild(model);result.classList.add('legacy-model-enhanced');
-  redo.addEventListener('click',()=>{result.hidden=true;form.hidden=false;document.body.classList.remove('calculator-result-mode');if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});summaryControls()[0]?.focus({preventScroll:true});}});
+  redo.addEventListener('click',()=>{model.hidden=true;result.hidden=false;form.hidden=false;document.body.classList.remove('calculator-result-mode');if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});summaryControls()[0]?.focus({preventScroll:true});}});
   const sharedUrl=()=>{const values={};for(const control of stateControls())values[control.id]=control.type==='checkbox'?control.checked:control.value;try{return `${location.origin}${location.pathname}#s=${btoa(encodeURIComponent(JSON.stringify(values)))}`;}catch{return `${location.origin}${location.pathname}`;}};
   const shareText=()=>`${document.title.replace(' | QuantoLab','')}: ${config.outputs[0] ? document.getElementById(config.outputs[0][1])?.textContent||'' : ''}`;
   copyButton.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(`${shareText()} ${sharedUrl()}`);status.textContent='Link copiado.';setTimeout(()=>status.textContent='',1800);}catch{status.textContent='Não foi possível copiar o link.';}});
@@ -66,10 +66,12 @@ function refreshModel(){
   wrap.replaceChildren();const table=make('table','calculator-table'),thead=document.createElement('thead'),tbody=document.createElement('tbody'),head=document.createElement('tr');head.append(make('th','','Item'),make('th','','Valor'));thead.appendChild(head);
   for(const [label,id] of config.outputs){const tr=document.createElement('tr'),th=make('th','',label),td=make('td','',document.getElementById(id)?.textContent||'');th.scope='row';tr.append(th,td);tbody.appendChild(tr);}table.append(thead,tbody);wrap.appendChild(table);
 }
-function showResult(){refreshModel();result.hidden=false;if(matchMedia('(max-width:760px)').matches){form.hidden=true;document.body.classList.add('calculator-result-mode');result.tabIndex=-1;result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
+function showResult(){const model=buildModel();refreshModel();result.hidden=false;model.hidden=false;form.hidden=false;if(matchMedia('(max-width:760px)').matches){result.tabIndex=-1;result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
 calculate.textContent='Calcular';
-result.hidden=true;
+const model=buildModel();
+result.hidden=false;
+model.hidden=true;
 calculate.addEventListener('click',()=>setTimeout(showResult,0));
-clear?.addEventListener('click',()=>{setTimeout(()=>{result.hidden=true;form.hidden=false;document.body.classList.remove('calculator-result-mode');},0);});
+clear?.addEventListener('click',()=>{setTimeout(()=>{result.hidden=false;model.hidden=true;form.hidden=false;document.body.classList.remove('calculator-result-mode');},0);});
 if(restore())setTimeout(()=>calculate.click(),0);
 })();
