@@ -104,3 +104,17 @@
   .simple-actions{grid-template-columns:1fr!important}
   .simple-actions .btn-secondary{order:2}
 }
+
+/* Regra de produto: o preview de resultado permanece visível antes e depois do cálculo. */
+.calculator-simple .panel.result[hidden],
+.calculator-simple [data-tool-result][hidden]{display:block!important}
+.calculator-simple .panel.result[hidden] .calculator-model,
+.calculator-simple [data-tool-result][hidden] .calculator-model{display:none!important}
+
+@media(max-width:760px){
+  .calculator-simple [data-tool-form][hidden],
+  .calculator-simple .panel.form[hidden],
+  .calculator-simple form.panel.form[hidden]{display:block!important}
+  .calculator-simple.calculator-result-mode .calc-grid{display:grid}
+  .calculator-simple.calculator-result-mode .panel.result{width:100%;margin:0}
+}
