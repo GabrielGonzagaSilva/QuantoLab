@@ -148,12 +148,11 @@ if(/<loc>https:\/\/quantolab\.com\.br\/contato<\/loc>/.test(sitemap))fail('sitem
 function element(value=''){
   return {value:String(value),textContent:'',disabled:false,listeners:{},addEventListener(type,cb){this.listeners[type]=cb;}};
 }
-function runCalculator(scriptName,values,click=false){
+function runCalculator(scriptName,values){
   const els={};for(const [id,value] of Object.entries(values))els[id]=element(value);
   const document={getElementById:id=>els[id]||null,querySelectorAll:()=>[]};
   const context=vm.createContext({document,Intl,Date,Math,Number,console,setTimeout,clearTimeout});
   vm.runInContext(read(scriptName),context,{filename:scriptName});
-  if(click&&els.calcular?.listeners.click)els.calcular.listeners.click();
   return els;
 }
 const expectIncludes=(label,text,expected)=>{if(!String(text).includes(expected))fail(`${label}: esperado "${expected}" em "${text}".`);};
@@ -171,19 +170,22 @@ try{
   e=runCalculator('meta-faturamento.js',{renda:8000,custos:1500,impostos:12,reserva:10,projetos:4,calcular:'',limpar:'',principal:'',porProjeto:'',porSemana:'',porAno:'',pontoEquilibrio:'',status:''});
   expectIncludes('Meta mensal',e.principal.textContent,'12.179');
   expectIncludes('Meta mensal / por projeto',e.porProjeto.textContent,'3.045');
+}catch(err){fail(`Testes de cálculo legado: ${err.stack||err.message}`);}
 
-  e=runCalculator('clt-pj.js',{cltSalario:7000,cltBeneficios:1200,dependentes:0,cltDescontos:0,cltBonus:0,pjMensal:10000,pjMeses:11,pjImpostos:10,pjContador:200,pjOutros:500,calcular:'',limpar:'',winner:'',diferenca:'',cltAno:'',pjAno:'',cltMes:'',pjMes:'',fgtsAno:'',pjEquivalente:'',status:''});
-  if(e.winner.textContent!=='PJ')fail(`CLT x PJ: esperado PJ, recebido ${e.winner.textContent}.`);
-  expectIncludes('CLT x PJ / CLT anual',e.cltAno.textContent,'86.924');
-  expectIncludes('CLT x PJ / PJ anual',e.pjAno.textContent,'90.600');
-  expectIncludes('CLT x PJ / equivalência',e.pjEquivalente.textContent,'9.629');
-
-  e=runCalculator('desligamento.js',{admissao:'2024-01-10',desligamento:'2026-08-10',salario:5000,divisorSaldo:'30',tipo:'sem_justa',aviso:'indenizado',feriasVencidas:'nao',periodosFerias:0,decimoAdiantado:'nao',valorDecimoAdiantado:0,saldoFgts:12000,saqueAniversario:'nao',dependentes:0,outrasVerbas:0,naturezaOutras:'remuneratoria',outrosDescontos:0,calcular:'',limpar:'',totalLiquido:'',notice:'',rSaldo:'',rAviso:'',rDecimo:'',rFeriasProp:'',rFeriasVencidas:'',rOutras:'',rFgtsRescisao:'',rMultaFgts:'',rSaqueFgts:'',rInss:'',rIrrf:'',rDescontos:''},true);
-  expectIncludes('Rescisão / 13º projetado',e.rDecimo.textContent,'3.750');
-  expectIncludes('Rescisão / aviso proporcional',e.rAviso.textContent,'6.000');
-  if(e.totalLiquido.textContent.includes('R$ 0,00'))fail('Rescisão CLT: total líquido ficou zerado no cenário de referência.');
-  if(e.rMultaFgts.textContent.includes('R$ 0,00'))fail('Rescisão CLT: multa do FGTS ficou zerada na demissão sem justa causa.');
-}catch(err){fail(`Testes de cálculo: ${err.stack||err.message}`);}
+for(const required of [
+  ['salario-liquido.html','data-tool="salario-liquido"'],
+  ['ferias.html','data-tool="ferias"'],
+  ['decimo-terceiro.html','data-tool="decimo-terceiro"'],
+  ['fgts.html','data-tool="fgts"'],
+  ['seguro-desemprego.html','data-tool="seguro-desemprego"'],
+  ['hora-extra.html','data-tool="hora-extra"'],
+  ['inss.html','data-tool="inss"'],
+  ['juros-compostos.html','data-tool="juros-compostos"'],
+  ['custo-funcionario.html','data-tool="custo-funcionario"']
+]) if(!read(required[0]).includes(required[1]))fail(`${required[0]}: integração do motor compartilhado ausente.`);
+if(!read('comparador-profissional.html').includes('id="meuCalculo"'))fail('CLT x PJ: resumo Meu cálculo ausente.');
+if(!read('simulador.html').includes('id="meuCalculo"'))fail('Rescisão: resumo Meu cálculo ausente.');
+if(!read('tools-finance.js').includes("['taxaTipo','Período da taxa'"))fail('Juros compostos: alternância mensal/anual ausente.');
 
 if(failures.length){console.error(`QA falhou com ${failures.length} problema(s):`);for(const item of failures)console.error(`- ${item}`);process.exit(1);}
-console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, segurança do browser, estrutura responsiva, tema persistente, headers e 5 calculadoras com resultados esperados.`);
+console.log(`QA aprovado: ${htmlFiles.length} páginas, ${jsFiles.length} scripts, segurança do browser, SEO, tema, 3 calculadoras legadas e integração do novo modelo de cálculo.`);

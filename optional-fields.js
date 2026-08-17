@@ -42,4 +42,12 @@
       });
     });
   }
+
+  const path=location.pathname.replace(/\.html$/,'');
+  if(['/valor-hora','/preco-projeto','/meta-faturamento'].includes(path)){
+    const script=document.createElement('script');
+    script.src='/legacy-calculator-model.js';
+    script.async=false;
+    document.body.appendChild(script);
+  }
 })();
