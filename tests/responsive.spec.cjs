@@ -223,7 +223,7 @@ test.describe('theme control', () => {
 test.describe('decision support', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  for (const route of ['/valor-hora.html','/preco-projeto.html','/meta-faturamento.html','/comparador-profissional.html','/simulador.html']) {
+  for (const route of ['/valor-hora.html','/preco-projeto.html','/meta-faturamento.html']) {
     test(`${route} explains the result and offers a coherent next decision`, async ({ page }) => {
       await page.goto(`http://127.0.0.1:4173${route}`, { waitUntil: 'networkidle' });
       await acceptTermsIfNeeded(page);
@@ -235,13 +235,27 @@ test.describe('decision support', () => {
     });
   }
 
-  test('CLT x PJ can test another PJ proposal without rebuilding the simulation', async ({ page }) => {
+  test('CLT x PJ calculates the required PJ value from the CLT package', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/comparador-profissional.html', { waitUntil: 'networkidle' });
     await acceptTermsIfNeeded(page);
-    await page.locator('[data-pj-value="12000"]').click();
-    await expect(page.locator('#pjMensal')).toHaveValue('12000');
-    await expect(page.locator('[data-pj-value="12000"]')).toHaveAttribute('aria-pressed','true');
-    await expect(page.locator('#status')).toContainText('%');
-    await expect(page.locator('#difPercentual')).not.toHaveText('0%');
+    await page.locator('#cltSalario').fill('7000');
+    await page.locator('#valeTransporte').fill('0');
+    await page.locator('#valeRefeicao').fill('800');
+    await page.locator('#outrosBeneficios').fill('300');
+    await page.locator('#simples').fill('6');
+    await page.locator('#clt-pj-form').getByRole('button', { name: 'Calcular', exact: true }).click();
+    await expect(page.locator('#clt-pj-result')).toBeVisible();
+    await expect(page.locator('#pjEquivalente')).toContainText('R$');
+    await expect(page.locator('#tabelaPj')).toContainText('Imposto Simples Nacional');
+    await expect(page.locator('.source-note')).toContainText('Referências trabalhistas e tributárias de 2026');
+  });
+
+  test('rescisão exposes the new result model and official references', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/simulador.html', { waitUntil: 'networkidle' });
+    await acceptTermsIfNeeded(page);
+    await expect(page.locator('#rescisao-form')).toBeVisible();
+    await expect(page.locator('#rescisao-result')).toBeHidden();
+    await expect(page.locator('#meuCalculo')).toHaveCount(1);
+    await expect(page.locator('.source-note')).toContainText('Referências trabalhistas e tributárias de 2026');
   });
 });
