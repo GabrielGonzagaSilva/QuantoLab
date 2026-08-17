@@ -4,90 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calculadora de rescisão CLT 2026 | QuantoLab</title>
-<meta name="description" content="Estime sua rescisão CLT de forma simples com data de entrada, saída, salário e motivo do desligamento.">
+<meta name="description" content="Estime sua rescisão CLT com salário, datas, motivo, aviso prévio, férias, dependentes e FGTS.">
 <link rel="canonical" href="https://quantolab.com.br/simulador">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<!-- SEO:START -->
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta name="theme-color" content="#D9FF66">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="QuantoLab">
 <meta property="og:title" content="Calculadora de rescisão CLT 2026 | QuantoLab">
-<meta property="og:description" content="Estime sua rescisão CLT de forma simples com data de entrada, saída, salário e motivo do desligamento.">
+<meta property="og:description" content="Estime os principais valores de uma rescisão CLT usando referências de 2026.">
 <meta property="og:url" content="https://quantolab.com.br/simulador">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"QuantoLab","item":"https://quantolab.com.br/"},{"@type":"ListItem","position":2,"name":"Rescisão CLT","item":"https://quantolab.com.br/simulador"}]}</script>
-<!-- SEO:END -->
 <script src="/theme.js"></script>
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/calculator-simple.css">
 <link rel="stylesheet" href="/theme.css">
 </head>
 <body class="calculator-simple">
-<header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
+<header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Rescisão CLT</div><h1>Quanto você pode receber na rescisão?</h1><p class="lead">Preencha os dados principais do desligamento. O que você não souber pode ficar de fora da estimativa.</p></div></section>
-<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no seu navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / Rescisão CLT</div><h1>Calcule sua rescisão trabalhista</h1><p class="lead">Informe os dados do contrato para estimar valores do acerto, FGTS e multa quando aplicável.</p></div></section>
+<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
 <div class="shell">
-<aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="simulador-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
+<aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="simulador-top"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section class="calc-grid">
-<div class="panel form" id="rescisao-form">
-<p class="simple-start"><strong>Comece com as informações principais.</strong> Os campos extras explicam o que significam e podem ser ignorados quando não se aplicarem.</p>
-<h3 class="simple-section">O básico</h3>
+<form class="panel form" id="rescisao-form" novalidate>
+<p class="simple-start"><strong>Preencha os dados do vínculo.</strong> Use os valores e datas do contrato sempre que possível.</p>
+<div class="field"><label for="salario">Salário bruto</label><div class="input-wrap"><span class="prefix">R$</span><input id="salario" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
 <div class="grid2">
-<div class="field"><label for="admissao">Quando você entrou na empresa?</label><span class="field-help">Use a data de admissão que aparece no contrato, registro ou carteira de trabalho.</span><div class="input-wrap"><input id="admissao" type="date"></div></div>
-<div class="field"><label for="desligamento">Qual foi o último dia do contrato?</label><span class="field-help">Use o último dia informado no desligamento. Esta versão calcula saídas ocorridas em 2026.</span><div class="input-wrap"><input id="desligamento" type="date" min="2026-01-01" max="2026-12-31"></div></div>
+<div class="field"><label for="admissao">Data de contratação</label><div class="input-wrap"><input id="admissao" type="date"></div></div>
+<div class="field"><label for="desligamento">Data de demissão</label><div class="input-wrap"><input id="desligamento" type="date" min="2026-01-01" max="2026-12-31"></div></div>
 </div>
-<div class="field"><label for="salario">Salário bruto por mês</label><span class="field-help">É o salário antes dos descontos de INSS e Imposto de Renda.</span><div class="input-wrap"><span class="prefix">R$</span><input id="salario" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
-<div class="field"><label for="tipo">Como o contrato terminou?</label><span class="field-help">Escolha a opção que mais se aproxima do motivo oficial do desligamento.</span><div class="input-wrap"><select id="tipo"><option value="sem_justa">A empresa me demitiu sem justa causa</option><option value="pedido">Eu pedi demissão</option><option value="acordo">Fizemos um acordo para encerrar o contrato</option><option value="justa">A empresa me demitiu por justa causa</option><option value="prazo">Meu contrato com prazo definido terminou</option><option value="indireta">Rescisão indireta reconhecida</option></select></div></div>
-<div class="field"><label for="aviso">O que aconteceu com o aviso prévio?</label><span class="field-help">Se não houve aviso prévio no seu caso, escolha “Não se aplica”.</span><div class="input-wrap"><select id="aviso"><option value="indenizado">Foi pago sem eu trabalhar</option><option value="trabalhado">Eu trabalhei durante o aviso</option><option value="descontado">Não trabalhei e pode ser descontado</option><option value="nao_aplica">Não se aplica</option></select></div></div>
-<details class="simple-details">
-<summary>Ajustes opcionais</summary>
-<div class="simple-details-body">
-<div class="field"><label for="divisorSaldo">Como calcular os dias do último mês?</label><span class="field-help">A regra mais comum usa 30 dias. Altere apenas se você souber que precisa usar os dias reais do mês.</span><div class="input-wrap"><select id="divisorSaldo"><option value="30">Usar 30 dias</option><option value="calendario">Usar os dias reais do mês</option></select></div></div>
-<div class="grid2">
-<div class="field"><label for="feriasVencidas">Tem férias completas ainda não usadas?</label><span class="field-help">São férias que você já ganhou por completar um período de trabalho, mas ainda não tirou.</span><div class="input-wrap"><select id="feriasVencidas"><option value="nao">Não</option><option value="sim">Sim</option></select></div></div>
-<div class="field"><label for="periodosFerias">Quantos períodos?</label><span class="field-help">Só precisa informar se respondeu “Sim” no campo anterior.</span><div class="input-wrap"><input id="periodosFerias" type="number" min="0" max="20" step="1" value="0" inputmode="numeric"></div></div>
+<div class="field"><label for="tipo">Motivo</label><div class="input-wrap"><select id="tipo"><option value="sem_justa">Demissão sem justa causa</option><option value="pedido">Pedido de demissão</option><option value="acordo">Comum acordo</option><option value="justa">Demissão por justa causa</option><option value="prazo">Término de contrato com prazo definido</option><option value="indireta">Rescisão indireta reconhecida</option><option value="reciproca">Culpa recíproca reconhecida</option></select></div></div>
+<div class="field"><label for="aviso">Aviso prévio</label><div class="input-wrap"><select id="aviso"><option value="indenizado">Indenizado</option><option value="trabalhado">Trabalhado</option><option value="descontado">Não cumprido, com possível desconto</option><option value="nao_aplica">Não se aplica</option></select></div></div>
+<div class="field"><label class="check-field" for="feriasAdquiridas"><span>Possui férias adquiridas no ano anterior?</span></label><div class="input-wrap input-wrap--check"><input id="feriasAdquiridas" type="checkbox"></div></div>
+<div class="field"><label for="dependentes">Número de dependentes</label><div class="input-wrap"><input id="dependentes" type="number" min="0" max="30" step="1" value="0" inputmode="numeric"></div></div>
+<div class="field"><label for="saldoFgts">Saldo do FGTS</label><span class="field-help">Use o saldo de referência disponível no extrato para estimar saque e multa.</span><div class="input-wrap"><span class="prefix">R$</span><input id="saldoFgts" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="feriasVencidasDias">Férias vencidas</label><span class="field-help">Informe dias adicionais de férias vencidas, quando houver.</span><div class="input-wrap"><input id="feriasVencidasDias" type="number" min="0" max="60" step="1" value="0" inputmode="numeric"><span class="suffix">dias</span></div></div>
+<div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="submit">Calcular</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
+</form>
+<aside class="panel result" id="rescisao-result" aria-live="polite" hidden tabindex="-1">
+<div class="result-top"><div class="result-kicker">Valor líquido estimado da rescisão</div><div id="totalLiquido" class="result-value">R$ 0,00</div><p id="notice" class="result-sub">Preencha os dados para calcular.</p></div>
+<div class="result-body">
+<div class="calculator-model">
+<button class="calculator-model__redo" id="refazer" type="button">Fazer outro cálculo</button>
+<section class="calculator-model__section"><h3>Meu cálculo</h3><div class="calculator-model__summary" id="meuCalculo"></div></section>
+<section class="calculator-model__section"><h3>Resultado</h3><div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Evento</th><th>Valor</th></tr></thead><tbody id="resultadoTabela"></tbody></table></div></section>
+<div class="result-share"><button class="btn btn-secondary" id="compartilhar" type="button">Compartilhar resultado</button><button class="btn btn-secondary" id="copiar" type="button">Copiar link</button><p class="result-share__status" id="shareStatus" aria-live="polite"></p></div>
 </div>
-<div class="grid2">
-<div class="field"><label for="decimoAdiantado">Já recebeu parte do 13º deste ano?</label><span class="field-help">Marque “Sim” apenas se a empresa já adiantou uma parte do seu 13º de 2026.</span><div class="input-wrap"><select id="decimoAdiantado"><option value="nao">Não</option><option value="sim">Sim</option></select></div></div>
-<div class="field"><label for="valorDecimoAdiantado">Quanto já recebeu?</label><span class="field-help">Só precisa informar se respondeu “Sim” no campo anterior. Esse valor será abatido do 13º estimado.</span><div class="input-wrap"><span class="prefix">R$</span><input id="valorDecimoAdiantado" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div></div>
 </div>
-<div class="field"><label for="saldoFgtsModo">Saldo do FGTS usado para calcular a multa</label><span class="field-help">Se tiver o extrato, prefira o valor usado para fins rescisórios. Se não souber, a multa será estimada apenas com o FGTS calculado nesta rescisão.</span><div class="optional-choice"><div class="input-wrap"><select id="saldoFgtsModo" data-optional-target="saldoFgts"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="saldoFgts" hidden><span class="prefix">R$</span><input id="saldoFgts" type="number" min="0" step="0.01" value="0" inputmode="decimal" aria-label="Saldo do FGTS para cálculo da multa" disabled></div></div></div>
-<div class="grid2">
-<div class="field"><label for="saqueAniversario">Você usa Saque-Aniversário?</label><span class="field-help">Escolha “Sim” se você aderiu ao Saque-Aniversário do FGTS.</span><div class="input-wrap"><select id="saqueAniversario"><option value="nao">Não</option><option value="sim">Sim</option></select></div></div>
-<div class="field"><label for="dependentes">Dependentes no Imposto de Renda</label><span class="field-help">Informe quantas pessoas entram como dependentes no seu IR. Se não tiver, deixe 0.</span><div class="input-wrap"><input id="dependentes" type="number" min="0" max="30" step="1" value="0" inputmode="numeric"></div></div>
-</div>
-<div class="grid2">
-<div class="field"><label for="outrasVerbasModo">Outros valores a receber</label><span class="field-help">Ex.: comissão, bônus, horas extras ou outro valor que ainda precise entrar na rescisão.</span><div class="optional-choice"><div class="input-wrap"><select id="outrasVerbasModo" data-optional-target="outrasVerbas"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="outrasVerbas" hidden><span class="prefix">R$</span><input id="outrasVerbas" type="number" min="0" step="0.01" value="0" inputmode="decimal" aria-label="Outros valores a receber na rescisão" disabled></div></div></div>
-<div class="field" data-optional-dependent="outrasVerbas" hidden><label for="naturezaOutras">Esse valor extra é pagamento pelo trabalho?</label><span class="field-help">Se for pagamento pelo trabalho, ele pode entrar nas bases de INSS, IR e FGTS. Se for indenização, não entra nessas bases.</span><div class="input-wrap"><select id="naturezaOutras"><option value="remuneratoria">Sim</option><option value="indenizatoria">Não, é indenização</option></select></div></div>
-</div>
-<div class="field"><label for="outrosDescontosModo">Outros valores a descontar</label><span class="field-help">Ex.: adiantamentos, faltas ou outro desconto que você já saiba que será aplicado.</span><div class="optional-choice"><div class="input-wrap"><select id="outrosDescontosModo" data-optional-target="outrosDescontos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="outrosDescontos" hidden><span class="prefix">R$</span><input id="outrosDescontos" type="number" min="0" step="0.01" value="0" inputmode="decimal" aria-label="Outros valores a descontar da rescisão" disabled></div></div></div>
-</div>
-</details>
-<div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Ver estimativa da rescisão →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
-</div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Estimativa do valor pago na rescisão</div><div id="totalLiquido" class="result-value">R$ 0</div><p id="notice" class="result-sub">Preencha os dados para calcular.</p></div><div class="result-body result-direct"><div class="highlight"><span>FGTS que pode ficar disponível à parte</span><strong id="rSaqueFgts">R$ 0</strong></div><details class="result-details"><summary>Ver detalhes do cálculo</summary><div class="result-details-body">
-<div class="row"><span>Salário pelos dias trabalhados</span><strong id="rSaldo">R$ 0</strong></div>
-<div class="row"><span>Aviso prévio</span><strong id="rAviso">R$ 0</strong></div>
-<div class="row"><span>13º proporcional</span><strong id="rDecimo">R$ 0</strong></div>
-<div class="row"><span>Férias proporcionais + 1/3</span><strong id="rFeriasProp">R$ 0</strong></div>
-<div class="row"><span>Férias completas + 1/3</span><strong id="rFeriasVencidas">R$ 0</strong></div>
-<div class="row"><span>Outros valores a receber</span><strong id="rOutras">R$ 0</strong></div>
-<div class="row"><span>INSS estimado</span><strong id="rInss">− R$ 0</strong></div>
-<div class="row"><span>Imposto de Renda estimado</span><strong id="rIrrf">− R$ 0</strong></div>
-<div class="row"><span>Outros descontos</span><strong id="rDescontos">− R$ 0</strong></div>
-<div class="row"><span>FGTS depositado na rescisão</span><strong id="rFgtsRescisao">R$ 0</strong></div>
-<div class="row"><span>Multa estimada do FGTS</span><strong id="rMultaFgts">R$ 0</strong></div>
-</div></details></div></aside>
+</aside>
 </section>
-<aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="simulador-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>Primeiro veja a estimativa</h2><p>A conta básica usa as datas, o salário, o motivo do desligamento e o aviso prévio. Informações extras só entram quando você escolher informar.</p><div class="notice"><strong>Importante:</strong> esta é uma estimativa. O termo oficial da rescisão pode incluir regras ou valores específicos do seu contrato.</div></article>
+<aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="simulador-after-tool"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
+<article class="article"><h2>O que entra nesta estimativa</h2><p>O cálculo organiza saldo de salário, aviso prévio, 13º proporcional, férias, descontos tributários, depósitos de FGTS e multa quando aplicável ao motivo informado.</p><div class="notice"><strong>Importante:</strong> a rescisão oficial pode ter médias, convenções, decisões judiciais ou outras verbas específicas do contrato. Use esta ferramenta como estimativa e confira o termo oficial.</div></article>
+<div class="source-note" role="note"><span>Referências trabalhistas e tributárias de 2026</span><a href="/metodologia">Fontes e metodologia →</a></div>
 </div>
 </main>
-<footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
+<footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
+<script src="/tools-core.js"></script>
 <script src="/desligamento.js"></script>
-<script src="/optional-fields.js"></script>
 </body>
 </html>
