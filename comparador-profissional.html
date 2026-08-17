@@ -4,70 +4,61 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Calculadora CLT x PJ 2026 | QuantoLab</title>
-  <meta name="description" content="Compare uma proposta CLT e uma proposta PJ de forma simples, com diferença mensal, anual, percentual e ponto de equilíbrio.">
+  <meta name="description" content="Descubra quanto precisa receber como PJ para compensar um salário CLT considerando benefícios, direitos e impostos.">
   <link rel="canonical" href="https://quantolab.com.br/comparador-profissional">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<!-- SEO:START -->
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-<meta name="theme-color" content="#D9FF66">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="QuantoLab">
-<meta property="og:title" content="Calculadora CLT x PJ 2026 | QuantoLab">
-<meta property="og:description" content="Compare uma proposta CLT e uma proposta PJ com diferença mensal, anual, percentual e ponto de equilíbrio.">
-<meta property="og:url" content="https://quantolab.com.br/comparador-profissional">
-<meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"QuantoLab","item":"https://quantolab.com.br/"},{"@type":"ListItem","position":2,"name":"CLT x PJ","item":"https://quantolab.com.br/comparador-profissional"}]}</script>
-<!-- SEO:END -->
-<script src="/theme.js"></script>
-<link rel="stylesheet" href="/style.css">
-<link rel="stylesheet" href="/calculator-simple.css">
-<link rel="stylesheet" href="/theme.css">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  <meta name="theme-color" content="#D9FF66">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="QuantoLab">
+  <meta property="og:title" content="Calculadora CLT x PJ 2026 | QuantoLab">
+  <meta property="og:description" content="Calcule o valor PJ equivalente ao seu pacote CLT.">
+  <meta property="og:url" content="https://quantolab.com.br/comparador-profissional">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"QuantoLab","item":"https://quantolab.com.br/"},{"@type":"ListItem","position":2,"name":"CLT x PJ","item":"https://quantolab.com.br/comparador-profissional"}]}</script>
+  <script src="/theme.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/calculator-simple.css">
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body class="calculator-simple">
-<header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/#ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
+<header class="header"><div class="shell nav"><a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a><nav class="navlinks" aria-label="Navegação principal"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a></nav></div></header>
 <main>
-<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>CLT ou PJ: qual compensa mais?</h1><p class="lead">Compare as duas propostas e veja a diferença no mês, no ano e o valor PJ necessário para empatar.</p></div></section>
-<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no seu navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
+<section class="calc-hero"><div class="shell"><div class="breadcrumbs"><a href="/">QuantoLab</a> / CLT x PJ</div><h1>Quanto você precisa receber como PJ?</h1><p class="lead">Informe seu pacote CLT e a alíquota do Simples Nacional. O cálculo transforma salário, benefícios e direitos em uma referência mensal equivalente como PJ.</p></div></section>
+<div class="shell"><div class="trust-row trust-row--compact" aria-label="Compromissos do QuantoLab"><span>Sem cadastro</span><span>Cálculo no navegador</span><a href="/metodologia">Como calculamos →</a></div></div>
 <div class="shell">
-<aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="comparador-profissional-top" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
+<aside class="ad ad--leaderboard" aria-label="Publicidade" data-ad-slot="comparador-profissional-top"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
 <section class="calc-grid">
-<div class="panel form" id="clt-pj-form">
-<p class="simple-start"><strong>As duas propostas são o essencial.</strong> Benefícios, impostos e custos extras só entram se você escolher informar.</p>
-<h3 class="simple-section">Proposta CLT</h3>
-<div class="field"><label for="cltSalario">Salário bruto por mês</label><span class="field-help">Use o salário antes dos descontos de INSS e Imposto de Renda.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltSalario" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
-<div class="field"><label for="cltBeneficiosModo">Benefícios por mês</label><span class="field-help">Ex.: VR, VA, auxílio ou outro benefício que realmente tenha valor financeiro para você.</span><div class="optional-choice"><div class="input-wrap"><select id="cltBeneficiosModo" data-optional-target="cltBeneficios"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="cltBeneficios" hidden><span class="prefix">R$</span><input id="cltBeneficios" type="number" min="0" step="50" value="0" inputmode="decimal" aria-label="Benefícios mensais da proposta CLT" disabled></div></div></div>
-<h3 class="simple-section">Proposta PJ</h3>
-<div class="field"><label for="pjMensal">Valor bruto por mês como PJ</label><span class="field-help">Use o valor mensal da proposta antes de impostos e custos do PJ.</span><div class="input-wrap"><span class="prefix">R$</span><input id="pjMensal" type="number" min="0" step="100" value="10000" inputmode="decimal"></div></div>
-<div class="scenario-quick" role="group" aria-label="Testar outros valores mensais da proposta PJ"><span>Testar rápido:</span><button type="button" data-pj-value="8000" aria-pressed="false">R$ 8 mil</button><button type="button" data-pj-value="9000" aria-pressed="false">R$ 9 mil</button><button type="button" data-pj-value="10000" aria-pressed="true">R$ 10 mil</button><button type="button" data-pj-value="12000" aria-pressed="false">R$ 12 mil</button></div>
-<div class="field"><label for="pjImpostosModo">Impostos e taxas do PJ</label><span class="field-help">Use a média percentual que sai do faturamento. Se não souber, a comparação será feita sem descontar este item.</span><div class="optional-choice"><div class="input-wrap"><select id="pjImpostosModo" data-optional-target="pjImpostos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um percentual</option></select></div><div class="input-wrap optional-value" data-optional-value="pjImpostos" hidden><input id="pjImpostos" type="number" min="0" max="95" step="0.1" value="0" inputmode="decimal" aria-label="Percentual de impostos e taxas do PJ" disabled><span class="suffix">%</span></div></div></div>
-<details class="simple-details">
-<summary>Ajustes opcionais</summary>
-<div class="simple-details-body">
-<h3 class="form-section-title">CLT</h3>
-<div class="grid2">
-<div class="field"><label for="dependentes">Dependentes no Imposto de Renda</label><span class="field-help">Informe quantas pessoas entram como dependentes no seu Imposto de Renda. Se não tiver, deixe 0.</span><div class="input-wrap"><input id="dependentes" type="number" min="0" max="30" step="1" value="0" inputmode="numeric"></div></div>
-<div class="field"><label for="cltDescontosModo">Outros descontos por mês</label><span class="field-help">Ex.: coparticipação, pensão ou outro desconto recorrente além de INSS e IR.</span><div class="optional-choice"><div class="input-wrap"><select id="cltDescontosModo" data-optional-target="cltDescontos"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="cltDescontos" hidden><span class="prefix">R$</span><input id="cltDescontos" type="number" min="0" step="10" value="0" inputmode="decimal" aria-label="Outros descontos mensais da proposta CLT" disabled></div></div></div>
-</div>
-<div class="field"><label for="cltBonusModo">Bônus ou PLR líquido no ano</label><span class="field-help">Informe apenas se houver um valor anual que você espera realmente receber.</span><div class="optional-choice"><div class="input-wrap"><select id="cltBonusModo" data-optional-target="cltBonus"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="cltBonus" hidden><span class="prefix">R$</span><input id="cltBonus" type="number" min="0" step="100" value="0" inputmode="decimal" aria-label="Bônus ou PLR líquido anual" disabled></div></div></div>
-<h3 class="form-section-title">PJ</h3>
-<div class="field"><label for="pjMeses">Quantos meses recebe no ano?</label><span class="field-help">Use 12 se o contrato pagar todos os meses do ano. Reduza apenas se houver meses sem faturamento.</span><div class="input-wrap"><input id="pjMeses" type="number" min="1" max="12" step="1" value="12" inputmode="numeric"><span class="suffix">meses</span></div></div>
-<div class="grid2">
-<div class="field"><label for="pjContadorModo">Contador por mês</label><span class="field-help">Informe o custo mensal do contador ou serviço contábil, se houver.</span><div class="optional-choice"><div class="input-wrap"><select id="pjContadorModo" data-optional-target="pjContador"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="pjContador" hidden><span class="prefix">R$</span><input id="pjContador" type="number" min="0" step="10" value="0" inputmode="decimal" aria-label="Custo mensal de contador do PJ" disabled></div></div></div>
-<div class="field"><label for="pjOutrosModo">Outros gastos do PJ por mês</label><span class="field-help">Ex.: plano de saúde, ferramentas, taxas bancárias ou outros custos que seriam seus.</span><div class="optional-choice"><div class="input-wrap"><select id="pjOutrosModo" data-optional-target="pjOutros"><option value="ignorar">Não se aplica / não tenho essa informação</option><option value="informar">Quero informar um valor</option></select></div><div class="input-wrap optional-value" data-optional-value="pjOutros" hidden><span class="prefix">R$</span><input id="pjOutros" type="number" min="0" step="50" value="0" inputmode="decimal" aria-label="Outros gastos mensais do PJ" disabled></div></div></div>
+<form class="panel form" id="clt-pj-form" novalidate>
+<p class="simple-start"><strong>Use os valores mensais.</strong> Se não recebe algum benefício, deixe o campo em zero.</p>
+<div class="field"><label for="cltSalario">Salário bruto CLT</label><span class="field-help">Valor registrado antes dos descontos obrigatórios.</span><div class="input-wrap"><span class="prefix">R$</span><input id="cltSalario" type="number" min="0" step="100" value="7000" inputmode="decimal"></div></div>
+<div class="field"><label for="valeTransporte">Vale transporte, valor mensal</label><span class="field-help">Informe o valor mensal disponibilizado para transporte.</span><div class="input-wrap"><span class="prefix">R$</span><input id="valeTransporte" type="number" min="0" step="50" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="valeRefeicao">Vale refeição, valor mensal</label><span class="field-help">Informe o benefício mensal de alimentação ou refeição.</span><div class="input-wrap"><span class="prefix">R$</span><input id="valeRefeicao" type="number" min="0" step="50" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="outrosBeneficios">Outros benefícios</label><span class="field-help">Some plano de saúde, ajuda de custo, seguros e outros benefícios com valor financeiro.</span><div class="input-wrap"><span class="prefix">R$</span><input id="outrosBeneficios" type="number" min="0" step="50" value="0" inputmode="decimal"></div></div>
+<div class="field"><label for="simples">Alíquota do Simples Nacional</label><span class="field-help">Informe a alíquota efetiva estimada que incide sobre o faturamento PJ.</span><div class="input-wrap"><input id="simples" type="number" min="0" max="95" step="0.1" value="6" inputmode="decimal"><span class="suffix">% ao mês</span></div></div>
+<div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="submit">Calcular</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
+</form>
+<aside class="panel result" id="clt-pj-result" aria-live="polite" hidden tabindex="-1">
+<div class="result-top"><div class="result-kicker">Valor PJ mensal equivalente</div><div id="pjEquivalente" class="result-value">R$ 0</div><p id="status" class="result-sub">Preencha os dados para calcular.</p></div>
+<div class="result-body">
+<div class="calculator-model">
+<button class="calculator-model__redo" id="refazer" type="button">Fazer outro cálculo</button>
+<section class="calculator-model__section"><h3>Meu cálculo</h3><div class="calculator-model__summary" id="meuCalculo"></div></section>
+<section class="calculator-model__section"><h3>Resultado</h3><div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Salário CLT</th><th>Valor mensal equivalente</th></tr></thead><tbody id="tabelaClt"></tbody></table></div></section>
+<section class="calculator-model__section"><div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Salário PJ</th><th>Valor</th></tr></thead><tbody id="tabelaPj"></tbody></table></div></section>
+<div class="result-share"><button class="btn btn-secondary" id="compartilhar" type="button">Compartilhar resultado</button><button class="btn btn-secondary" id="copiar" type="button">Copiar link</button><p class="result-share__status" id="shareStatus" aria-live="polite"></p></div>
 </div>
 </div>
-</details>
-<div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="button">Comparar CLT e PJ →</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
-</div>
-<aside class="panel result" aria-live="polite"><div class="result-top"><div class="result-kicker">Melhor cenário financeiro nesta estimativa</div><div id="winner" class="result-value">—</div><p id="status" class="result-sub">Preencha os dados para comparar.</p></div><div class="result-body result-direct"><div class="highlight"><span>Diferença no ano</span><strong id="diferenca">R$ 0</strong></div><details class="result-details"><summary>Como chegamos nesta comparação</summary><div class="result-details-body"><div class="row"><span>Diferença média por mês</span><strong id="difMensal">R$ 0</strong></div><div class="row"><span>Diferença percentual</span><strong id="difPercentual">0%</strong></div><div class="row"><span>CLT disponível no ano</span><strong id="cltAno">R$ 0</strong></div><div class="row"><span>PJ disponível no ano</span><strong id="pjAno">R$ 0</strong></div><div class="row"><span>CLT líquido em um mês normal</span><strong id="cltMes">R$ 0</strong></div><div class="row"><span>PJ médio por mês no ano</span><strong id="pjMes">R$ 0</strong></div><div class="row"><span>FGTS CLT estimado no ano</span><strong id="fgtsAno">R$ 0</strong></div><div class="row"><span>PJ mensal para empatar com o CLT</span><strong id="pjEquivalente">R$ 0</strong></div></div></details></div></aside>
+</aside>
 </section>
-<aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="comparador-profissional-after-tool" data-ad-priority="high"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
-<article class="article"><h2>Compare o ano inteiro, não só o salário do mês</h2><p>O CLT considera INSS, Imposto de Renda, 13º, férias e benefícios informados. No PJ, impostos e custos só são descontados quando você decidir informar esses valores.</p><div class="notice"><strong>Importante:</strong> o resultado é uma comparação financeira. Benefícios não financeiros, estabilidade, previdência e características do contrato também importam.</div></article>
+<aside class="ad ad--content" aria-label="Publicidade" data-ad-slot="comparador-profissional-after-tool"><span class="ad-label">Publicidade</span><div class="ad-box"><span class="ad-placeholder">Espaço publicitário</span></div></aside>
+<article class="article"><h2>Compare o pacote, não apenas o salário</h2><p>A referência mensal CLT considera salário líquido, benefícios informados, 13º, férias e FGTS. Depois, o cálculo encontra o faturamento PJ necessário para manter valor equivalente após a alíquota informada.</p><div class="notice"><strong>Importante:</strong> esta é uma comparação financeira. Contabilidade, pró labore, previdência, riscos contratuais e benefícios não financeiros podem mudar a decisão.</div></article>
+<div class="source-note" role="note"><span>Referências trabalhistas e tributárias de 2026</span><a href="/metodologia">Fontes e metodologia →</a></div>
 </div>
 </main>
-<footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/">Início</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
+<footer class="footer"><div class="shell footer-grid"><div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div><div class="footer-links"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a></div></div></footer>
+<script src="/tools-core.js"></script>
 <script src="/clt-pj.js"></script>
-<script src="/optional-fields.js"></script>
 </body>
 </html>
