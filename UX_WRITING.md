@@ -1,4 +1,4 @@
-# QuantoLab — Regras de linguagem
+# QuantoLab: Regras de linguagem
 
 ## Regra principal
 Todo texto da interface deve ser entendido por uma pessoa sem conhecimento técnico, financeiro, contábil ou jurídico.
@@ -6,6 +6,8 @@ Todo texto da interface deve ser entendido por uma pessoa sem conhecimento técn
 ## Como escrever
 - Usar palavras do dia a dia.
 - Preferir frases curtas e diretas.
+- Não usar travessões em textos da interface, títulos, descrições, mensagens, metadados ou conteúdos editoriais.
+- Quando uma frase normalmente usaria travessão, preferir ponto, vírgula, dois-pontos, ponto e vírgula ou reescrever a frase.
 - Explicar o que o usuário precisa informar, não o nome técnico do conceito.
 - Quando um termo técnico for realmente necessário, mostrar primeiro uma expressão simples e explicar o termo em seguida.
 - Evitar siglas sem contexto.
@@ -27,3 +29,5 @@ Todo texto da interface deve ser entendido por uma pessoa sem conhecimento técn
 Antes de publicar uma página, perguntar: uma pessoa que nunca viu esse assunto consegue entender o campo sem pesquisar o significado?
 
 Se a resposta for não, o texto deve ser simplificado antes da publicação.
+
+Também validar que nenhum texto visível contém os caracteres de travessão longo ou médio.
