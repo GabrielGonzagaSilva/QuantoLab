@@ -11,6 +11,7 @@
   let button=null;
   let icon=null;
   let label=null;
+  let typographyObserver=null;
 
   const globalStyles=document.querySelector('link[href="/platform.css"]');
   if(!globalStyles){
@@ -116,6 +117,65 @@
 
   function make(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
 
+  function cleanVisibleText(value){
+    if(!value||!/[—–]/.test(value))return value;
+    if(/^[\s—–]+$/.test(value))return value.replace(/[—–]/g,'…');
+    return value
+      .replace(/\s*[—–]\s+(e|ou)\s+/gi,' $1 ')
+      .replace(/\s*[—–]\s*/g,': ');
+  }
+
+  function cleanMetadataText(value){
+    if(!value||!/[—–]/.test(value))return value;
+    return value.replace(/\s*[—–]\s*/g,' | ');
+  }
+
+  function sanitizeElementAttributes(element){
+    if(!(element instanceof Element))return;
+    for(const attr of ['title','aria-label','placeholder','alt']){
+      const value=element.getAttribute(attr);
+      const cleaned=cleanVisibleText(value);
+      if(value&&cleaned!==value)element.setAttribute(attr,cleaned);
+    }
+  }
+
+  function sanitizeTextNode(node){
+    if(node.nodeType!==Node.TEXT_NODE)return;
+    const parent=node.parentElement;
+    if(!parent||parent.closest('script,style,code,pre,svg'))return;
+    const cleaned=cleanVisibleText(node.nodeValue);
+    if(cleaned!==node.nodeValue)node.nodeValue=cleaned;
+  }
+
+  function sanitizeSubtree(rootNode){
+    if(rootNode.nodeType===Node.TEXT_NODE){sanitizeTextNode(rootNode);return;}
+    if(!(rootNode instanceof Element)&&rootNode!==document.body)return;
+    if(rootNode instanceof Element)sanitizeElementAttributes(rootNode);
+    const walker=document.createTreeWalker(rootNode,NodeFilter.SHOW_TEXT);
+    let node;while((node=walker.nextNode()))sanitizeTextNode(node);
+    if(rootNode.querySelectorAll)for(const element of rootNode.querySelectorAll('[title],[aria-label],[placeholder],[alt]'))sanitizeElementAttributes(element);
+  }
+
+  function normalizeSiteTypography(){
+    document.title=cleanMetadataText(document.title);
+    for(const selector of ['meta[property="og:title"]','meta[property="og:description"]','meta[name="description"]']){
+      for(const meta of document.querySelectorAll(selector)){
+        const value=meta.getAttribute('content');
+        const cleaned=cleanMetadataText(value);
+        if(value&&cleaned!==value)meta.setAttribute('content',cleaned);
+      }
+    }
+    sanitizeSubtree(document.body);
+    if(typographyObserver)typographyObserver.disconnect();
+    typographyObserver=new MutationObserver(records=>{
+      for(const record of records){
+        if(record.type==='characterData')sanitizeTextNode(record.target);
+        for(const node of record.addedNodes)sanitizeSubtree(node);
+      }
+    });
+    typographyObserver.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+
   function mountTermsConsent(){
     const path=currentProductPath();
     if(path==='/termos'||path==='/politica-de-privacidade'||storageGet(TERMS_KEY)==='accepted')return;
@@ -161,7 +221,7 @@
     }
   };
 
-  function mountUI(){mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
+  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
