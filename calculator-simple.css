@@ -48,8 +48,6 @@
 .scenario-quick>span{margin-right:2px;font-weight:650}
 .scenario-quick button{min-height:36px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);font-size:11.5px;font-weight:680;cursor:pointer}
 .scenario-quick button[aria-pressed="true"]{border-color:#667e20;background:rgba(217,255,102,.28);color:var(--text)}
-
-/* Fluxo de cálculo inspirado em padrões consolidados de calculadoras financeiras */
 .calculator-simple [data-tool-result][hidden]{display:none!important}
 .calculator-model{display:grid;gap:22px;margin-top:4px}
 .calculator-model__redo{justify-self:start;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--accent);font:inherit;font-size:12px;font-weight:750;line-height:1.4;cursor:pointer}
@@ -74,10 +72,9 @@
 .calculator-chart svg{display:block;width:100%;height:auto;min-height:180px}
 .calculator-chart__legend{display:flex;justify-content:space-between;gap:16px;margin-top:10px;color:#b9b9bf;font-size:11px}
 .calculator-chart__legend strong{color:#fff}
-.input-wrap--check{justify-content:flex-start;min-height:48px;padding-inline:14px}
-.input-wrap--check input{width:22px;height:22px;margin:0;accent-color:#667e20}
+.input-wrap--check{justify-content:flex-start;min-height:52px;padding-inline:8px}
+.input-wrap--check input{width:44px;height:44px;margin:0;accent-color:#667e20;cursor:pointer}
 .model-active .result-details{display:none}
-
 @media (hover:hover){.decision-card:hover{transform:translateY(-2px);border-color:var(--border-strong);box-shadow:var(--shadow-sm)}.calculator-model__redo:hover{color:#fff}}
 @media (max-width:760px){
   .calculator-simple .trust-row--compact{display:none}
