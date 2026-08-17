@@ -77,7 +77,11 @@ Principais tokens:
 - `.highlight` apresenta a segunda informação mais útil.
 - `.result-details` aplica progressive disclosure para composição e premissas.
 
-Regra: o usuário nunca deve depender de abrir detalhes para descobrir a resposta principal.
+Regra permanente: o preview principal de resultado deve estar visível desde o carregamento da calculadora, antes de qualquer cálculo. O estado inicial usa mensagem neutra e ocupa a mesma área que receberá a resposta. Tabelas, composição detalhada, gráfico e ações de compartilhamento podem permanecer ocultos até existir um cálculo válido.
+
+No mobile, formulário e preview permanecem no fluxo da página ao mesmo tempo. Calcular pode deslocar o foco ou a rolagem para o resultado, mas não deve esconder o formulário nem depender de uma troca de tela para revelar o preview.
+
+O usuário nunca deve depender de abrir detalhes para descobrir a resposta principal.
 
 ### Cards
 
