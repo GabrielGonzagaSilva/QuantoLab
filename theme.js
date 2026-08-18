@@ -116,8 +116,9 @@
   }
 
   function mountAdvertising(){
+    if(!/(^|\.)quantolab\.com\.br$/i.test(window.location.hostname))return;
     const mount=()=>{
-      if(document.getElementById('quantolab-adsterra-native-script'))return;
+      if(document.querySelector('script[data-adsterra-loader]'))return;
       const slots=[...document.querySelectorAll('[data-ad-slot]')].filter(slot=>slot.dataset.adPriority!=='low');
       if(!slots.length)return;
       const slot=slots.find(item=>/after(?:-tool|-tools)?$/.test(item.dataset.adSlot||''))||slots.find(item=>item.classList.contains('ad--content'))||slots.find(item=>item.dataset.adPriority==='high')||slots[0];
@@ -128,7 +129,7 @@
       }
       slot.dataset.adProvider='adsterra';slot.dataset.adFormat='native-banner';
       const container=document.createElement('div');container.id='container-4df7857eeb5d00d170c72cf4a5eb2aec';box.replaceChildren(container);
-      const script=document.createElement('script');script.id='quantolab-adsterra-native-script';script.async=true;script.setAttribute('data-cfasync','false');script.src='https://pl30913530.effectivecpmnetwork.com/4df7857eeb5d00d170c72cf4a5eb2aec/invoke.js';
+      const script=document.createElement('script');script.dataset.adsterraLoader='native-banner';script.async=true;script.setAttribute('data-cfasync','false');script.src='https://pl30913530.effectivecpmnetwork.com/4df7857eeb5d00d170c72cf4a5eb2aec/invoke.js';
       script.addEventListener('load',()=>window.QuantoLabAnalytics?.track?.('ad_script_loaded',{provider:'adsterra',format:'native_banner'}),{once:true});
       script.addEventListener('error',()=>{wrapper?.remove();},{once:true});
       document.head.appendChild(script);
