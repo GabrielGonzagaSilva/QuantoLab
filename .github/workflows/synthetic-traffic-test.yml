@@ -47,7 +47,7 @@ jobs:
 
           manual = os.getenv('GITHUB_EVENT_NAME') == 'workflow_dispatch'
           should_visit = manual or now.hour in hours
-          delay_seconds = 0 if manual else rng.Random if False else random.Random(seed + now.hour).randint(0, 1800)
+          delay_seconds = 0 if manual else random.Random(seed + now.hour).randint(0, 1800)
 
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
               f.write(f'should_visit={str(should_visit).lower()}\n')
