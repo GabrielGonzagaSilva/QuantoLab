@@ -11,8 +11,9 @@ A camada `window.QuantoLabAnalytics` registra intenção de medição sem instal
 - `result_shared`: compartilhamento nativo ou cópia de link.
 - `profile_saved`: referências opcionais salvas localmente.
 - `profile_cleared`: referências locais removidas.
+- `ad_script_loaded`: confirmação técnica de que o script de publicidade foi carregado, sem valores de calculadora.
 
 ## Regras
 - não enviar salários, valores de projetos ou conteúdo dos campos como propriedades de analytics;
-- não ativar provedor externo sem revisar privacidade, CSP, consentimento aplicável e política de retenção;
+- não ativar provedor externo de analytics sem revisar privacidade, CSP, consentimento aplicável e política de retenção;
 - medir o funil `visita → uso → cálculo → próxima ferramenta → retorno` sem transformar dados financeiros digitados em identificadores.
