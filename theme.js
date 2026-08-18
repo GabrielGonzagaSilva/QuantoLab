@@ -128,11 +128,12 @@
         wrapper=document.createElement('div');wrapper.className='ads-ready';slot.before(wrapper);wrapper.appendChild(slot);
       }
       slot.dataset.adProvider='adsterra';slot.dataset.adFormat='native-banner';
-      const container=document.createElement('div');container.id='container-4df7857eeb5d00d170c72cf4a5eb2aec';box.replaceChildren(container);
+      box.style.display='block';box.style.overflow='visible';box.style.border='0';box.style.background='transparent';box.style.color='inherit';box.style.textAlign='initial';box.style.minHeight='0';
       const script=document.createElement('script');script.dataset.adsterraLoader='native-banner';script.async=true;script.setAttribute('data-cfasync','false');script.src='https://pl30913530.effectivecpmnetwork.com/4df7857eeb5d00d170c72cf4a5eb2aec/invoke.js';
+      const container=document.createElement('div');container.id='container-4df7857eeb5d00d170c72cf4a5eb2aec';container.style.width='100%';
       script.addEventListener('load',()=>window.QuantoLabAnalytics?.track?.('ad_script_loaded',{provider:'adsterra',format:'native_banner'}),{once:true});
       script.addEventListener('error',()=>{wrapper?.remove();},{once:true});
-      document.head.appendChild(script);
+      box.replaceChildren(script,container);
     };
     if(storageGet(TERMS_KEY)==='accepted')mount();
     else window.addEventListener('quantolab:terms-accepted',mount,{once:true});
