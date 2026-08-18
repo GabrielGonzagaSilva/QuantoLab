@@ -48,7 +48,13 @@
 .scenario-quick>span{margin-right:2px;font-weight:650}
 .scenario-quick button{min-height:36px;padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);font-size:11.5px;font-weight:680;cursor:pointer}
 .scenario-quick button[aria-pressed="true"]{border-color:#667e20;background:rgba(217,255,102,.28);color:var(--text)}
-.calculator-simple [data-tool-result][hidden]{display:none!important}
+.calculator-simple .panel.result[hidden]{display:block!important}
+.calculator-simple .panel.result[hidden] .result-value{min-height:1.15em;font-size:0}
+.calculator-simple .panel.result[hidden] .result-value::after{content:"Aguardando cálculo";display:block;font-size:clamp(28px,4vw,44px);line-height:1.06}
+.calculator-simple .panel.result[hidden] .result-sub{font-size:0}
+.calculator-simple .panel.result[hidden] .result-sub::after{content:"Preencha os dados e toque em Calcular para visualizar o resultado.";display:block;font-size:13px;line-height:1.5}
+.calculator-simple .panel.result[hidden] .result-body>*{display:none!important}
+.calculator-simple .panel.result[hidden] .result-body::before{content:"O detalhamento do cálculo aparecerá aqui.";display:block;padding:16px;border:1px solid rgba(255,255,255,.10);border-radius:14px;color:#b9b9bf;font-size:12.5px;line-height:1.5}
 .calculator-model{display:grid;gap:22px;margin-top:4px}
 .calculator-model__redo{justify-self:start;padding:0;border:0;border-bottom:1px solid currentColor;background:transparent;color:var(--accent);font:inherit;font-size:12px;font-weight:750;line-height:1.4;cursor:pointer}
 .calculator-model__section{display:grid;gap:12px;padding-top:20px;border-top:1px solid rgba(255,255,255,.10)}
@@ -99,6 +105,8 @@
   .calculator-tabs button{flex:1}
   .calculator-chart__legend{flex-direction:column;gap:4px}
   .calculator-simple input,.calculator-simple select{font-size:16px}
+  .calculator-simple .panel.result[hidden]{margin-top:16px}
+  .calculator-simple .panel.result[hidden] .result-top{padding-bottom:22px}
 }
 @media(max-width:430px){
   .simple-actions{grid-template-columns:1fr!important}
