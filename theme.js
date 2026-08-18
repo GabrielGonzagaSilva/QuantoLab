@@ -115,30 +115,6 @@
     const grid=document.createElement('div');grid.className='card-grid decision-grid';for(const item of config.related)grid.appendChild(relatedCard(item));section.append(head,grid);article.after(source,section);
   }
 
-  function mountAdvertising(){
-    if(!/(^|\.)quantolab\.com\.br$/i.test(window.location.hostname))return;
-    const mount=()=>{
-      if(document.querySelector('script[data-adsterra-loader]'))return;
-      const slots=[...document.querySelectorAll('[data-ad-slot]')].filter(slot=>slot.dataset.adPriority!=='low');
-      if(!slots.length)return;
-      const slot=slots.find(item=>/after(?:-tool|-tools)?$/.test(item.dataset.adSlot||''))||slots.find(item=>item.classList.contains('ad--content'))||slots.find(item=>item.dataset.adPriority==='high')||slots[0];
-      const box=slot.querySelector('.ad-box');if(!box)return;
-      let wrapper=slot.parentElement;
-      if(!wrapper?.classList.contains('ads-ready')){
-        wrapper=document.createElement('div');wrapper.className='ads-ready';slot.before(wrapper);wrapper.appendChild(slot);
-      }
-      slot.dataset.adProvider='adsterra';slot.dataset.adFormat='native-banner';
-      box.style.display='block';box.style.overflow='visible';box.style.border='0';box.style.background='transparent';box.style.color='inherit';box.style.textAlign='initial';box.style.minHeight='0';
-      const script=document.createElement('script');script.dataset.adsterraLoader='native-banner';script.async=true;script.setAttribute('data-cfasync','false');script.src='https://pl30913530.effectivecpmnetwork.com/4df7857eeb5d00d170c72cf4a5eb2aec/invoke.js';
-      const container=document.createElement('div');container.id='container-4df7857eeb5d00d170c72cf4a5eb2aec';container.style.width='100%';
-      script.addEventListener('load',()=>window.QuantoLabAnalytics?.track?.('ad_script_loaded',{provider:'adsterra',format:'native_banner'}),{once:true});
-      script.addEventListener('error',()=>{wrapper?.remove();},{once:true});
-      box.replaceChildren(script,container);
-    };
-    if(storageGet(TERMS_KEY)==='accepted')mount();
-    else window.addEventListener('quantolab:terms-accepted',mount,{once:true});
-  }
-
   function make(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
 
   function cleanVisibleText(value){
@@ -246,7 +222,7 @@
     }
   };
 
-  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();mountAdvertising();window.QuantoLabAnalytics?.track?.('page_view');}
+  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
