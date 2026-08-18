@@ -1,14 +1,145 @@
-name: QuantoLab Synthetic Monitoring (PAUSED)
+name: QuantoLab Synthetic Monitoring — Light
 
 on:
+  schedule:
+    - cron: '7 * * * *'
+      timezone: 'America/Sao_Paulo'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: write
+
+concurrency:
+  group: quantolab-synthetic-monitoring
+  cancel-in-progress: false
 
 jobs:
-  paused:
+  synthetic-monitoring:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      BR_PROXIES_B64: ${{ secrets.BR_PROXIES_B64 }}
+      BR_PROXIES_FILE: /tmp/quantolab-br-proxies.csv
+      TRAFFIC_STATE_DIR: .traffic_state
+      TRAFFIC_LOG_DIR: traffic-logs
+      TZ: America/Sao_Paulo
+
     steps:
-      - name: Monitoring paused
-        run: echo "QuantoLab synthetic monitoring is paused. No synthetic traffic will be generated."
+      - name: Decide this hour's visit
+        id: schedule
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          import os
+          import random
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          now = datetime.now(ZoneInfo('America/Sao_Paulo'))
+          seed = int.from_bytes(
+              hashlib.sha256(f'quantolab-light:{now.date().isoformat()}'.encode()).digest()[:8],
+              'big',
+          )
+          rng = random.Random(seed)
+          hours = sorted(rng.sample(range(24), 5))
+
+          manual = os.getenv('GITHUB_EVENT_NAME') == 'workflow_dispatch'
+          should_visit = manual or now.hour in hours
+          delay_seconds = 0 if manual else random.Random(seed + now.hour).randint(0, 1800)
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'should_visit={str(should_visit).lower()}\n')
+              f.write(f'delay_seconds={delay_seconds}\n')
+              f.write('selected_hours=' + ','.join(f'{h:02d}' for h in hours) + '\n')
+
+          print('Daily selected hours:', ', '.join(f'{h:02d}h' for h in hours))
+          print('Current local hour:', f'{now.hour:02d}h')
+          print('Visit this run:', should_visit)
+          if should_visit and not manual:
+              print('Additional random delay:', delay_seconds, 'seconds')
+          PY
+
+      - name: Validate Brazilian proxy pool
+        if: steps.schedule.outputs.should_visit == 'true'
+        id: proxy-secret
+        shell: bash
+        run: |
+          if [ -z "$BR_PROXIES_B64" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::BR_PROXIES_B64 is not configured. No synthetic visit will be generated."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: tools/traffic-requirements.txt
+
+      - name: Restore synthetic traffic state
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .traffic_state
+          key: quantolab-traffic-state-${{ github.run_id }}
+          restore-keys: |
+            quantolab-traffic-state-
+
+      - name: Decode Brazilian proxy pool
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        shell: bash
+        run: |
+          umask 077
+          printf '%s' "$BR_PROXIES_B64" | base64 --decode > "$BR_PROXIES_FILE"
+          python - <<'PY'
+          import csv
+          import os
+
+          path = os.environ['BR_PROXIES_FILE']
+          with open(path, encoding='utf-8-sig', newline='') as f:
+              rows = list(csv.DictReader(f))
+          if not rows or not {'id', 'server'}.issubset(rows[0].keys()):
+              raise SystemExit('Invalid BR proxy CSV: expected id,server columns')
+          print(f'Brazil proxy endpoints loaded: {len(rows)}')
+          PY
+
+      - name: Install Playwright
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/traffic-requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Randomize visit time inside selected hour
+        if: github.event_name != 'workflow_dispatch' && steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        shell: bash
+        run: sleep "${{ steps.schedule.outputs.delay_seconds }}"
+
+      - name: Execute one synthetic visit
+        if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        run: python tools/quantolab_ci_traffic.py --force-visits 1 --window-seconds 900
+
+      - name: Save synthetic traffic state
+        if: always() && steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .traffic_state
+          key: quantolab-traffic-state-${{ github.run_id }}
+
+      - name: Upload run log
+        if: always() && steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: quantolab-traffic-${{ github.run_id }}
+          path: traffic-logs/
+          if-no-files-found: ignore
+          retention-days: 14
