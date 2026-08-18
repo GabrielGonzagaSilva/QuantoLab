@@ -8,10 +8,11 @@
 @media (hover:hover){.theme-toggle:hover{transform:translateY(-1px);border-color:var(--border-strong)}}
 
 /* Institutional footer */
-.footer-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(29,29,31,.07);color:#85858b;font-size:10.5px;line-height:1.55}
-.footer-meta small{display:block;font-size:inherit;line-height:inherit;overflow-wrap:break-word}
-.footer-meta__copyright{flex:0 1 auto;color:#707076;font-weight:650;white-space:nowrap}
-.footer-meta__disclaimer{max-width:620px;text-align:right}
+.footer-grid{flex-wrap:wrap}
+.footer-meta{flex:0 0 100%;width:100%;display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(29,29,31,.07);color:#85858b;font-size:10.5px;line-height:1.55}
+.footer-meta small{display:block;min-width:0;font-size:inherit;line-height:inherit;overflow-wrap:break-word}
+.footer-meta__copyright{flex:0 0 auto;color:#707076;font-weight:650;white-space:nowrap}
+.footer-meta__disclaimer{flex:0 1 620px;max-width:620px;text-align:right}
 
 /* Dark palette */
 :root[data-resolved-theme="dark"]{
