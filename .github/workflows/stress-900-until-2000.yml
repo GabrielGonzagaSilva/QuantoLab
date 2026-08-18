@@ -1,14 +1,22 @@
 name: QuantoLab One-Time Monitoring Stress Test (PAUSED)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/stress-900-until-2000.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: quantolab-one-time-stress-900
+  cancel-in-progress: true
 
 jobs:
   paused:
     runs-on: ubuntu-latest
     steps:
       - name: Stress test paused
-        run: echo "QuantoLab 900-click stress test is paused. No stress traffic will be generated."
+        run: echo "QuantoLab 900-click stress test is paused. Any previous run in this concurrency group is cancelled."
