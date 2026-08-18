@@ -14,6 +14,12 @@ async function open(page, route) {
   await acceptTermsIfNeeded(page);
 }
 
+async function expectResultPreview(result) {
+  await expect(result).toBeVisible();
+  const preview = await result.locator('.result-value').evaluate(el => getComputedStyle(el, '::after').content);
+  expect(preview).toContain('Aguardando cálculo');
+}
+
 test.describe('calculator result flow on mobile', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -22,8 +28,7 @@ test.describe('calculator result flow on mobile', () => {
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
     await expect(form).toBeVisible();
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
     await page.locator('#tool-salario').fill('7000');
     await page.locator('#tool-outros').fill('200');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
@@ -43,8 +48,7 @@ test.describe('calculator result flow on mobile', () => {
     const form = page.locator('#valor-hora-form');
     const result = page.locator('.panel.result');
     await expect(form).toBeVisible();
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
     await page.locator('#renda').fill('6000');
     await page.locator('#horasDia').fill('8');
     await page.locator('#diasSemana').fill('5');
@@ -55,15 +59,14 @@ test.describe('calculator result flow on mobile', () => {
     await expect(result.locator('.calculator-table')).toContainText('Valor por hora');
     await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
     await expect(form).toBeVisible();
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
   });
 
   test('juros compostos exposes graph and table result views', async ({ page }) => {
     await open(page, '/juros-compostos.html');
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
-    await expect(result).toBeVisible();
+    await expectResultPreview(result);
     await page.locator('#tool-inicial').fill('10000');
     await page.locator('#tool-aporte').fill('500');
     await page.locator('#tool-taxa').fill('10');
@@ -83,8 +86,7 @@ test.describe('calculator result flow on mobile', () => {
     await open(page, '/comparador-profissional.html');
     const form = page.locator('#clt-pj-form');
     const result = page.locator('#clt-pj-result');
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
     await page.locator('#cltSalario').fill('7000');
     await page.locator('#valeTransporte').fill('0');
     await page.locator('#valeRefeicao').fill('800');
@@ -104,8 +106,7 @@ test.describe('calculator result flow on mobile', () => {
     await open(page, '/simulador.html');
     const form = page.locator('#rescisao-form');
     const result = page.locator('#rescisao-result');
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
     await page.locator('#salario').fill('5000');
     await page.locator('#admissao').fill('2024-01-10');
     await page.locator('#desligamento').fill('2026-08-10');
@@ -130,8 +131,7 @@ test.describe('calculator layout on desktop', () => {
     const form = page.locator('[data-tool-form]');
     const result = page.locator('[data-tool-result]');
     await expect(form).toBeVisible();
-    await expect(result).toBeVisible();
-    await expect(result).toContainText('Aguardando cálculo');
+    await expectResultPreview(result);
     let formBox = await form.boundingBox();
     let resultBox = await result.boundingBox();
     expect(formBox).not.toBeNull();
