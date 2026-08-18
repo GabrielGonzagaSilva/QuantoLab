@@ -1,99 +1,14 @@
-name: QuantoLab One-Time Monitoring Stress Test
+name: QuantoLab One-Time Monitoring Stress Test (PAUSED)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/stress-900-until-2000.yml'
-      - 'tools/quantolab_stress_900.py'
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: quantolab-one-time-stress-900
-  cancel-in-progress: false
-
 jobs:
-  stress-test:
+  paused:
     runs-on: ubuntu-latest
-    timeout-minutes: 175
-    env:
-      TZ: America/Sao_Paulo
-      BR_PROXIES_B64: ${{ secrets.BR_PROXIES_B64 }}
-      BR_PROXIES_FILE: /tmp/quantolab-br-proxies.csv
-      STRESS_LOG_DIR: stress-logs
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Validate test window and proxy pool
-        id: gate
-        shell: bash
-        run: |
-          python - <<'PY'
-          import os
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          now = datetime.now(ZoneInfo('America/Sao_Paulo'))
-          cutoff = now.replace(hour=20, minute=0, second=0, microsecond=0)
-          valid_day = now.date().isoformat() == '2026-08-18'
-          before_cutoff = now < cutoff
-          has_proxy = bool(os.getenv('BR_PROXIES_B64', '').strip())
-          enabled = valid_day and before_cutoff and has_proxy
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
-              f.write(f'enabled={str(enabled).lower()}\n')
-          print('Local time:', now.isoformat(timespec='seconds'))
-          print('Before cutoff:', before_cutoff)
-          print('Brazil proxy secret configured:', has_proxy)
-          if not has_proxy:
-              print('::warning::BR_PROXIES_B64 is missing; stress test cannot provide distinct Brazilian IPs.')
-          if not valid_day or not before_cutoff:
-              print('::warning::The one-time test window is closed; no clicks will be generated.')
-          PY
-
-      - name: Set up Python
-        if: steps.gate.outputs.enabled == 'true'
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
-          cache: 'pip'
-          cache-dependency-path: tools/traffic-requirements.txt
-
-      - name: Decode Brazilian proxy pool
-        if: steps.gate.outputs.enabled == 'true'
-        shell: bash
-        run: |
-          umask 077
-          printf '%s' "$BR_PROXIES_B64" | base64 --decode > "$BR_PROXIES_FILE"
-          python - <<'PY'
-          import csv, os
-          with open(os.environ['BR_PROXIES_FILE'], encoding='utf-8-sig', newline='') as f:
-              rows = list(csv.DictReader(f))
-          usable = [r for r in rows if (r.get('server') or '').strip()]
-          print('Proxy endpoints loaded:', len(usable))
-          if len(usable) < 60:
-              raise SystemExit('At least 60 proxy endpoints are required for 60 distinct sessions.')
-          PY
-
-      - name: Install Playwright
-        if: steps.gate.outputs.enabled == 'true'
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r tools/traffic-requirements.txt
-          python -m playwright install --with-deps chromium
-
-      - name: Run 900 safe internal clicks until 20:00
-        if: steps.gate.outputs.enabled == 'true'
-        run: python tools/quantolab_stress_900.py
-
-      - name: Upload stress-test logs
-        if: always() && steps.gate.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v5
-        with:
-          name: quantolab-stress-900-${{ github.run_id }}
-          path: stress-logs/
-          if-no-files-found: ignore
-          retention-days: 14
+      - name: Stress test paused
+        run: echo "QuantoLab 900-click stress test is paused. No stress traffic will be generated."
