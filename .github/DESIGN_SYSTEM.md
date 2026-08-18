@@ -77,6 +77,8 @@ Principais tokens:
 - `.highlight` apresenta a segunda informação mais útil.
 - `.result-details` aplica progressive disclosure para composição e premissas.
 
+Regra permanente: o preview do painel de resultado deve permanecer visível antes do cálculo, no desktop e no mobile. No estado inicial, deve indicar que está aguardando o cálculo e preservar o espaço do resultado sem exibir tabelas vazias. Após Calcular, o mesmo painel recebe o resultado real. Ao voltar ao formulário ou limpar os campos, o preview continua visível.
+
 Regra: o usuário nunca deve depender de abrir detalhes para descobrir a resposta principal.
 
 ### Cards

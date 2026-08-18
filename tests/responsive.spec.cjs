@@ -254,7 +254,9 @@ test.describe('decision support', () => {
     await page.goto('http://127.0.0.1:4173/simulador.html', { waitUntil: 'networkidle' });
     await acceptTermsIfNeeded(page);
     await expect(page.locator('#rescisao-form')).toBeVisible();
-    await expect(page.locator('#rescisao-result')).toBeHidden();
+    await expect(page.locator('#rescisao-result')).toBeVisible();
+    const preview = await page.locator('#rescisao-result .result-value').evaluate(el => getComputedStyle(el, '::after').content);
+    expect(preview).toContain('Aguardando cálculo');
     await expect(page.locator('#meuCalculo')).toHaveCount(1);
     await expect(page.locator('.source-note')).toContainText('Referências trabalhistas e tributárias de 2026');
   });
