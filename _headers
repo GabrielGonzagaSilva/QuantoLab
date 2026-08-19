@@ -10,6 +10,10 @@
   X-Permitted-Cross-Domain-Policies: none
   X-XSS-Protection: 0
 
+/
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+
 /embed/*
   ! X-Frame-Options
   ! Content-Security-Policy
