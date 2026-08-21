@@ -1,6 +1,9 @@
 # Internal repository files that must never be published as site assets
 .github/
 scripts/
+tools/
+worker/
+tests/
 UX_WRITING.md
 .gitignore
 .assetsignore
