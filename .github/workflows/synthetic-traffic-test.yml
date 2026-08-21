@@ -137,7 +137,7 @@ jobs:
 
       - name: Upload run log
         if: always() && steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: quantolab-traffic-${{ github.run_id }}
           path: traffic-logs/
