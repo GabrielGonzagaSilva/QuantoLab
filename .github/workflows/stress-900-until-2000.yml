@@ -91,7 +91,7 @@ jobs:
 
       - name: Upload stress-test logs
         if: always() && steps.gate.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: quantolab-stress-900-${{ github.run_id }}
           path: stress-logs/
