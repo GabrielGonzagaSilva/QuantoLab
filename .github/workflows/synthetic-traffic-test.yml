@@ -87,7 +87,7 @@ jobs:
 
       - name: Restore synthetic traffic state
         if: steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .traffic_state
           key: quantolab-traffic-state-${{ github.run_id }}
@@ -130,7 +130,7 @@ jobs:
 
       - name: Save synthetic traffic state
         if: always() && steps.schedule.outputs.should_visit == 'true' && steps.proxy-secret.outputs.configured == 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: .traffic_state
           key: quantolab-traffic-state-${{ github.run_id }}
