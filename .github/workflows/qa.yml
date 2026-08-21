@@ -33,7 +33,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in *.js scripts/*.mjs; do
+          for file in *.js worker/*.js scripts/*.mjs; do
             node --check "$file"
           done
           python -m py_compile scripts/generate-platform.py
@@ -43,6 +43,12 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/security-config.mjs
+
+      - name: Run analytics contract QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/analytics-qa.mjs
 
       - name: Run legacy regression QA
         shell: bash
