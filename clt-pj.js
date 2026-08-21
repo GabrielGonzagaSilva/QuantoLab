@@ -9,7 +9,10 @@ const result=$('clt-pj-result');
 const summary=$('meuCalculo');
 const tableClt=$('tabelaClt');
 const tablePj=$('tabelaPj');
+const TOOL='comparador-profissional';
 let last=null;
+
+window.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
 
 function addSummary(label,value){const row=document.createElement('div');row.className='calculator-model__summary-row';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=label;b.textContent=value;row.append(a,b);summary.appendChild(row);}
 function addTableRow(host,label,value){const tr=document.createElement('tr'),th=document.createElement('th'),td=document.createElement('td');th.scope='row';th.textContent=label;td.textContent=value;tr.append(th,td);host.appendChild(tr);}
@@ -22,6 +25,7 @@ function calculate(event){
   const salary=num('cltSalario'),transport=num('valeTransporte'),meal=num('valeRefeicao'),other=num('outrosBeneficios'),rate=Math.min(95,num('simples'))/100;
   showResult();
   if(!salary){$('pjEquivalente').textContent='Revise os dados';$('status').textContent='Informe o salário bruto CLT para calcular.';return;}
+  window.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
   const inss=inssEmployee(salary),ir=irrfMonthly(salary,{inss}),transportDiscount=Math.min(transport,salary*.06),vacation=salary/12,vacationThird=salary/36,thirteenth=salary/12,fgts=salary*.08;
   const effective=round2(salary+transport+meal+other+vacation+vacationThird+thirteenth+fgts-transportDiscount-inss-ir.tax);
   const pjGross=round2(effective/(1-rate)),pjTax=round2(pjGross*rate),pjNet=round2(pjGross-pjTax);
@@ -31,11 +35,11 @@ function calculate(event){
   summary.replaceChildren();addSummary('Salário bruto CLT',money(salary));addSummary('Vale transporte',money(transport));addSummary('Vale refeição',money(meal));addSummary('Outros benefícios',money(other));addSummary('Alíquota do Simples Nacional',pct(rate*100));
   tableClt.replaceChildren();addTableRow(tableClt,'Salário bruto',money(salary));addTableRow(tableClt,'Vale transporte',money(transport));addTableRow(tableClt,'Desconto vale transporte',money(transportDiscount));addTableRow(tableClt,'Vale refeição',money(meal));addTableRow(tableClt,'Outros benefícios',money(other));addTableRow(tableClt,'Férias, reserva mensal',money(vacation));addTableRow(tableClt,'1/3 de férias, reserva mensal',money(vacationThird));addTableRow(tableClt,'13º, reserva mensal',money(thirteenth));addTableRow(tableClt,'FGTS',money(fgts));addTableRow(tableClt,'INSS',money(inss));addTableRow(tableClt,'IRRF',money(ir.tax));addTableRow(tableClt,'Remuneração líquida efetiva',money(effective));
   tablePj.replaceChildren();addTableRow(tablePj,'Salário bruto',money(pjGross));addTableRow(tablePj,'Imposto Simples Nacional',money(pjTax));addTableRow(tablePj,'Remuneração líquida efetiva',money(pjNet));
-  window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:'comparador-profissional'});
+  window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
 }
 function clearAll(){form.reset();$('cltSalario').value='';$('valeTransporte').value='0';$('valeRefeicao').value='0';$('outrosBeneficios').value='0';$('simples').value='6';result.hidden=true;last=null;showForm();}
 form.addEventListener('submit',calculate);$('limpar').addEventListener('click',clearAll);$('refazer').addEventListener('click',showForm);
-$('copiar').addEventListener('click',async()=>{const url=shareUrl(),text=last?`CLT x PJ: valor PJ equivalente ${money(last.pjGross)}. ${url}`:url;try{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Link copiado.';setTimeout(()=>$('shareStatus').textContent='',1800);}catch{$('shareStatus').textContent='Não foi possível copiar o link.';}});
-$('compartilhar').addEventListener('click',async()=>{const url=shareUrl(),text=last?`Valor PJ equivalente: ${money(last.pjGross)}`:'Calculadora CLT x PJ';if(navigator.share){try{await navigator.share({title:'Calculadora CLT x PJ',text,url});}catch{}}else $('copiar').click();});
+$('copiar').addEventListener('click',async()=>{const url=shareUrl(),text=last?`CLT x PJ: valor PJ equivalente ${money(last.pjGross)}. ${url}`:url;try{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Link copiado.';if(last)window.QuantoLabAnalytics?.track?.('result_shared',{tool:TOOL,method:'copy'});setTimeout(()=>$('shareStatus').textContent='',1800);}catch{$('shareStatus').textContent='Não foi possível copiar o link.';}});
+$('compartilhar').addEventListener('click',async()=>{const url=shareUrl(),text=last?`Valor PJ equivalente: ${money(last.pjGross)}`:'Calculadora CLT x PJ';if(navigator.share){try{await navigator.share({title:'Calculadora CLT x PJ',text,url});if(last)window.QuantoLabAnalytics?.track?.('result_shared',{tool:TOOL,method:'native'});}catch{}}else $('copiar').click();});
 restore();result.hidden=true;
 })();
