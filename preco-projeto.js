@@ -3,7 +3,7 @@ const num=id=>Math.max(0,Number($(id)?.value)||0);
 const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(v||0);
 const TOOL='preco-projeto';
 
-window.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
+globalThis.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
 
 function reset(message='Preencha os dados para calcular.'){
   $('principal').textContent='R$ 0';$('base').textContent='R$ 0';$('custosResultado').textContent='R$ 0';$('reservaResultado').textContent='R$ 0';$('complexidadeResultado').textContent='R$ 0';$('entrada').textContent='R$ 0';$('status').textContent=message;
@@ -17,7 +17,7 @@ function run(trackEvent=true){
   const complexidade=num('complexidade')/100;
   if(!valorHora||!horas){reset('Informe seu valor por hora e o tempo previsto.');return;}
 
-  if(trackEvent)window.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
+  if(trackEvent)globalThis.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
   const base=valorHora*horas;
   const reserva=base*revisoes;
   const extraComplexidade=base*complexidade;
@@ -31,7 +31,7 @@ function run(trackEvent=true){
   $('entrada').textContent=money(final*.5);
   const hasAdjustments=custos>0||revisoes>0||complexidade>0;
   $('status').textContent=hasAdjustments?'Preço com os ajustes opcionais que você informou.':'Preço básico: valor da hora × horas do projeto.';
-  if(trackEvent)window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
+  if(trackEvent)globalThis.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
 }
 
 function clearAll(){
