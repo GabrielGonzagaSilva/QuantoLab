@@ -5,10 +5,10 @@
   const TERMS_KEY='quantolab-terms-v2026-08-16';
   const PROFILE_KEY='quantolab-profile-v1';
   const THEMES=['system','light','dark'];
-  const ANALYTICS_ENDPOINT='/api/analytics/event';
   const ANALYTICS_SCHEMA_VERSION=1;
   const ANALYTICS_EVENTS=new Set(['page_view','terms_accepted','tool_opened','calculation_started','calculation_completed','result_shared','journey_continued','profile_saved','profile_cleared','ad_script_loaded']);
   const ANALYTICS_PROPERTIES=new Set(['tool','method','from_tool','to_tool','version','provider']);
+  const analyticsQueue=window.__QuantoLabAnalyticsQueue=Array.isArray(window.__QuantoLabAnalyticsQueue)?window.__QuantoLabAnalyticsQueue:[];
   const root=document.documentElement;
   const media=window.matchMedia('(prefers-color-scheme: dark)');
   let selected='system';
@@ -116,10 +116,20 @@
   }
 
   function sendAnalytics(detail){
-    const body=JSON.stringify({event:detail.name,properties:detail.properties,referrer_host:analyticsReferrerHost(),schema_version:ANALYTICS_SCHEMA_VERSION});
-    try{
-      void fetch(ANALYTICS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body,credentials:'omit',cache:'no-store',keepalive:true,referrerPolicy:'no-referrer'}).catch(()=>{});
-    }catch{}
+    const payload={event:detail.name,properties:detail.properties,referrer_host:analyticsReferrerHost(),schema_version:ANALYTICS_SCHEMA_VERSION};
+    const transport=window.QuantoLabAnalyticsTransport;
+    if(typeof transport==='function'){transport(payload);return;}
+    analyticsQueue.push(payload);
+    if(analyticsQueue.length>50)analyticsQueue.shift();
+  }
+
+  function loadAnalyticsTransport(){
+    if(document.querySelector('script[data-quantolab-analytics-transport]'))return;
+    const script=document.createElement('script');
+    script.src='/client/analytics-transport.js';
+    script.async=true;
+    script.dataset.quantolabAnalyticsTransport='';
+    document.head.appendChild(script);
   }
 
   function toolSlugFromPath(path){
@@ -274,6 +284,7 @@
 
   function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountJourneyTracking();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
+  loadAnalyticsTransport();
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
   const onSystemChange=()=>{if(selected==='system')applyTheme();};if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);else if(typeof media.addListener==='function')media.addListener(onSystemChange);
