@@ -5,6 +5,10 @@
   const TERMS_KEY='quantolab-terms-v2026-08-16';
   const PROFILE_KEY='quantolab-profile-v1';
   const THEMES=['system','light','dark'];
+  const ANALYTICS_ENDPOINT='/api/analytics/event';
+  const ANALYTICS_SCHEMA_VERSION=1;
+  const ANALYTICS_EVENTS=new Set(['page_view','terms_accepted','tool_opened','calculation_started','calculation_completed','result_shared','journey_continued','profile_saved','profile_cleared','ad_script_loaded']);
+  const ANALYTICS_PROPERTIES=new Set(['tool','method','from_tool','to_tool','version','provider']);
   const root=document.documentElement;
   const media=window.matchMedia('(prefers-color-scheme: dark)');
   let selected='system';
@@ -95,6 +99,49 @@
   }
 
   function currentProductPath(){let path=window.location.pathname.replace(/\.html$/,'');if(path==='/index')path='/';return path;}
+
+  function analyticsReferrerHost(){
+    if(!document.referrer)return '';
+    try{return new URL(document.referrer).hostname.toLowerCase();}catch{return '';}
+  }
+
+  function safeAnalyticsProperties(properties={}){
+    const safe={path:currentProductPath()};
+    if(!properties||typeof properties!=='object')return safe;
+    for(const [key,value] of Object.entries(properties)){
+      if(!ANALYTICS_PROPERTIES.has(key))continue;
+      if(typeof value==='string'||typeof value==='number'||typeof value==='boolean')safe[key]=String(value).slice(0,120);
+    }
+    return safe;
+  }
+
+  function sendAnalytics(detail){
+    const body=JSON.stringify({event:detail.name,properties:detail.properties,referrer_host:analyticsReferrerHost(),schema_version:ANALYTICS_SCHEMA_VERSION});
+    try{
+      void fetch(ANALYTICS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body,credentials:'omit',cache:'no-store',keepalive:true,referrerPolicy:'no-referrer'}).catch(()=>{});
+    }catch{}
+  }
+
+  function toolSlugFromPath(path){
+    const normalized=String(path||'').replace(/\.html$/,'').replace(/^\/+|\/+$/g,'');
+    const aliases={'clt-pj':'comparador-profissional','rescisao-clt':'simulador','salario-bruto-liquido':'salario-liquido'};
+    const slug=aliases[normalized]||normalized;
+    return /^[a-z0-9-]+$/.test(slug)?slug:'';
+  }
+
+  function currentToolSlug(){return document.body?.dataset?.tool||toolSlugFromPath(currentProductPath());}
+
+  function mountJourneyTracking(){
+    document.addEventListener('click',event=>{
+      const link=event.target instanceof Element?event.target.closest('a.decision-card[href]'):null;if(!link)return;
+      let target;
+      try{target=new URL(link.href,window.location.href);}catch{return;}
+      if(target.origin!==window.location.origin)return;
+      const fromTool=currentToolSlug(),toTool=toolSlugFromPath(target.pathname);
+      if(!fromTool||!toTool||fromTool===toTool)return;
+      window.QuantoLabAnalytics?.track?.('journey_continued',{from_tool:fromTool,to_tool:toTool});
+    },{capture:true});
+  }
 
   function relatedCard([href,title,description]){
     const card=document.createElement('a');card.className='card decision-card';card.href=href;
@@ -216,13 +263,16 @@
 
   window.QuantoLabAnalytics={
     track(name,properties={}){
-      const detail={name,properties:{...properties,path:currentProductPath()},at:new Date().toISOString()};
+      if(!ANALYTICS_EVENTS.has(name))return false;
+      const detail={name,properties:safeAnalyticsProperties(properties),at:new Date().toISOString()};
       try{window.dispatchEvent(new CustomEvent('quantolab:event',{detail}));}catch{}
       if(Array.isArray(window.dataLayer))window.dataLayer.push({event:`ql_${name}`,...detail.properties});
+      sendAnalytics(detail);
+      return true;
     }
   };
 
-  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
+  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountJourneyTracking();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
