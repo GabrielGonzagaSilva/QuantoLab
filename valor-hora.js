@@ -3,7 +3,7 @@ const num=id=>Math.max(0,Number($(id)?.value)||0);
 const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(v||0);
 const TOOL='valor-hora';
 
-window.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
+globalThis.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
 
 function reset(message='Preencha os dados para calcular.'){
   $('recomendado').textContent='R$ 0/h';
@@ -34,7 +34,7 @@ function run(trackEvent=true){
   const horasCobraveisMes=horasCobraveisAno/12;
   if(horasCobraveisMes<=0){reset('Não há horas disponíveis para cobrar com esses dados.');return;}
 
-  if(trackEvent)window.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
+  if(trackEvent)globalThis.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
   const entradaMinimaMes=(renda+custos)/(1-impostos);
   const valorMinimo=entradaMinimaMes/horasCobraveisMes;
   const valorSugerido=valorMinimo*(1+margem);
@@ -48,7 +48,7 @@ function run(trackEvent=true){
   $('projeto').textContent=money(valorSugerido*20);
   const hasAdjustments=ferias>0||naoFaturavel>0||impostos>0||margem>0;
   $('status').textContent=hasAdjustments?'Estimativa com os ajustes opcionais que você informou.':'Estimativa básica. Use os ajustes opcionais se quiser refinar.';
-  if(trackEvent)window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
+  if(trackEvent)globalThis.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
 }
 
 function clearAll(){
