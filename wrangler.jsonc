@@ -1,10 +1,21 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "quantolab",
-  "compatibility_date": "2026-08-14",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-08-21",
   "workers_dev": false,
   "preview_urls": false,
   "assets": {
-    "directory": "."
-  }
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/analytics/*"
+    ]
+  },
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS",
+      "dataset": "quantolab_product_events"
+    }
+  ]
 }
