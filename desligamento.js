@@ -8,7 +8,10 @@ const form=$('rescisao-form');
 const result=$('rescisao-result');
 const summary=$('meuCalculo');
 const table=$('resultadoTabela');
+const TOOL='simulador';
 let last=null;
+
+window.QuantoLabAnalytics?.track?.('tool_opened',{tool:TOOL});
 
 function parseDate(id){const value=$(id)?.value;if(!value)return null;const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);}
 function addDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d;}
@@ -33,6 +36,7 @@ function calculate(event){
   if(!salary||!admission||!end){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Informe salário, data de contratação e data de demissão.';return;}
   if(end<admission){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='A data de demissão precisa ser posterior à contratação.';return;}
   if(end.getFullYear()!==2026){$('totalLiquido').textContent='Revise os dados';$('notice').textContent='Esta versão usa as tabelas tributárias de 2026. Informe uma demissão em 2026.';return;}
+  window.QuantoLabAnalytics?.track?.('calculation_started',{tool:TOOL});
   const type=$('tipo').value,notice=$('aviso').value,noticeLength=noticeDays(admission,end);let projectedEnd=new Date(end),noticeCredit=0,noticeDiscount=0;
   if(notice==='indenizado'&&(type==='sem_justa'||type==='indireta')){noticeCredit=salary/30*noticeLength;projectedEnd=addDays(end,noticeLength);}
   else if(notice==='indenizado'&&type==='acordo'){noticeCredit=salary/30*noticeLength*.5;projectedEnd=addDays(end,Math.ceil(noticeLength*.5));}
@@ -65,11 +69,11 @@ function calculate(event){
   $('notice').textContent=fgtsAvailable>0?`Além do acerto, a estimativa indica ${money(fgtsAvailable)} entre saldo de FGTS disponível e multa.`:'FGTS e multa são mostrados separadamente quando houver direito de saque.';
   summary.replaceChildren();addSummary('Salário bruto',money(salary));addSummary('Data de contratação',fmtDate(admission));addSummary('Data de demissão',fmtDate(end));addSummary('Motivo',typeLabel());addSummary('Aviso prévio',noticeLabel());addSummary('Férias adquiridas no ano anterior',$('feriasAdquiridas').checked?'Sim':'Não');addSummary('Número de dependentes',String(dependents));addSummary('Saldo do FGTS',money(previousFgts));addSummary('Férias vencidas',`${overdueDays} dias`);
   table.replaceChildren();addRow('Salário pelos dias trabalhados',money(salaryBalance));addRow('Aviso prévio',noticeDiscount?`Desconto de ${money(noticeDiscount)}`:money(noticeCredit));addRow('13º proporcional',money(gross13));addRow('Férias proporcionais e 1/3',money(proportionalVacation));addRow('Férias adquiridas e 1/3',money(acquiredVacation));addRow('Férias vencidas informadas e 1/3',money(overdueVacation));addRow('INSS estimado',money(totalInss));addRow('IRRF estimado',money(totalIrrf));addRow('Valor líquido do acerto',money(directNet));addRow('FGTS calculado na rescisão',money(terminationFgts));addRow('Saldo de FGTS considerado',money(fgtsBase));addRow('Multa do FGTS',money(penalty));addRow('FGTS disponível para saque',money(withdrawal));addRow('FGTS mais multa',money(fgtsAvailable));
-  window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:'simulador'});
+  window.QuantoLabAnalytics?.track?.('calculation_completed',{tool:TOOL});
 }
 function clearAll(){form.reset();$('salario').value='';$('dependentes').value='0';$('saldoFgts').value='0';$('feriasVencidasDias').value='0';$('tipo').value='sem_justa';$('aviso').value='indenizado';result.hidden=true;last=null;showForm();}
 form.addEventListener('submit',calculate);$('limpar').addEventListener('click',clearAll);$('refazer').addEventListener('click',showForm);
-$('copiar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}. ${url}`:url;try{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Link copiado.';setTimeout(()=>$('shareStatus').textContent='',1800);}catch{$('shareStatus').textContent='Não foi possível copiar o link.';}});
-$('compartilhar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}`:'Calculadora de rescisão';if(navigator.share){try{await navigator.share({title:'Calculadora de rescisão',text,url});}catch{}}else $('copiar').click();});
+$('copiar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}. ${url}`:url;try{await navigator.clipboard.writeText(text);$('shareStatus').textContent='Link copiado.';if(last)window.QuantoLabAnalytics?.track?.('result_shared',{tool:TOOL,method:'copy'});setTimeout(()=>$('shareStatus').textContent='',1800);}catch{$('shareStatus').textContent='Não foi possível copiar o link.';}});
+$('compartilhar').addEventListener('click',async()=>{const encoded=encodeState(),url=encoded?`${location.origin}${location.pathname}#s=${encoded}`:`${location.origin}${location.pathname}`,text=last?`Rescisão estimada: ${money(last.directNet)}`:'Calculadora de rescisão';if(navigator.share){try{await navigator.share({title:'Calculadora de rescisão',text,url});if(last)window.QuantoLabAnalytics?.track?.('result_shared',{tool:TOOL,method:'native'});}catch{}}else $('copiar').click();});
 restore();result.hidden=true;
 })();
