@@ -33,7 +33,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in *.js worker/*.js scripts/*.mjs; do
+          for file in *.js client/*.js worker/*.js scripts/*.mjs; do
             node --check "$file"
           done
           python -m py_compile scripts/generate-platform.py
