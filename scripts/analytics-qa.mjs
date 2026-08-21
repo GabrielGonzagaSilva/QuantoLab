@@ -7,6 +7,7 @@ const fail = message => {
 
 const read = path => fs.readFileSync(path, 'utf8');
 const theme = read('theme.js');
+const transport = read('client/analytics-transport.js');
 const core = read('tools-core.js');
 const worker = read('worker/index.js');
 const privacy = read('politica-de-privacidade.html');
@@ -16,10 +17,16 @@ for (const event of ['page_view','tool_opened','calculation_started','calculatio
   if (!worker.includes(`'${event}'`)) fail(`worker/index.js is missing ${event} in the server allowlist.`);
 }
 
-if (!theme.includes("const ANALYTICS_ENDPOINT='/api/analytics/event'")) fail('Analytics endpoint must remain first-party.');
-if (!theme.includes("credentials:'omit'")) fail('Analytics requests must not send browser credentials.');
-if (!theme.includes("referrerPolicy:'no-referrer'")) fail('Collector request must not leak the current URL through the Referer header.');
+if (!theme.includes("script.src='/client/analytics-transport.js'")) fail('Theme must load the reviewed same-origin analytics transport.');
+if (theme.includes('fetch(') || theme.includes('sendBeacon')) fail('Global theme shell must not make network calls directly.');
 if (!theme.includes('safeAnalyticsProperties')) fail('Client property allowlist is required.');
+if (!theme.includes('__QuantoLabAnalyticsQueue')) fail('Analytics queue is required to avoid losing early events.');
+
+if (!transport.includes("const ENDPOINT='/api/analytics/event'")) fail('Analytics endpoint must remain first-party.');
+if (!transport.includes("credentials:'omit'")) fail('Analytics requests must not send browser credentials.');
+if (!transport.includes("referrerPolicy:'no-referrer'")) fail('Collector request must not leak the current URL through the Referer header.');
+if (/https?:\/\//i.test(transport)) fail('Analytics transport must not call external origins.');
+if (/localStorage|sessionStorage|document\.cookie|fingerprint/i.test(transport)) fail('Analytics transport must not create visitor identifiers.');
 
 for (const event of ['tool_opened','calculation_started','calculation_completed','result_shared']) {
   if (!core.includes(`'${event}'`)) fail(`tools-core.js must emit ${event} for shared calculators.`);
