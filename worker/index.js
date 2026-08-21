@@ -94,6 +94,7 @@ async function collect(request,env){
   // Synthetic monitoring is deliberately excluded from product and traffic metrics.
   if(request.headers.has('x-quantolab-synthetic-test'))return empty();
   if(!isSameOriginBrowserRequest(request))return empty(403);
+  if(!env.ANALYTICS||typeof env.ANALYTICS.writeDataPoint!=='function')return empty(503);
 
   const type=request.headers.get('content-type')||'';
   if(!type.toLowerCase().includes('application/json'))return empty(415);
