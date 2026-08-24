@@ -1,0 +1,55 @@
+name: Prepare AdSense Readiness
+
+on:
+  push:
+    branches: [agent/adsense-readiness-2026]
+    paths:
+      - 'scripts/prepare-adsense-review.py'
+      - '.github/workflows/adsense-prepare.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: adsense-prepare
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: agent/adsense-readiness-2026
+          fetch-depth: 1
+
+      - name: Regenerate current platform
+        run: python scripts/generate-platform.py
+
+      - name: Apply AdSense readiness transformation
+        run: python scripts/prepare-adsense-review.py
+
+      - name: Validate generated sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/generate-platform.py scripts/prepare-adsense-review.py
+          for file in *.js scripts/*.mjs; do node --check "$file"; done
+          node scripts/adsense-readiness-qa.mjs
+
+      - name: Commit generated readiness changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'QuantoLab Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Preparar conteúdo e indexação para nova revisão do AdSense'
+          git push origin HEAD:agent/adsense-readiness-2026
