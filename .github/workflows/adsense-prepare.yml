@@ -40,6 +40,15 @@ jobs:
           for file in *.js scripts/*.mjs; do node --check "$file"; done
           node scripts/adsense-readiness-qa.mjs
 
+      - name: Keep workflow mutations for direct GitHub update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git restore .github/workflows/qa.yml
+          git restore .github/workflows/stress-900-until-2000.yml
+          git restore .github/workflows/synthetic-traffic-test.yml
+          rm -rf scripts/__pycache__
+
       - name: Commit generated readiness changes
         shell: bash
         run: |
