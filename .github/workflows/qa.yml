@@ -36,7 +36,7 @@ jobs:
           for file in *.js scripts/*.mjs; do
             node --check "$file"
           done
-          python -m py_compile scripts/generate-platform.py
+          python -m py_compile scripts/generate-platform.py scripts/prepare-adsense-review.py
 
       - name: Validate production security config
         shell: bash
@@ -48,12 +48,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp scripts/qa.mjs /tmp/qa.mjs
-          sed -i 's/2026-08-14/2026-08-16/g' /tmp/qa.mjs
-          node /tmp/qa.mjs
+          node scripts/qa.mjs
 
       - name: Run platform expansion QA
         shell: bash
         run: |
           set -euo pipefail
           node scripts/platform-qa.mjs
+
+      - name: Run AdSense readiness QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/adsense-readiness-qa.mjs
