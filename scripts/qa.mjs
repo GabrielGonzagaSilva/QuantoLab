@@ -88,17 +88,10 @@ if(balance!==0)fail('style.css: chaves desbalanceadas.');
 if(!css.includes('@media (max-width:380px)'))fail('style.css: falta proteção para telas muito estreitas.');
 if(!css.includes(':focus-visible'))fail('style.css: falta estado de foco acessível.');
 if(!css.includes('.btn-secondary'))fail('style.css: falta estilo do botão secundário.');
-if(!css.includes('.ad--leaderboard')||!css.includes('.ad--content')||!css.includes('.ad--footer'))fail('style.css: sistema responsivo de publicidade incompleto.');
-const adMinimums=new Map([['index.html',2],['valor-hora.html',2],['preco-projeto.html',2],['meta-faturamento.html',2],['comparador-profissional.html',2],['simulador.html',2],['metodologia.html',2],['sobre.html',1],['politica-de-privacidade.html',1],['termos.html',1]]);
-const adSlots=new Set();
-for(const [file,minimum] of adMinimums){
+for(const file of htmlFiles){
   const html=read(file);
-  const slots=[...html.matchAll(/\bdata-ad-slot=["']([^"']+)["']/g)].map(m=>m[1]);
-  if(slots.length<minimum)fail(`${file}: inventário publicitário abaixo do planejado (${slots.length}/${minimum}).`);
-  if(!/<aside class=["'][^"']*\bad\b[^"']*["'][^>]+aria-label=["']Publicidade["']/i.test(html))fail(`${file}: espaço publicitário sem identificação acessível.`);
-  for(const slot of slots){if(adSlots.has(slot))fail(`Publicidade: data-ad-slot duplicado "${slot}".`);adSlots.add(slot);}
+  if(/data-ad-slot=|Espaço publicitário|aria-label=[\"']Publicidade[\"']/i.test(html))fail(`${file}: inventário publicitário deve permanecer removido durante a revisão do AdSense.`);
 }
-if(read('contato.html').includes('data-ad-slot='))fail('contato.html: página noindex/baixo conteúdo não deve exibir publicidade.');
 
 const headers=read('_headers');
 for(const required of ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','X-Frame-Options','Permissions-Policy'])if(!headers.includes(required))fail(`_headers: falta ${required}.`);
@@ -115,7 +108,7 @@ else {
   for(const entry of ['.github/','scripts/','UX_WRITING.md','.env','.dev.vars','.wrangler/'])if(!assetsignore.includes(entry))fail(`.assetsignore: falta excluir ${entry} do bundle público.`);
 }
 
-const indexablePages=['index.html','valor-hora.html','preco-projeto.html','meta-faturamento.html','comparador-profissional.html','simulador.html','sobre.html','metodologia.html','politica-de-privacidade.html','termos.html'];
+const indexablePages=['index.html','ferramentas.html','guias.html','valor-hora.html','preco-projeto.html','meta-faturamento.html','comparador-profissional.html','simulador.html','sobre.html','metodologia.html','politica-editorial.html','politica-de-privacidade.html','termos.html'];
 for(const file of indexablePages){
   const html=read(file);
   for(const requirement of [
@@ -135,14 +128,13 @@ for(const file of indexablePages){
 if(!read('index.html').includes('"@type":"WebSite"'))fail('SEO técnico: home sem WebSite structured data.');
 const contact=read('contato.html');
 if(!/<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(contact))fail('SEO técnico: contato deve permanecer noindex.');
-if(!css.includes('.ads-ready .ad{display:block}')||!css.includes('.ad{display:none;'))fail('Publicidade: placeholders vazios devem ficar ocultos antes da ativação da rede.');
 if(!fs.existsSync(path.join(root,'54b967966f714fbb3be34ca2b1113ef2.txt')))fail('IndexNow: arquivo de validação ausente.');
 if(!fs.existsSync(path.join(root,'.github/workflows/indexnow.yml')))fail('IndexNow: workflow de submissão ausente.');
 
 const sitemap=read('sitemap.xml');
 if(/<loc>[^<]+\.html<\/loc>/i.test(sitemap))fail('sitemap.xml: contém URL .html em vez da rota canônica.');
 for(const m of sitemap.matchAll(/<loc>https:\/\/quantolab\.com\.br([^<]*)<\/loc>/g))if(!routeExists(m[1]||'/'))fail(`sitemap.xml: rota inexistente ${m[1]||'/'}.`);
-if((sitemap.match(/<lastmod>2026-08-14<\/lastmod>/g)||[]).length<10)fail('sitemap.xml: lastmod ausente nas URLs indexáveis.');
+if((sitemap.match(/<lastmod>2026-08-24<\/lastmod>/g)||[]).length<10)fail('sitemap.xml: lastmod ausente nas URLs indexáveis.');
 if(/<loc>https:\/\/quantolab\.com\.br\/contato<\/loc>/.test(sitemap))fail('sitemap.xml: contato noindex não deve constar no sitemap.');
 
 function element(value=''){
