@@ -12,6 +12,7 @@ on:
       - 'favicon.svg'
       - 'quantolab-logo.svg'
       - '54b967966f714fbb3be34ca2b1113ef2.txt'
+      - '.github/workflows/indexnow.yml'
   workflow_dispatch:
 
 permissions:
