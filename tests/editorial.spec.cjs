@@ -45,14 +45,14 @@ for (const viewport of viewports) {
           return {
             h1: document.querySelectorAll('h1').length,
             offenders: offenders.slice(0, 12),
-            hasAds: /Publicidade|Espaço publicitário/.test(document.body.innerText || '') || Boolean(document.querySelector('[data-ad-slot]')),
+            hasAdInventory: Boolean(document.querySelector('[data-ad-slot], .ad-box, .ad-placeholder')),
             documentWidth: document.documentElement.scrollWidth,
           };
         });
 
         expect(audit.h1).toBe(1);
         expect(audit.offenders, JSON.stringify(audit, null, 2)).toEqual([]);
-        expect(audit.hasAds).toBe(false);
+        expect(audit.hasAdInventory).toBe(false);
         expect(audit.documentWidth).toBeLessThanOrEqual(viewport.width + 1);
       });
     }
