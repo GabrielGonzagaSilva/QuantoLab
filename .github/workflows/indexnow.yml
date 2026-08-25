@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - '*.html'
-      - '*.js'
-      - 'style.css'
+      - '**/*.html'
+      - '**/*.js'
+      - '**/*.css'
       - 'sitemap.xml'
       - 'robots.txt'
       - 'favicon.svg'
@@ -24,32 +24,84 @@ concurrency:
 jobs:
   submit:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
-      - name: Wait for production and submit sitemap URLs
+      - name: Checkout release content
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Wait for exact production release
         env:
-          INDEXNOW_KEY: 54b967966f714fbb3be34ca2b1113ef2
           SITE: https://quantolab.com.br
+        shell: bash
         run: |
           set -euo pipefail
 
-          key_url="$SITE/$INDEXNOW_KEY.txt"
+          expected_sitemap_sha="$(sha256sum sitemap.xml | awk '{print $1}')"
           ready=0
-          for attempt in $(seq 1 36); do
-            body="$(curl -fsSL --max-time 10 "$key_url" 2>/dev/null || true)"
-            if [ "$body" = "$INDEXNOW_KEY" ]; then
+
+          for attempt in $(seq 1 60); do
+            cache_bust="${GITHUB_SHA}-${attempt}"
+            if curl -fsSL --max-time 15 -H 'Cache-Control: no-cache' "$SITE/sitemap.xml?v=$cache_bust" -o /tmp/production-sitemap.xml; then
+              production_sitemap_sha="$(sha256sum /tmp/production-sitemap.xml | awk '{print $1}')"
+            else
+              production_sitemap_sha=""
+            fi
+
+            home="$(curl -fsSL --max-time 15 -H 'Cache-Control: no-cache' "$SITE/?v=$cache_bust" 2>/dev/null || true)"
+            guides="$(curl -fsSL --max-time 15 -H 'Cache-Control: no-cache' "$SITE/guias?v=$cache_bust" 2>/dev/null || true)"
+            editorial="$(curl -fsSL --max-time 15 -H 'Cache-Control: no-cache' "$SITE/politica-editorial?v=$cache_bust" 2>/dev/null || true)"
+            salary="$(curl -fsSL --max-time 15 -H 'Cache-Control: no-cache' "$SITE/salario-liquido?v=$cache_bust" 2>/dev/null || true)"
+
+            if [ "$production_sitemap_sha" = "$expected_sitemap_sha" ] \
+              && grep -q 'href="/guias"' <<<"$home" \
+              && grep -q 'Guias QuantoLab' <<<"$guides" \
+              && grep -q '<h1>Política editorial</h1>' <<<"$editorial" \
+              && grep -q 'data-editorial-depth="salario-liquido"' <<<"$salary" \
+              && ! grep -q 'data-ad-slot' <<<"$home$guides$editorial$salary" \
+              && ! grep -q 'Espaço publicitário' <<<"$home$guides$editorial$salary"; then
               ready=1
               break
             fi
-            sleep 5
+
+            echo "Production not synchronized yet: attempt $attempt/60"
+            sleep 10
           done
 
           if [ "$ready" -ne 1 ]; then
-            echo "Production did not expose the IndexNow key in time."
+            echo "Production did not match the expected release within the validation window."
             exit 1
           fi
 
-          curl -fsSL --max-time 20 "$SITE/sitemap.xml" -o /tmp/sitemap.xml
+          echo "Production release verified against repository sitemap and critical AdSense readiness markers."
+
+      - name: Validate publisher association
+        env:
+          SITE: https://quantolab.com.br
+          INDEXNOW_KEY: 54b967966f714fbb3be34ca2b1113ef2
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          key_body="$(curl -fsSL --max-time 15 "$SITE/$INDEXNOW_KEY.txt")"
+          [ "$key_body" = "$INDEXNOW_KEY" ]
+
+          ads_body="$(curl -fsSL --max-time 15 "$SITE/ads.txt")"
+          grep -Fxq 'google.com, pub-9919728006820087, DIRECT, f08c47fec0942fa0' <<<"$ads_body"
+
+          echo "IndexNow key and Google AdSense ads.txt association verified in production."
+
+      - name: Submit synchronized sitemap URLs
+        env:
+          INDEXNOW_KEY: 54b967966f714fbb3be34ca2b1113ef2
+          SITE: https://quantolab.com.br
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "$SITE/sitemap.xml?v=$GITHUB_SHA" -o /tmp/sitemap.xml
           python3 - <<'PY'
           import json
           import os
@@ -72,7 +124,7 @@ jobs:
           }
           with open('/tmp/indexnow.json', 'w', encoding='utf-8') as fh:
               json.dump(payload, fh, ensure_ascii=False)
-          print(f'Prepared {len(urls)} URL(s) for IndexNow.')
+          print(f'Prepared {len(urls)} synchronized URL(s) for IndexNow.')
           PY
 
           status="$(curl -sS --max-time 30 -o /tmp/indexnow-response.txt -w '%{http_code}' \
