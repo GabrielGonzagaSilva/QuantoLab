@@ -65,9 +65,10 @@ const headers=read('_headers');
 for(const term of ['/embed/*','! X-Frame-Options','! Content-Security-Policy','frame-ancestors https:','X-Robots-Tag: noindex, nofollow'])if(!headers.includes(term))fail(`_headers: regra de embed incompleta (${term}).`);
 
 const sitemap=read('sitemap.xml');
-for(const slug of [...existing,...newTools,'ferramentas','meus-numeros','incorporar',...professions.map(p=>`valor-hora/${p}`)])if(!sitemap.includes(`https://quantolab.com.br/${slug}`))fail(`Sitemap sem ${slug}.`);
+for(const slug of [...existing,...newTools,'ferramentas','guias','politica-editorial'])if(!sitemap.includes(`https://quantolab.com.br/${slug}`))fail(`Sitemap sem ${slug}.`);
+for(const slug of ['meus-numeros','incorporar',...professions.map(p=>`valor-hora/${p}`)])if(sitemap.includes(`https://quantolab.com.br/${slug}`))fail(`Sitemap não deve indexar ${slug}.`);
 if(sitemap.includes('/embed/calculadora'))fail('Sitemap não deve indexar embed.');
-if(!sitemap.includes('<lastmod>2026-08-16</lastmod>'))fail('Sitemap não foi atualizado para 2026-08-16.');
+if(!sitemap.includes('<lastmod>2026-08-24</lastmod>'))fail('Sitemap não foi atualizado para 2026-08-24.');
 
 try{
   const document={readyState:'loading',addEventListener(){},querySelector(){return null},querySelectorAll(){return[]},head:{appendChild(){}},createElement(){return {appendChild(){},append(){},setAttribute(){},classList:{add(){}}};}};
