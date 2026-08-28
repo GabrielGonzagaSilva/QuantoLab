@@ -1,0 +1,162 @@
+name: QuantoLab Synthetic Traffic — 100-300/day
+
+on:
+  schedule:
+    - cron: '11 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/quantolab-synthetic-traffic.yml'
+      - 'tools/quantolab_synthetic_traffic.py'
+      - 'tools/traffic-requirements.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: quantolab-synthetic-traffic
+  cancel-in-progress: false
+
+jobs:
+  synthetic-traffic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      TZ: America/Sao_Paulo
+      BR_PROXIES_B64: ${{ secrets.BR_PROXIES_B64 }}
+      BR_PROXIES_FILE: /tmp/quantolab-br-proxies.csv
+      TRAFFIC_STATE_DIR: .traffic_state
+      TRAFFIC_LOG_DIR: traffic-logs
+
+    steps:
+      - name: Plan current hour
+        id: plan
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib
+          import math
+          import os
+          import random
+          from datetime import date, datetime
+          from zoneinfo import ZoneInfo
+
+          tz = ZoneInfo('America/Sao_Paulo')
+          now = datetime.now(tz)
+          start = date(2026, 8, 28)
+          end = date(2026, 9, 15)
+          active_date = start <= now.date() <= end
+          has_proxy = bool(os.getenv('BR_PROXIES_B64', '').strip())
+
+          seed = int.from_bytes(
+              hashlib.sha256(f'quantolab-traffic:{now.date().isoformat()}'.encode()).digest()[:8],
+              'big',
+          )
+          rng = random.Random(seed)
+          target = rng.randint(100, 300)
+
+          weights = [rng.uniform(0.45, 1.55) for _ in range(24)]
+          total_weight = sum(weights)
+          raw = [target * weight / total_weight for weight in weights]
+          quotas = [math.floor(value) for value in raw]
+          remainder = target - sum(quotas)
+          order = sorted(range(24), key=lambda hour: raw[hour] - quotas[hour], reverse=True)
+          for hour in order[:remainder]:
+              quotas[hour] += 1
+
+          quota = quotas[now.hour] if active_date else 0
+          seconds_to_next_hour = (59 - now.minute) * 60 + (60 - now.second)
+          window_seconds = max(60, min(2100, seconds_to_next_hour - 120))
+          enabled = active_date and has_proxy and quota > 0
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'enabled={str(enabled).lower()}\n')
+              f.write(f'active_date={str(active_date).lower()}\n')
+              f.write(f'has_proxy={str(has_proxy).lower()}\n')
+              f.write(f'target={target}\n')
+              f.write(f'quota={quota}\n')
+              f.write(f'window_seconds={window_seconds}\n')
+
+          print('Local time:', now.isoformat(timespec='seconds'))
+          print('Test window:', start.isoformat(), 'through', end.isoformat(), '(inclusive)')
+          print('Daily target:', target)
+          print('Hourly quotas:', quotas)
+          print('Current-hour quota:', quota)
+          print('Brazil proxy secret configured:', has_proxy)
+          if not active_date:
+              print('Synthetic traffic disabled: outside configured test dates.')
+          elif not has_proxy:
+              print('::warning::BR_PROXIES_B64 is missing. No synthetic traffic will be generated.')
+          PY
+
+      - name: Checkout
+        if: steps.plan.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        if: steps.plan.outputs.enabled == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: tools/traffic-requirements.txt
+
+      - name: Restore synthetic IP state
+        if: steps.plan.outputs.enabled == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: .traffic_state
+          key: quantolab-synthetic-state-${{ github.run_id }}
+          restore-keys: |
+            quantolab-synthetic-state-
+
+      - name: Decode Brazilian proxy pool
+        if: steps.plan.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          umask 077
+          printf '%s' "$BR_PROXIES_B64" | base64 --decode > "$BR_PROXIES_FILE"
+          python - <<'PY'
+          import csv
+          import os
+
+          with open(os.environ['BR_PROXIES_FILE'], encoding='utf-8-sig', newline='') as f:
+              rows = list(csv.DictReader(f))
+          usable = [row for row in rows if (row.get('server') or '').strip()]
+          if not usable:
+              raise SystemExit('BR_PROXIES_B64 decoded successfully, but contains no usable server endpoints.')
+          print('Brazil proxy endpoints loaded:', len(usable))
+          PY
+
+      - name: Install Playwright
+        if: steps.plan.outputs.enabled == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/traffic-requirements.txt
+          python -m playwright install chromium
+
+      - name: Run this hour's randomized accesses
+        if: steps.plan.outputs.enabled == 'true'
+        run: |
+          python tools/quantolab_synthetic_traffic.py \
+            --visits "${{ steps.plan.outputs.quota }}" \
+            --window-seconds "${{ steps.plan.outputs.window_seconds }}" \
+            --daily-target "${{ steps.plan.outputs.target }}"
+
+      - name: Save synthetic IP state
+        if: always() && steps.plan.outputs.enabled == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .traffic_state
+          key: quantolab-synthetic-state-${{ github.run_id }}
+
+      - name: Upload synthetic traffic log
+        if: always() && steps.plan.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: quantolab-synthetic-${{ github.run_id }}
+          path: traffic-logs/
+          if-no-files-found: ignore
+          retention-days: 14
