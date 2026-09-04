@@ -23,91 +23,165 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/platform.css">
   <link rel="stylesheet" href="/home.css">
-<link rel="stylesheet" href="/guides.css"></head>
-<body class="home-refined">
-<header class="header">
-  <div class="shell nav">
-    <a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a>
-    <nav class="navlinks" aria-label="Navegação principal"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a><a href="/guias">Guias</a></nav>
-  </div>
-</header>
-<main>
-  <section class="hero home-hero">
-    <div class="shell home-hero-grid">
-      <div class="home-hero-copy">
-        <span class="home-kicker">Trabalho, carreira e dinheiro</span>
-        <h1>Faça as contas antes de decidir.</h1>
-        <p class="lead">Salário, CLT x PJ, freelas, projetos e planejamento financeiro. Ferramentas diretas, com fórmulas, premissas e fontes para você conferir.</p>
-        <div class="home-hero-actions" aria-label="Ações principais">
-          <a class="home-link home-link--primary" href="/ferramentas">Explorar as 28 ferramentas <span aria-hidden="true">→</span></a>
-          <a class="home-link" href="/metodologia">Como os cálculos funcionam</a>
+  <link rel="stylesheet" href="/guides.css">
+</head>
+<body class="home-v2">
+  <!--
+  THESIS: QuantoLab é um sistema de instrumentos digitais para decisões; recusa o hero genérico de fintech e demonstra cálculo real na primeira dobra.
+  OWN-WORLD: preto técnico, off-white, branco e lime; superfícies planas, linhas de medição, tipografia precisa e numerais tabulares.
+  STORY: entender a proposta, experimentar um cálculo real, escolher o instrumento certo, conferir método e continuar a decisão.
+  FIRST VIEWPORT: mensagem e ação à esquerda; instrumento funcional de salário líquido à direita; a demonstração ocupa metade da dobra e responde em tempo real.
+  FORM: Digital Instrument System, direção explicitamente aprovada pelo usuário.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+  -->
+  <header class="header">
+    <div class="shell nav">
+      <a class="brand" href="/" aria-label="QuantoLab"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"></a>
+      <nav class="navlinks" aria-label="Navegação principal"><a href="/ferramentas">Ferramentas</a><a href="/metodologia">Metodologia</a><a href="/sobre">Sobre</a><a href="/guias">Guias</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="lab-hero" aria-labelledby="home-title">
+      <div class="shell lab-hero-grid">
+        <div class="lab-hero-copy">
+          <h1 id="home-title">Faça as contas antes de decidir.</h1>
+          <p>Salário, CLT x PJ, freelas, projetos e planejamento financeiro. Ferramentas diretas, com fórmulas, premissas e fontes para você conferir.</p>
+          <div class="lab-hero-actions">
+            <a class="lab-action lab-action--primary" href="/ferramentas">Explorar as 28 ferramentas <span aria-hidden="true">↗</span></a>
+            <a class="lab-action lab-action--quiet" href="/metodologia">Como os cálculos funcionam</a>
+          </div>
+          <div class="lab-proof" aria-label="Compromissos do QuantoLab">
+            <span>Sem cadastro obrigatório</span>
+            <span>Cálculos verificáveis</span>
+            <span>Referências 2026 quando aplicável</span>
+          </div>
+        </div>
+
+        <aside class="lab-instrument" data-home-instrument aria-label="Prévia interativa da calculadora de salário líquido">
+          <div class="lab-instrument-head">
+            <span>Instrumento 01</span>
+            <strong>Salário líquido · 2026</strong>
+            <span class="lab-status"><i aria-hidden="true"></i>ativo</span>
+          </div>
+
+          <div class="lab-instrument-body">
+            <label class="lab-input-label" for="home-salary-input">Salário bruto mensal</label>
+            <div class="lab-input-control">
+              <span>R$</span>
+              <input id="home-salary-input" type="number" min="0" step="100" value="5000" inputmode="decimal" aria-describedby="home-salary-note">
+            </div>
+            <p id="home-salary-note">A prévia usa a mesma função de INSS e IRRF da calculadora completa.</p>
+
+            <div class="lab-readout" aria-live="polite">
+              <span>Disponível estimado</span>
+              <output id="home-salary-net">—</output>
+            </div>
+
+            <div class="lab-meter" aria-hidden="true"><span id="home-salary-meter"></span></div>
+
+            <dl class="lab-breakdown">
+              <div><dt>INSS</dt><dd id="home-salary-inss">—</dd></div>
+              <div><dt>IRRF</dt><dd id="home-salary-irrf">—</dd></div>
+              <div><dt>Retenção total</dt><dd id="home-salary-rate">—</dd></div>
+            </dl>
+          </div>
+
+          <div class="lab-instrument-foot">
+            <a href="/salario-liquido">Abrir calculadora completa <span aria-hidden="true">→</span></a>
+            <span>Resultado informativo</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="lab-directory section" aria-labelledby="tools-title">
+      <div class="shell">
+        <div class="lab-section-intro">
+          <h2 id="tools-title">Instrumentos para decisões reais.</h2>
+          <p>Abra a conta que responde sua dúvida agora. O resultado aparece primeiro; fórmula, premissas e fontes continuam disponíveis para conferência.</p>
+        </div>
+
+        <div class="lab-tool-list">
+          <a href="/salario-liquido"><span class="lab-tool-type">Trabalho</span><strong>Salário líquido</strong><p>Veja quanto fica disponível depois de INSS, IRRF e descontos informados.</p><span class="lab-tool-action">Calcular ↗</span></a>
+          <a href="/comparador-profissional"><span class="lab-tool-type">Carreira</span><strong>CLT x PJ</strong><p>Compare propostas, diferença anual e o valor PJ necessário para equivaler ao CLT.</p><span class="lab-tool-action">Comparar ↗</span></a>
+          <a href="/valor-hora"><span class="lab-tool-type">Freelancer</span><strong>Valor por hora</strong><p>Use sua meta, gastos e tempo disponível para chegar a uma referência de cobrança.</p><span class="lab-tool-action">Calcular ↗</span></a>
+          <a href="/preco-projeto"><span class="lab-tool-type">Freelancer</span><strong>Preço de projeto</strong><p>Transforme horas, valor por hora e custos em uma estimativa de preço.</p><span class="lab-tool-action">Calcular ↗</span></a>
+          <a href="/simulador"><span class="lab-tool-type">Trabalho</span><strong>Rescisão CLT</strong><p>Estime os principais valores de um desligamento a partir dos dados do contrato.</p><span class="lab-tool-action">Simular ↗</span></a>
+          <a href="/reserva-emergencia"><span class="lab-tool-type">Dinheiro</span><strong>Reserva de emergência</strong><p>Converta seus gastos essenciais em uma meta de proteção financeira.</p><span class="lab-tool-action">Planejar ↗</span></a>
+        </div>
+
+        <div class="lab-directory-foot">
+          <a class="lab-action lab-action--primary" href="/ferramentas">Ver todas as ferramentas <span aria-hidden="true">↗</span></a>
+          <a class="lab-action lab-action--quiet" href="/meus-numeros">Salvar referências neste navegador</a>
         </div>
       </div>
-      <aside class="home-facts" aria-label="Informações sobre o QuantoLab">
-        <div class="home-fact"><strong>28</strong><span>ferramentas disponíveis</span></div>
-        <div class="home-fact"><strong>2026</strong><span>referências atualizadas quando aplicável</span></div>
-        <div class="home-fact"><strong>0</strong><span>cadastros obrigatórios</span></div>
-      </aside>
-    </div>
-  </section>
+    </section>
 
-  <div class="shell">
-    <div class="home-trust" aria-label="Compromissos do QuantoLab">
-      <span>Cálculos que você consegue conferir</span>
-      <span>Seus números ficam no navegador quando possível</span>
-      <a href="/metodologia">Fontes e metodologia →</a>
-    </div>
-    
-  </div>
-
-  <section id="ferramentas" class="section home-tools-section">
-    <div class="shell">
-      <div class="section-head home-section-head">
+    <section class="lab-method section" aria-labelledby="method-title">
+      <div class="shell lab-method-grid">
         <div>
-          <span class="home-section-label">Mais usadas</span>
-          <h2>Comece pela conta que resolve sua dúvida agora.</h2>
+          <h2 id="method-title">O resultado vem primeiro. A conta fica aberta.</h2>
+          <p>QuantoLab foi estruturado para reduzir atrito sem esconder o raciocínio. Você decide quanto detalhe precisa ver.</p>
         </div>
-        <p>Sem fluxo obrigatório. Abra uma ferramenta, veja o resultado e aprofunde só se fizer sentido.</p>
+        <div class="lab-method-steps">
+          <article><span>Calcular</span><strong>Resposta direta</strong><p>O número principal ganha prioridade visual e aparece antes do detalhamento técnico.</p></article>
+          <article><span>Conferir</span><strong>Premissas visíveis</strong><p>Composição, fórmulas e referências oficiais ficam acessíveis quando entram no cálculo.</p></article>
+          <article><span>Continuar</span><strong>Próxima decisão</strong><p>Ferramentas relacionadas conectam uma conta à próxima sem criar fluxo obrigatório.</p></article>
+        </div>
       </div>
+    </section>
 
-      <div class="tool-grid home-tool-grid">
-        <a class="tool-card home-tool-card" href="/salario-liquido"><span class="home-tool-meta">Trabalho</span><h3>Salário líquido</h3><p>Veja quanto fica disponível depois de INSS, IRRF e descontos informados.</p><span class="tool-link">Calcular</span></a>
-        <a class="tool-card home-tool-card" href="/comparador-profissional"><span class="home-tool-meta">Carreira</span><h3>CLT x PJ</h3><p>Compare propostas, diferença anual e o valor PJ necessário para equivaler ao CLT.</p><span class="tool-link">Comparar</span></a>
-        <a class="tool-card home-tool-card" href="/valor-hora"><span class="home-tool-meta">Freelancer</span><h3>Valor por hora</h3><p>Use sua meta, gastos e tempo disponível para chegar a uma referência de cobrança.</p><span class="tool-link">Calcular</span></a>
-        <a class="tool-card home-tool-card" href="/preco-projeto"><span class="home-tool-meta">Freelancer</span><h3>Preço de projeto</h3><p>Transforme horas, valor por hora e custos em uma estimativa de preço.</p><span class="tool-link">Calcular</span></a>
-        <a class="tool-card home-tool-card" href="/simulador"><span class="home-tool-meta">Trabalho</span><h3>Rescisão CLT</h3><p>Estime os principais valores de um desligamento a partir dos dados do contrato.</p><span class="tool-link">Simular</span></a>
-        <a class="tool-card home-tool-card" href="/reserva-emergencia"><span class="home-tool-meta">Dinheiro</span><h3>Reserva de emergência</h3><p>Converta seus gastos essenciais em uma meta de proteção financeira.</p><span class="tool-link">Planejar</span></a>
+    <section class="lab-editorial section" aria-labelledby="guides-title">
+      <div class="shell">
+        <div class="lab-section-intro lab-section-intro--split">
+          <h2 id="guides-title">Uma boa decisão precisa de contexto.</h2>
+          <p>As calculadoras mostram a conta. Os guias explicam o que entra, o que fica de fora e como interpretar o resultado antes de agir.</p>
+        </div>
+        <div class="lab-guide-list">
+          <a href="/guias/salario-liquido-2026"><span>Trabalho</span><strong>Entenda o salário líquido</strong><p>Por que bruto, INSS, IRRF e descontos precisam ser lidos em etapas.</p></a>
+          <a href="/guias/clt-ou-pj"><span>Carreira</span><strong>Compare CLT e PJ com visão anual</strong><p>Separe equivalência financeira de diferenças contratuais e de risco.</p></a>
+          <a href="/guias/valor-hora-e-preco"><span>Freelancer</span><strong>Construa preço com capacidade real</strong><p>Conecte meta, custos, horas faturáveis e escopo de projeto.</p></a>
+        </div>
+        <div class="lab-directory-foot">
+          <a class="lab-action lab-action--primary" href="/guias">Ver todos os guias <span aria-hidden="true">↗</span></a>
+          <a class="lab-action lab-action--quiet" href="/politica-editorial">Como produzimos e revisamos</a>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="home-tools-footer">
-        <a class="home-link home-link--primary" href="/ferramentas">Ver todas as ferramentas <span aria-hidden="true">→</span></a>
-        <a class="home-link" href="/meus-numeros">Salvar referências neste navegador</a>
-      </div>
+  <footer class="footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div>
+      <div class="footer-links"><a href="/ferramentas">Ferramentas</a><a href="/sobre">Sobre</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/politica-editorial">Política editorial</a></div>
     </div>
-  </section>
+  </footer>
 
-  <div class="shell"></div>
-
-  <section class="section home-principles-section" aria-labelledby="home-principles-title">
-    <div class="shell">
-      <div class="home-principles-head">
-        <span class="home-section-label">Como o produto funciona</span>
-        <h2 id="home-principles-title">O resultado precisa ser útil e verificável.</h2>
-      </div>
-      <div class="home-principles">
-        <div class="home-principle"><strong>Resultado direto</strong><p>A resposta principal aparece antes dos detalhes técnicos.</p></div>
-        <div class="home-principle"><strong>Cálculo aberto</strong><p>Premissas, composição e fórmulas ficam disponíveis para conferência.</p></div>
-        <div class="home-principle"><strong>Fonte identificada</strong><p>Quando há regra oficial ou referência externa, a origem e a atualização ficam visíveis.</p></div>
-        <div class="home-principle"><strong>Privacidade simples</strong><p>Não exigimos cadastro; dados opcionais podem ficar salvos apenas no seu navegador.</p></div>
-      </div>
-    </div>
-  </section>
-<section class="section home-editorial" data-home-editorial="true"><div class="shell"><div class="section-head home-section-head"><div><span class="home-section-label">Guias e contexto</span><h2>Uma boa decisão precisa de mais do que uma resposta numérica.</h2></div><p>As calculadoras mostram a conta. Os guias explicam o que entra, o que fica de fora e como interpretar o resultado antes de agir.</p></div><div class="guide-grid guide-grid--home"><a class="guide-card" href="/guias/salario-liquido-2026"><span>Trabalho</span><h3>Entenda o salário líquido</h3><p>Veja por que bruto, INSS, IRRF e descontos precisam ser lidos em etapas.</p></a><a class="guide-card" href="/guias/clt-ou-pj"><span>Carreira</span><h3>Compare CLT e PJ com visão anual</h3><p>Separe equivalência financeira de diferenças contratuais e de risco.</p></a><a class="guide-card" href="/guias/valor-hora-e-preco"><span>Freelancer</span><h3>Construa preço com capacidade real</h3><p>Conecte meta, custos, horas faturáveis e escopo de projeto.</p></a></div><div class="home-tools-footer"><a class="home-link home-link--primary" href="/guias">Ver todos os guias <span aria-hidden="true">→</span></a><a class="home-link" href="/politica-editorial">Como produzimos e revisamos</a></div></div></section></main>
-<footer class="footer">
-  <div class="shell footer-grid">
-    <div class="footer-brand"><img src="/quantolab-logo.svg" alt="QuantoLab" width="333" height="51"><span>Ferramentas claras para decisões profissionais.</span></div>
-    <div class="footer-links"><a href="/ferramentas">Ferramentas</a><a href="/sobre">Sobre</a><a href="/metodologia">Metodologia</a><a href="/politica-de-privacidade">Privacidade</a><a href="/termos">Termos</a><a href="/politica-editorial">Política editorial</a></div>
-  </div>
-</footer>
+  <script src="/tools-core.js"></script>
+  <script>
+    (()=>{
+      const input=document.getElementById('home-salary-input');
+      const net=document.getElementById('home-salary-net');
+      const inss=document.getElementById('home-salary-inss');
+      const irrf=document.getElementById('home-salary-irrf');
+      const rate=document.getElementById('home-salary-rate');
+      const meter=document.getElementById('home-salary-meter');
+      const util=window.QuantoLabTools?.util;
+      if(!input||!util)return;
+      const render=()=>{
+        const gross=Math.max(0,Number(input.value)||0);
+        const result=util.salaryNet(gross,0,0);
+        const retained=gross?((result.inss+result.irrf)/gross)*100:0;
+        net.textContent=util.money(result.net);
+        inss.textContent=util.money(result.inss);
+        irrf.textContent=util.money(result.irrf);
+        rate.textContent=`${util.number(retained)}%`;
+        meter.style.width=`${Math.max(0,Math.min(100,gross?result.net/gross*100:0))}%`;
+      };
+      input.addEventListener('input',render);
+      render();
+    })();
+  </script>
 </body>
 </html>
