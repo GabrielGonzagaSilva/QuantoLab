@@ -10,7 +10,7 @@
   const compactBrandMedia=window.matchMedia('(max-width:700px)');
   const WORDMARK_SRC='/quantolab-logo.svg';
   const COMPACT_MARK_SRC='/brand/mark-black.svg';
-  const FAVICON_SRC='/favicon.svg?v=20260905-official-wordmark';
+  const FAVICON_SRC='/favicon-20260905.svg';
   let selected='system';
   let button=null;
   let icon=null;
