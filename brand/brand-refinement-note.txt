@@ -1,0 +1,1 @@
+Brand refinement: symbol-first navigation signature and cache-busting favicon rollout.
