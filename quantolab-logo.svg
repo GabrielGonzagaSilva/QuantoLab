@@ -5,5 +5,5 @@
     <path d="M48 63L56.961 18C71.2985 18 65.4241 45 60.6947 58.5L48 63Z" fill="#1D1D1F" stroke="#1D1D1F" stroke-linecap="round"/>
     <path d="M51.7606 12L42 68.7887H71.2817" stroke="#1D1D1F" stroke-width="12" stroke-linecap="round"/>
   </g>
-  <text x="57" y="38" fill="#1D1D1F" font-family="Arial, Helvetica, sans-serif" font-size="39" font-weight="700" letter-spacing="-2.1">QuantoLab</text>
+  <text x="62" y="31.5" fill="#1D1D1F" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="-0.35">QuantoLab</text>
 </svg>
