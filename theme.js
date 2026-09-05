@@ -7,6 +7,10 @@
   const THEMES=['system','light','dark'];
   const root=document.documentElement;
   const media=window.matchMedia('(prefers-color-scheme: dark)');
+  const compactBrandMedia=window.matchMedia('(max-width:700px)');
+  const WORDMARK_SRC='/quantolab-logo.svg';
+  const COMPACT_MARK_SRC='/brand/mark-black.svg';
+  const FAVICON_SRC='/favicon.svg?v=20260905-official-wordmark';
   let selected='system';
   let button=null;
   let icon=null;
@@ -20,6 +24,28 @@
     link.href='/platform.css';
     document.head.appendChild(link);
   }
+
+  function normalizeFavicon(){
+    const icons=[...document.querySelectorAll('link[rel~="icon"]')];
+    let favicon=icons[0]||null;
+    for(const candidate of icons.slice(1))candidate.remove();
+    if(!favicon){favicon=document.createElement('link');favicon.rel='icon';document.head.appendChild(favicon);}
+    favicon.rel='icon';favicon.type='image/svg+xml';favicon.href=FAVICON_SRC;favicon.removeAttribute('sizes');
+  }
+
+  function syncHeaderBrand(){
+    const compact=compactBrandMedia.matches;
+    for(const image of document.querySelectorAll('.header .brand img')){
+      const nextSrc=compact?COMPACT_MARK_SRC:WORDMARK_SRC;
+      if(image.getAttribute('src')!==nextSrc)image.setAttribute('src',nextSrc);
+      image.setAttribute('width',compact?'78':'334');
+      image.setAttribute('height',compact?'75':'48');
+      if(compact){image.style.width='40px';image.style.height='auto';}
+      else{image.style.removeProperty('width');image.style.removeProperty('height');}
+    }
+  }
+
+  normalizeFavicon();
 
   const decisionSupport={
     '/valor-hora':{
@@ -222,9 +248,10 @@
     }
   };
 
-  function mountUI(){normalizeSiteTypography();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
+  function mountUI(){normalizeSiteTypography();syncHeaderBrand();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
   const onSystemChange=()=>{if(selected==='system')applyTheme();};if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);else if(typeof media.addListener==='function')media.addListener(onSystemChange);
+  const onBrandLayoutChange=()=>syncHeaderBrand();if(typeof compactBrandMedia.addEventListener==='function')compactBrandMedia.addEventListener('change',onBrandLayoutChange);else if(typeof compactBrandMedia.addListener==='function')compactBrandMedia.addListener(onBrandLayoutChange);
 })();
