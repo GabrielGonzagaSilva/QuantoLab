@@ -25,7 +25,8 @@ Regras:
 - evitar sequência de cards promocionais;
 - evitar excesso de transições, cortes, geometrias e efeitos entre seções;
 - continuidade deve vir principalmente de grid, espaço, tipografia e mudança controlada de superfície;
-- lime é reservado a dados ativos, estados e um gesto de assinatura claro, não repetido em toda seção.
+- lime é reservado a dados ativos, estados e um gesto de assinatura claro, não repetido em toda seção;
+- a homepage pode usar gradientes atmosféricos sutis para unir superfícies, desde que não funcionem como glow, ornamento ou estética Web3/AI SaaS.
 
 ### Operate — calculadoras e ferramentas
 
@@ -52,6 +53,7 @@ Objetivo: compreensão. Priorizar medida de leitura, hierarquia, fontes e wayfin
 - O símbolo isolado é reservado a contextos compactos, principalmente navegação mobile, avatar e favicon.
 - Não reconstruir o wordmark com tipografia do sistema.
 - A marca deve recuar quando o instrumento, o dado ou a tarefa já comunicam claramente que o usuário está no QuantoLab.
+- Na homepage, o header pertence ao mesmo campo escuro do hero; por isso o wordmark é apresentado em versão clara por tratamento de superfície.
 
 ### Paleta
 
@@ -69,9 +71,23 @@ Objetivo: compreensão. Priorizar medida de leitura, hierarquia, fontes e wayfin
 
 Lime comunica ação, estado ativo, leitura principal ou uma assinatura de marca claramente definida. Na homepage, o resultado da calculadora e o fechamento de ação são os usos de maior intensidade. Não espalhar lime como decoração entre todas as seções.
 
-### Dark mode
+### Light e dark mode
 
-O modo escuro preserva o mesmo sistema, com superfícies `#111113`, `#19191C` e `#202024`. Lime permanece a cor de assinatura. Não usar glow como substituto de contraste.
+Os temas são compostos como sistemas próprios, não como inversões mecânicas.
+
+**Homepage / Persuade**
+- header e hero permanecem escuros em light e dark mode porque formam o campo de marca e de demonstração do instrumento;
+- a preferência de tema passa a influenciar principalmente as superfícies que vêm depois da primeira dobra;
+- light mode usa off-white, papel claro e tons suaves intermediários;
+- dark mode usa carvão profundo com diferenças reais de elevação entre canvas, método e conteúdo editorial;
+- a transição hero → conteúdo pode usar um gradiente atmosférico curto e controlado para evitar corte preto/branco;
+- gradientes não podem criar glow, neon, halo ou decoração autônoma.
+
+**Operate / Read**
+- o tema do usuário governa toda a superfície;
+- light prioriza leitura em off-white/branco;
+- dark usa superfícies `#111113`, `#19191C` e `#202024` com contraste composto explicitamente;
+- lime permanece a cor de assinatura e estado ativo.
 
 ### Tipografia
 
@@ -93,20 +109,22 @@ O modo escuro preserva o mesmo sistema, com superfícies `#111113`, `#19191C` e 
 - Inputs: 10 px.
 - Form/result panels: 12–16 px.
 - A homepage não usa diagonais ou geometrias decorativas como recurso recorrente de transição.
-- Continuidade visual é construída por alinhamento, ritmo, espaço e contraste de superfície.
+- Continuidade visual é construída por alinhamento, ritmo, espaço, contraste tonal e transições atmosféricas discretas.
 - Geometria adicional só entra quando pertence à lógica de instrumento ou medição e melhora compreensão.
 - Não usar glassmorphism.
-- Não usar gradiente decorativo, glow, bento genérico ou estética Web3/AI SaaS.
+- Não usar glow, gradient text, bento genérico ou estética Web3/AI SaaS.
+- Gradiente só é permitido quando une superfícies próximas ou cria atmosfera de fundo de baixa intensidade; nunca deve ser o protagonista.
 
 ## 5. Navegação
 
 O header funciona como um rail sólido de instrumento:
 - altura de 68 px em desktop;
 - fundo sólido, sem blur;
+- na homepage, compartilha a mesma superfície escura do hero e não cria uma faixa clara independente;
 - wordmark oficial à esquerda em desktop/tablet;
 - símbolo isolado em navegação compacta/mobile;
 - navegação e tema à direita;
-- borda inferior de 1 px;
+- separadores devem ser discretos e não interromper a continuidade com o hero;
 - foco visível e área mínima de toque preservados.
 
 ## 6. Homepage
@@ -114,7 +132,9 @@ O header funciona como um rail sólido de instrumento:
 ### Primeira dobra
 
 Desktop:
-- campo preto contínuo, sem decoração de fundo competitiva;
+- header e hero formam um único ambiente escuro contínuo;
+- o hero usa um gradiente tonal quase imperceptível entre carvão e preto esverdeado, sem glow;
+- não existe faixa vazia ou corte visual rígido entre navegação e conteúdo;
 - grid de duas colunas com maior área visual para o instrumento;
 - copy mais contida à esquerda;
 - instrumento funcional de salário líquido à direita;
@@ -124,6 +144,7 @@ Desktop:
 - CTA principal leva ao catálogo e CTA secundário à metodologia.
 
 Mobile:
+- header permanece escuro e integrado ao hero;
 - copy curta primeiro;
 - símbolo compacto no header;
 - instrumento aparece imediatamente em seguida;
@@ -131,9 +152,20 @@ Mobile:
 - CTAs tornam-se empilhados;
 - corpo e descrições não devem depender de microtipografia para caber.
 
+### Transição hero → conteúdo
+
+Entre hero e conteúdo existe uma transição atmosférica curta, sem corte geométrico e sem plano lime.
+
+Light mode:
+- escuro do hero evolui gradualmente para off-white em uma faixa curta;
+- a faixa não carrega conteúdo importante e deve ser percebida como ambiente, não como efeito.
+
+Dark mode:
+- a mesma região conecta o hero a um carvão ligeiramente mais claro, com contraste muito menor.
+
 ### Rail de confiança
 
-Entre hero e conteúdo existe uma faixa neutra de confiança, sem plano lime ou corte decorativo. Ela apresenta:
+Após a transição existe uma faixa neutra de confiança que apresenta:
 - sem cadastro obrigatório;
 - cálculos verificáveis;
 - referências quando aplicável;
@@ -152,7 +184,8 @@ A função é reduzir ansiedade e conectar superfícies, não criar um novo pico
 
 ### Método
 
-- a seção é um campo escuro estável, sem entrada diagonal;
+- em light mode, método permanece na família de superfícies claras, usando um tom suave intermediário em vez de um grande bloco preto;
+- em dark mode, usa carvão um pouco elevado em relação ao canvas;
 - `Calcular / Conferir / Continuar` permanece uma sequência real, portanto `01 / 02 / 03` pode ser usado;
 - números são pequenos e funcionais, não elementos gráficos dominantes;
 - em mobile, a sequência retorna a uma coluna clara e previsível.
@@ -160,6 +193,8 @@ A função é reduzir ansiedade e conectar superfícies, não criar um novo pico
 ### Guias
 
 - os três guias usam composição editorial alinhada;
+- light mode usa superfície de papel levemente distinta do diretório;
+- dark mode usa carvão editorial com contraste tonal próprio;
 - não há offsets verticais artificiais entre os itens;
 - cada item é ancorado por linha superior, categoria, título e contexto;
 - a seção é secundária ao instrumento e ao diretório.
