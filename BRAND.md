@@ -1,42 +1,41 @@
 # QuantoLab — Brand Identity
 
-## Marca principal
+## Marca oficial
 
-A identidade oficial da V2 usa o símbolo geométrico enviado para o projeto. A construção combina a leitura de `Q` e `L` em uma forma compacta, técnica e reconhecível.
+A assinatura principal do QuantoLab é o **wordmark completo oficial** fornecido para o projeto. Ele deve ser usado em contextos em que há espaço suficiente para identificação plena da marca, especialmente navegação desktop e superfícies institucionais.
 
-O símbolo é a marca. O nome `QuantoLab` deve funcionar como identificação textual de interface, não como um wordmark pesado colado ao símbolo.
+O símbolo isolado é um **asset compacto**, não a assinatura principal. Seu uso é reservado a situações em que o espaço, o formato ou a legibilidade tornam o wordmark completo inadequado.
 
 ## Arquivos oficiais
 
-- `quantolab-logo.svg` — assinatura de navegação: símbolo dominante + nome em peso secundário.
-- `favicon-ql.svg` — favicon versionado para quebrar cache de navegador.
-- `favicon.svg` — fallback compatível para páginas e integrações legadas.
-- `brand/mark-black.svg` — símbolo preto sem fundo, para superfícies claras.
-- `brand/mark-white.svg` — símbolo branco sem fundo, para superfícies escuras.
-- `brand/icon-lime.svg` — ícone lime `#D9FF66` com símbolo preto.
-- `brand/icon-black.svg` — ícone preto com símbolo branco.
+- `quantolab-logo.svg` — wordmark oficial preto, usado como assinatura principal.
+- `brand/mark-black.svg` — símbolo isolado preto para superfícies claras e contextos compactos.
+- `brand/mark-white.svg` — símbolo isolado branco para superfícies escuras e contextos compactos.
+- `brand/icon-lime.svg` — ícone contido lime `#D9FF66` com símbolo preto.
+- `brand/icon-black.svg` — ícone contido preto com símbolo branco.
+- `favicon.svg` — favicon oficial em formato de ícone; recebe versionamento de URL em runtime para evitar cache persistente.
 
 ## Hierarquia de uso
 
-1. **Produto / navegação:** o símbolo é protagonista. O texto `QuantoLab` deve ser menor e menos pesado que o símbolo.
-2. **Interfaces compactas:** usar o símbolo isoladamente quando o contexto já identifica o produto.
-3. **Footer e superfícies institucionais:** manter a marca discreta; o conteúdo e a navegação têm prioridade.
-4. **Favicon, app icon e avatar:** usar o ícone lime com símbolo preto.
+1. **Header desktop e tablet:** usar o wordmark oficial completo.
+2. **Header mobile e contextos compactos:** usar o símbolo isolado quando o wordmark comprometer espaço ou leitura.
+3. **Footer e superfícies institucionais:** usar o wordmark oficial completo de forma discreta.
+4. **Favicon, app icon e avatar:** usar a versão de ícone, nunca o wordmark horizontal.
+5. **Dados, resultados e ferramentas:** a marca deve recuar; o conteúdo e a decisão do usuário permanecem protagonistas.
 
-## Cache de favicon
+## Favicon
 
-A homepage mantém `/favicon.svg` como fallback estável para compatibilidade e SEO técnico e declara `/favicon-ql.svg` como asset versionado adicional. Quando houver uma mudança visual relevante no favicon, alterar o caminho versionado evita depender do cache persistente que alguns navegadores aplicam a favicons.
+O HTML mantém um único favicon funcional. `theme.js` normaliza qualquer declaração legada para uma única referência a `/favicon.svg` com query de versão. Isso evita duas fontes concorrentes e força atualização do asset quando houver mudança de identidade.
 
 ## Regras de aplicação
 
 - Lime oficial: `#D9FF66`.
-- Usar o símbolo preto em fundos claros.
-- Usar o símbolo branco em fundos escuros.
-- Não deformar, inclinar, redesenhar ou alterar a proporção do símbolo.
-- Não tratar o nome `QuantoLab` como um segundo elemento de alto peso visual competindo com o símbolo.
-- Não aplicar glow, gradientes decorativos, sombras de marca ou efeitos que contrariem o conceito Digital Instrument System.
-- Preservar área de respiro ao redor do símbolo equivalente, no mínimo, à espessura visual do traço principal.
+- Não reconstruir o wordmark com tipografia do sistema.
+- Não separar, redesenhar, inclinar ou alterar a proporção do wordmark oficial.
+- Não usar o símbolo isolado por padrão quando houver espaço adequado para o wordmark.
+- Não aplicar glow, gradientes decorativos ou efeitos que contrariem o conceito Digital Instrument System.
+- Preservar área de respiro suficiente ao redor da assinatura.
 
 ## Relação com o sistema visual
 
-A marca deve reforçar a direção `QuantoLab — Digital Instrument System`: precisão, leitura técnica, clareza editorial e assinatura lime controlada. Ela funciona como identificador do produto e deve recuar quando a tarefa, o dado ou o conteúdo precisar ser protagonista.
+A identidade deve reforçar `QuantoLab — Digital Instrument System`: precisão, leitura técnica, clareza editorial e assinatura lime controlada. O wordmark identifica a marca; o símbolo resolve compactação; nenhum dos dois deve competir com a tarefa principal do produto.
