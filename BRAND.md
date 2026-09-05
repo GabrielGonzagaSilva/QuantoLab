@@ -13,7 +13,8 @@ O símbolo isolado é um **asset compacto**, não a assinatura principal. Seu us
 - `brand/mark-white.svg` — símbolo isolado branco para superfícies escuras e contextos compactos.
 - `brand/icon-lime.svg` — ícone contido lime `#D9FF66` com símbolo preto.
 - `brand/icon-black.svg` — ícone contido preto com símbolo branco.
-- `favicon.svg` — favicon oficial em formato de ícone; recebe versionamento de URL em runtime para evitar cache persistente.
+- `favicon-20260905.svg` — favicon oficial ativo, com pathname próprio para invalidar caches antigos.
+- `favicon.svg` — fallback legado mantido por compatibilidade e pelo contrato de SEO existente.
 
 ## Hierarquia de uso
 
@@ -25,7 +26,7 @@ O símbolo isolado é um **asset compacto**, não a assinatura principal. Seu us
 
 ## Favicon
 
-O HTML mantém um único favicon funcional. `theme.js` normaliza qualquer declaração legada para uma única referência a `/favicon.svg` com query de versão. Isso evita duas fontes concorrentes e força atualização do asset quando houver mudança de identidade.
+O HTML conserva `/favicon.svg` como fallback estável. Durante o carregamento, `theme.js` remove declarações concorrentes e normaliza o navegador para uma única referência a `/favicon-20260905.svg`. O pathname novo é intencional: favicons podem permanecer em cache mesmo quando o conteúdo do arquivo original muda.
 
 ## Regras de aplicação
 
