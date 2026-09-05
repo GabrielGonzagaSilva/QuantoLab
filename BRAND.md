@@ -23,6 +23,10 @@ O símbolo é a marca. O nome `QuantoLab` deve funcionar como identificação te
 3. **Footer e superfícies institucionais:** manter a marca discreta; o conteúdo e a navegação têm prioridade.
 4. **Favicon, app icon e avatar:** usar o ícone lime com símbolo preto.
 
+## Cache de favicon
+
+A homepage mantém `/favicon.svg` como fallback estável para compatibilidade e SEO técnico e declara `/favicon-ql.svg` como asset versionado adicional. Quando houver uma mudança visual relevante no favicon, alterar o caminho versionado evita depender do cache persistente que alguns navegadores aplicam a favicons.
+
 ## Regras de aplicação
 
 - Lime oficial: `#D9FF66`.
