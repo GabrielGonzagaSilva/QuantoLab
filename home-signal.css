@@ -1,0 +1,175 @@
+/* QuantoLab · Persuade signature · Hard Signal Gradient
+   One authored brand gesture: black → deep green → lime + restrained raster grain.
+   Scope: homepage only. Operate/Read surfaces remain unaffected. */
+
+.home-v2{
+  --signal-black:#070807;
+  --signal-deep:#0b1307;
+  --signal-green:#315f0b;
+  --signal-mid:#79c10f;
+  --signal-lime:#d9ff66;
+  --signal-grain:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAAAAABWESUoAAAD20lEQVR42gXB+VLidgAA4CS/hGA4EiBAgnIJLkdFUVZ33bWd3XXH7sx22hfoW/QV2ufoTKcv0L96baeOOutZdcETZBHEhEvCmYsc/T74p9IiOSJr42gPnvk9e0IMozPWD4lIl4fjZsfGcWgAEb19R+iszNllXPmap9BSZwYpRPsJ253UTwGE807/6b4zWfCVPYbMnpl6KfNSdHI3z6f/uTVi1jhCDjmTUjFqmuM015EbvxGFvH5O5bhhEoWk3w7BRp5uqvVGlyEUJ23zTuWNkfYU8KnqFd1vdaMdxBUWvok5V3JVV/YIQ+9NDAvNNiYbwgJxvWzP0hp4xZJbRsw4wEVh4vi4srPk67CHuU/Kf74l1Z7vvATfA3FWpWuBfuZED1pUm1t4qL1r4+VEfIvq21AJRK0tgPF34tPerU7b7QhVI8dyVUqpmKcVYagu4rTfeuX42zXM+PbtnbhTgaS0xswNOOrKR2/hZw3459bpknPiq9wtD4pG2nTvvdlL6Rr9b8KlN501kgDu4erwRrdcRI792XLm1jW0j2XStf3yyKyH60xUA8kNIdxfMvFKrNhc3yb4wWOy2r6G+FcTazHcd5TgHyvBB8m7cMhWg04CQ+teaISYOrHrc5U3W5fzbjBnUjOtQCXiCONTJ0Mu81cM6db6miiu6sfLBVQCX67cW+gHzEN/sLAyzeOsQHQ661bVpZX0KZM10PRuNAJrjlPoOfe3fURCeF25c2JEPeyiU+14hUT6Spi7YUcy9hEz1uAnzG47+l6uD/3til/X9x81+NdS5V0LKGLV61XLcYgjP0Ob0Kn87EIYr0ImTAOfHMc0vtGerH2ee2hy2GitO1tMR9sh36J1R0mo8C/7tgHqSguw5ik6MPqwtWKFRAllKrDNOH8/qgA2ZekYuT/IsX+vjpvXL8p+tFNHZcleVftvTkYamrT28Ow9cY8GbTlU1UVvm0uFuCS5T7CFR3vQBMyEQ/yeriPL85K7WbcQQRkSl+uOy9c33in5qgl+qFLux0u3+Mm6Wm/OMHl6f700skoP8asBGMSra2AdRi2cQbFav7yke1SlGu96QORURkIhYc5gauAF5eGfGZGbxZa1Vy1nHCk+xYvKciyANIKXhtZFO/69icfVs1nEnCtvvZKmG+ZCTRHaAqEA3LjwIyu6mjr1tg0phZ4wVE0oppkD4Vahs3NjlgutpMGm83FEd7AhA0MjO8ekHjQR5h264xjMXwTYfQVBD8jAcFAzt5CLtGMhduhrTk3wJFqY6WHxJ9uYAb4bZFpopBqAr744H1nyicL8kIkWVWyxMJx4AAr9D7oT/HG+baNVAAAAAElFTkSuQmCC");
+}
+
+/* Hero signature: the signal occupies one deliberate region instead of becoming UI chrome. */
+.home-v2 .lab-hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:var(--signal-black);
+}
+.home-v2 .lab-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(
+    118deg,
+    var(--signal-black) 0%,
+    var(--signal-black) 45%,
+    #091006 50%,
+    #173b08 56%,
+    #4e920b 63%,
+    #a7e817 70%,
+    var(--signal-lime) 78%,
+    #e4ff8f 100%
+  );
+  pointer-events:none;
+}
+.home-v2 .lab-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background-image:
+    linear-gradient(90deg,rgba(7,8,7,.48) 0%,rgba(7,8,7,.18) 38%,rgba(7,8,7,0) 61%),
+    var(--signal-grain);
+  background-size:auto,32px 32px;
+  background-repeat:no-repeat,repeat;
+  background-blend-mode:normal,soft-light;
+  opacity:.12;
+  pointer-events:none;
+}
+.home-v2 .lab-hero-grid{position:relative;z-index:2}
+.home-v2 .lab-hero-copy h1{text-shadow:0 1px 0 rgba(0,0,0,.08)}
+.home-v2 .lab-instrument{
+  border-color:rgba(255,255,255,.16);
+  box-shadow:0 34px 90px rgba(0,0,0,.30),0 1px 0 rgba(255,255,255,.05) inset;
+}
+
+/* The bridge stays short and tonal: signature dissolves into the reading canvas. */
+.home-v2 .lab-trust{padding-top:clamp(76px,6vw,96px)}
+.home-v2 .lab-trust::before{
+  height:clamp(76px,6vw,96px);
+  background-image:
+    linear-gradient(180deg,#11170d 0%,#263319 26%,#59654a 52%,#aeb5a5 76%,var(--home-canvas) 100%),
+    var(--signal-grain);
+  background-size:auto,32px 32px;
+  background-repeat:no-repeat,repeat;
+  background-blend-mode:normal,soft-light;
+}
+
+/* Closing signature mirrors the opening without creating another visual language. */
+.home-v2 .lab-close{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:var(--signal-lime);
+}
+.home-v2 .lab-close::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(
+    118deg,
+    #e5ff91 0%,
+    var(--signal-lime) 46%,
+    #9cdd16 58%,
+    #4b8210 68%,
+    #1b350b 76%,
+    #0a0d08 86%,
+    var(--signal-black) 100%
+  );
+  pointer-events:none;
+}
+.home-v2 .lab-close::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background-image:var(--signal-grain);
+  background-size:32px 32px;
+  background-repeat:repeat;
+  mix-blend-mode:soft-light;
+  opacity:.10;
+  pointer-events:none;
+}
+.home-v2 .lab-close-inner{position:relative;z-index:2}
+.home-v2 .lab-close h2{max-width:690px}
+.home-v2 .lab-close p{color:#283117}
+.home-v2 .lab-close .lab-action--inverse{
+  background:#090a09;
+  border-color:rgba(255,255,255,.20);
+  color:#f7f7f3;
+  box-shadow:0 18px 44px rgba(0,0,0,.18);
+}
+
+/* Dark mode keeps the same brand signal; theme changes begin after the Persuade field. */
+:root[data-resolved-theme="dark"] .home-v2 .lab-trust::before{
+  background-image:
+    linear-gradient(180deg,#11170d 0%,#151d11 38%,#121514 72%,var(--home-canvas) 100%),
+    var(--signal-grain);
+}
+
+@media(hover:hover){
+  .home-v2 .lab-close .lab-action--inverse:hover{
+    background:#151815;
+    border-color:rgba(217,255,102,.45);
+  }
+}
+
+/* Once the layout stacks, the signal moves down so copy remains calm and the instrument owns the color field. */
+@media(max-width:900px){
+  .home-v2 .lab-hero::before{
+    background:linear-gradient(
+      164deg,
+      var(--signal-black) 0%,
+      var(--signal-black) 38%,
+      #0b1407 46%,
+      #28580a 57%,
+      #79be0f 67%,
+      var(--signal-lime) 78%,
+      #e4ff8f 100%
+    );
+  }
+  .home-v2 .lab-hero::after{
+    background-image:
+      linear-gradient(180deg,rgba(7,8,7,.42) 0%,rgba(7,8,7,.10) 46%,rgba(7,8,7,0) 72%),
+      var(--signal-grain);
+  }
+  .home-v2 .lab-close::before{
+    background:linear-gradient(156deg,#e5ff91 0%,var(--signal-lime) 60%,#5d9d10 76%,#17300a 88%,var(--signal-black) 100%);
+  }
+}
+
+@media(max-width:760px){
+  .home-v2 .lab-trust{padding-top:70px}
+  .home-v2 .lab-trust::before{height:70px}
+  .home-v2 .lab-instrument{box-shadow:0 24px 56px rgba(0,0,0,.24)}
+}
+
+@media(max-width:430px){
+  .home-v2 .lab-hero::before{
+    background:linear-gradient(168deg,var(--signal-black) 0%,var(--signal-black) 42%,#173808 56%,#6aac0d 68%,var(--signal-lime) 82%,#e4ff8f 100%);
+  }
+  .home-v2 .lab-trust{padding-top:62px}
+  .home-v2 .lab-trust::before{height:62px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .home-v2 .lab-hero::before,
+  .home-v2 .lab-hero::after,
+  .home-v2 .lab-close::before,
+  .home-v2 .lab-close::after{animation:none!important}
+}
