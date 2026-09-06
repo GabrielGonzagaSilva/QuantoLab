@@ -11,7 +11,8 @@
   const WORDMARK_SRC='/quantolab-logo.svg';
   const COMPACT_MARK_SRC='/brand/mark-black.svg';
   const FAVICON_SRC='/favicon-20260905.svg';
-  let selected='system';
+  const DARK_ONLY_STYLES='/dark-only.css';
+  let selected='dark';
   let button=null;
   let icon=null;
   let label=null;
@@ -23,6 +24,13 @@
     link.rel='stylesheet';
     link.href='/platform.css';
     document.head.appendChild(link);
+  }
+
+  if(!document.querySelector(`link[href="${DARK_ONLY_STYLES}"]`)){
+    const darkOnly=document.createElement('link');
+    darkOnly.rel='stylesheet';
+    darkOnly.href=DARK_ONLY_STYLES;
+    document.head.appendChild(darkOnly);
   }
 
   function normalizeFavicon(){
@@ -83,10 +91,8 @@
   function storageSet(key,value){try{localStorage.setItem(key,value);return true;}catch{return false;}}
   function storageRemove(key){try{localStorage.removeItem(key);}catch{}}
 
-  try{const saved=storageGet(STORAGE_KEY);if(THEMES.includes(saved))selected=saved;}catch{}
-
-  const resolvedTheme=()=>selected==='system'?(media.matches?'dark':'light'):selected;
-  const nextTheme=()=>THEMES[(THEMES.indexOf(selected)+1)%THEMES.length];
+  const resolvedTheme=()=> 'dark';
+  const nextTheme=()=> 'dark';
   const names={system:'Sistema',light:'Claro',dark:'Escuro'};
   const icons={system:'◐',light:'☀',dark:'☾'};
 
@@ -98,19 +104,14 @@
   }
 
   function applyTheme(){
-    const resolved=resolvedTheme();root.dataset.theme=selected;root.dataset.resolvedTheme=resolved;root.style.colorScheme=resolved;
-    const themeColor=document.querySelector('meta[name="theme-color"]');if(themeColor)themeColor.setAttribute('content',resolved==='dark'?'#101012':'#D9FF66');updateButton();
+    root.dataset.theme='dark';root.dataset.resolvedTheme='dark';root.style.colorScheme='dark';
+    storageSet(STORAGE_KEY,'dark');
+    const themeColor=document.querySelector('meta[name="theme-color"]');if(themeColor)themeColor.setAttribute('content','#101012');updateButton();
   }
 
-  function saveTheme(){storageSet(STORAGE_KEY,selected);}
+  function saveTheme(){storageSet(STORAGE_KEY,'dark');}
 
-  function mountToggle(){
-    const nav=document.querySelector('.header .nav');if(!nav||nav.querySelector('.theme-toggle'))return;
-    button=document.createElement('button');button.type='button';button.className='theme-toggle';if(!nav.querySelector('.navlinks'))button.classList.add('theme-toggle--solo');
-    icon=document.createElement('span');icon.className='theme-toggle__icon';icon.setAttribute('aria-hidden','true');
-    label=document.createElement('span');label.className='theme-toggle__label';button.append(icon,label);
-    button.addEventListener('click',()=>{selected=nextTheme();saveTheme();applyTheme();});nav.appendChild(button);updateButton();
-  }
+  function mountToggle(){return;}
 
   function mountFooterMeta(){
     const footer=document.querySelector('.footer');const shell=footer?.querySelector('.shell');if(!shell||shell.querySelector('.footer-meta'))return;
@@ -248,10 +249,10 @@
     }
   };
 
-  function mountUI(){normalizeSiteTypography();syncHeaderBrand();mountToggle();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
+  function mountUI(){normalizeSiteTypography();syncHeaderBrand();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
-  const onSystemChange=()=>{if(selected==='system')applyTheme();};if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);else if(typeof media.addListener==='function')media.addListener(onSystemChange);
+  const onSystemChange=()=>{};if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);else if(typeof media.addListener==='function')media.addListener(onSystemChange);
   const onBrandLayoutChange=()=>syncHeaderBrand();if(typeof compactBrandMedia.addEventListener==='function')compactBrandMedia.addEventListener('change',onBrandLayoutChange);else if(typeof compactBrandMedia.addListener==='function')compactBrandMedia.addListener(onBrandLayoutChange);
 })();

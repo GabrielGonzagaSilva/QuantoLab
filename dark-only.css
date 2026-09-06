@@ -1,0 +1,8 @@
+/* QuantoLab · Dark-only guardrails */
+:root{color-scheme:dark}
+.theme-toggle{display:none!important}
+.num{
+  color:#f7f8f3!important;
+  background:rgba(213,255,64,.16)!important;
+  border-color:rgba(213,255,64,.24)!important;
+}

@@ -189,34 +189,24 @@ test.describe('terms consent', () => {
   });
 });
 
-test.describe('theme control', () => {
-  test.use({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
+test.describe('dark-only theme', () => {
+  test.use({ viewport: { width: 390, height: 844 }, colorScheme: 'light' });
 
-  test('follows the device, cycles themes and persists the choice', async ({ page }) => {
+  test('stays dark, exposes no theme toggle and persists the dark contract', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
     await acceptTermsIfNeeded(page);
     const html = page.locator('html');
-    const toggle = page.locator('.theme-toggle');
 
-    await expect(toggle).toBeVisible();
-    await expect(html).toHaveAttribute('data-theme', 'system');
-    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
-
-    await toggle.click();
-    await expect(html).toHaveAttribute('data-theme', 'light');
-    await expect(html).toHaveAttribute('data-resolved-theme', 'light');
-
-    await toggle.click();
+    await expect(page.locator('.theme-toggle')).toHaveCount(0);
     await expect(html).toHaveAttribute('data-theme', 'dark');
     await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+    expect(await page.evaluate(() => localStorage.getItem('quantolab-theme'))).toBe('dark');
 
     await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.locator('.theme-toggle')).toHaveCount(0);
     await expect(html).toHaveAttribute('data-theme', 'dark');
     await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
-
-    await page.locator('.theme-toggle').click();
-    await expect(html).toHaveAttribute('data-theme', 'system');
-    await expect(html).toHaveAttribute('data-resolved-theme', 'dark');
+    expect(await page.evaluate(() => localStorage.getItem('quantolab-theme'))).toBe('dark');
   });
 });
 
