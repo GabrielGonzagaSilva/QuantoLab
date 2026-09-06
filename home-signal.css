@@ -58,7 +58,8 @@
 
 /* Bridge: same reference gradient. Never fades to white/off-white. */
 .home-v2 .lab-trust{padding-top:clamp(82px,6.5vw,108px)}
-.home-v2 .lab-trust::before{
+.home-v2 .lab-trust::before,
+:root[data-resolved-theme="dark"] .home-v2 .lab-trust::before{
   height:clamp(82px,6.5vw,108px);
   background-image:
     linear-gradient(
@@ -152,7 +153,8 @@
       linear-gradient(180deg,rgba(5,6,5,.46) 0%,rgba(5,6,5,.12) 46%,rgba(5,6,5,0) 73%),
       var(--signal-grain);
   }
-  .home-v2 .lab-trust::before{
+  .home-v2 .lab-trust::before,
+  :root[data-resolved-theme="dark"] .home-v2 .lab-trust::before{
     background-image:
       linear-gradient(160deg,var(--signal-black) 0%,#102407 42%,#68aa0d 62%,var(--signal-lime) 76%,#4b810b 88%,#121214 100%),
       var(--signal-grain);
@@ -164,7 +166,8 @@
 
 @media(max-width:760px){
   .home-v2 .lab-trust{padding-top:74px}
-  .home-v2 .lab-trust::before{height:74px}
+  .home-v2 .lab-trust::before,
+  :root[data-resolved-theme="dark"] .home-v2 .lab-trust::before{height:74px}
   .home-v2 .lab-instrument{box-shadow:0 24px 56px rgba(0,0,0,.24)}
 }
 
@@ -173,7 +176,8 @@
     background:linear-gradient(168deg,var(--signal-black) 0%,var(--signal-black) 42%,#173808 56%,#69ad0d 69%,var(--signal-lime) 83%,var(--signal-lime) 100%);
   }
   .home-v2 .lab-trust{padding-top:66px}
-  .home-v2 .lab-trust::before{height:66px}
+  .home-v2 .lab-trust::before,
+  :root[data-resolved-theme="dark"] .home-v2 .lab-trust::before{height:66px}
 }
 
 @media(prefers-reduced-motion:reduce){
