@@ -4,7 +4,7 @@
   const STORAGE_KEY='quantolab-theme';
   const TERMS_KEY='quantolab-terms-v2026-08-16';
   const PROFILE_KEY='quantolab-profile-v1';
-  const THEMES=['dark'];
+  const THEMES=['system','light','dark'];
   const root=document.documentElement;
   const media=window.matchMedia('(prefers-color-scheme: dark)');
   const compactBrandMedia=window.matchMedia('(max-width:700px)');
@@ -91,8 +91,6 @@
   function storageSet(key,value){try{localStorage.setItem(key,value);return true;}catch{return false;}}
   function storageRemove(key){try{localStorage.removeItem(key);}catch{}}
 
-  try{const saved=storageGet(STORAGE_KEY);if(THEMES.includes(saved))selected=saved;}catch{}
-
   const resolvedTheme=()=> 'dark';
   const nextTheme=()=> 'dark';
   const names={system:'Sistema',light:'Claro',dark:'Escuro'};
@@ -106,7 +104,7 @@
   }
 
   function applyTheme(){
-    const resolved=resolvedTheme();root.dataset.theme='dark';root.dataset.resolvedTheme='dark';root.style.colorScheme='dark';
+    root.dataset.theme='dark';root.dataset.resolvedTheme='dark';root.style.colorScheme='dark';
     storageSet(STORAGE_KEY,'dark');
     const themeColor=document.querySelector('meta[name="theme-color"]');if(themeColor)themeColor.setAttribute('content','#101012');updateButton();
   }
