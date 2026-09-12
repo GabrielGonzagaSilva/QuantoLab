@@ -92,14 +92,7 @@ await fillSalary(page);
 await shotUnion(page, ['.calc-hero', '.trust-row', '.calc-grid'], '03-salario-liquido-preenchida.png', 'Calculadora de Salário Líquido — tela preenchida', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await calculateSalary(page);
 await shotLocator(page, '.calc-grid', '04-salario-liquido-resultado.png', 'Calculadora de Salário Líquido — resultado detalhado', { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
-
-const details = page.locator('details.result-details');
-if (await details.count()) {
-  const isOpen = await details.evaluate(el => el.open);
-  if (!isOpen) await details.locator('summary').click();
-}
-await page.waitForTimeout(200);
-await shotUnion(page, ['[data-tool-result]', '.article', '.source-note'], '05-salario-liquido-premissas-fontes.png', 'Salário Líquido — resultado, detalhamento, premissas e fonte', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
+await shotUnion(page, ['[data-tool-result]', '.article', '.source-note'], '05-salario-liquido-premissas-fontes.png', 'Salário Líquido — resultado, interpretação, premissas e fonte', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await shotLocator(page, '.next-decision', '06-proxima-decisao.png', 'Ferramentas relacionadas / próxima decisão', { viewport: 'desktop' });
 await shotLocator(page, '.calc-grid', '12-componentes-em-uso.png', 'Sistema — componentes e padrões em uso na calculadora', { viewport: 'desktop', note: 'Real product UI used as evidence of the design system in production.' });
 
