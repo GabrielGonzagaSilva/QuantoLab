@@ -1,0 +1,219 @@
+{
+  "generatedAt": "2026-09-12T23:57:08.421Z",
+  "source": "https://quantolab.com.br",
+  "policy": "Every image is captured directly from the live production website using Chromium/Playwright. No mockups or reconstructed UI.",
+  "desktop": {
+    "viewport": "1440x900",
+    "deviceScaleFactor": 2
+  },
+  "mobile": {
+    "viewport": "390x844",
+    "deviceScaleFactor": 2
+  },
+  "files": [
+    {
+      "filename": "01-homepage-hero.png",
+      "label": "Homepage — Hero",
+      "url": "https://quantolab.com.br/",
+      "selectors": [
+        "header.header",
+        ".lab-hero"
+      ],
+      "capturedAt": "2026-09-12T23:57:10.947Z",
+      "viewport": "desktop",
+      "bytes": 2251714
+    },
+    {
+      "filename": "02-homepage-comece-pela-duvida.png",
+      "label": "Homepage — Comece pela sua dúvida",
+      "url": "https://quantolab.com.br/",
+      "selectors": [
+        ".lab-directory"
+      ],
+      "capturedAt": "2026-09-12T23:57:11.112Z",
+      "viewport": "desktop",
+      "bytes": 240747
+    },
+    {
+      "filename": "03-salario-liquido-preenchida.png",
+      "label": "Calculadora de Salário Líquido — tela preenchida",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        ".calc-hero",
+        ".trust-row",
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:12.561Z",
+      "viewport": "desktop",
+      "input": {
+        "salario": 5000,
+        "descontos": 0,
+        "dependentes": 0
+      },
+      "bytes": 199987
+    },
+    {
+      "filename": "04-salario-liquido-resultado.png",
+      "label": "Calculadora de Salário Líquido — resultado detalhado",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:13.107Z",
+      "viewport": "desktop",
+      "input": {
+        "salario": 5000,
+        "descontos": 0,
+        "dependentes": 0
+      },
+      "bytes": 192320
+    },
+    {
+      "filename": "05-salario-liquido-premissas-fontes.png",
+      "label": "Salário Líquido — resultado, interpretação, premissas e fonte",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        "[data-tool-result]",
+        ".article",
+        ".source-note"
+      ],
+      "capturedAt": "2026-09-12T23:57:13.204Z",
+      "viewport": "desktop",
+      "input": {
+        "salario": 5000,
+        "descontos": 0,
+        "dependentes": 0
+      },
+      "bytes": 191366
+    },
+    {
+      "filename": "06-proxima-decisao.png",
+      "label": "Ferramentas relacionadas / próxima decisão",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        ".next-decision"
+      ],
+      "capturedAt": "2026-09-12T23:57:13.299Z",
+      "viewport": "desktop",
+      "bytes": 65790
+    },
+    {
+      "filename": "07-catalogo-por-dominio.png",
+      "label": "Catálogo de ferramentas por domínio — CLT, PJ, Freelancer e Financeiro",
+      "url": "https://quantolab.com.br/ferramentas",
+      "selectors": [
+        ".catalog-hero",
+        ".journey-section:nth-of-type(2)",
+        ".journey-section:nth-of-type(3)",
+        ".journey-section:nth-of-type(4)",
+        ".journey-section:nth-of-type(5)"
+      ],
+      "capturedAt": "2026-09-12T23:57:14.704Z",
+      "viewport": "desktop",
+      "bytes": 221645
+    },
+    {
+      "filename": "08-clt-pj-preenchida.png",
+      "label": "Comparador CLT x PJ — tela preenchida",
+      "url": "https://quantolab.com.br/comparador-profissional",
+      "selectors": [
+        ".calc-hero",
+        ".trust-row",
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:16.082Z",
+      "viewport": "desktop",
+      "input": {
+        "salarioCLT": 7000,
+        "valeRefeicao": 800,
+        "outrosBeneficios": 600,
+        "simples": 6
+      },
+      "bytes": 224707
+    },
+    {
+      "filename": "09-clt-pj-resultado.png",
+      "label": "Comparador CLT x PJ — resultado da comparação",
+      "url": "https://quantolab.com.br/comparador-profissional",
+      "selectors": [
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:17.484Z",
+      "viewport": "desktop",
+      "input": {
+        "salarioCLT": 7000,
+        "valeRefeicao": 800,
+        "outrosBeneficios": 600,
+        "simples": 6
+      },
+      "bytes": 321594
+    },
+    {
+      "filename": "10-metodologia.png",
+      "label": "Página de metodologia — princípios e revisão",
+      "url": "https://quantolab.com.br/metodologia",
+      "selectors": [
+        ".legal-hero",
+        "[data-method-review=\"true\"]",
+        ".article > h2:nth-of-type(2)",
+        ".article > p:nth-of-type(3)"
+      ],
+      "capturedAt": "2026-09-12T23:57:18.758Z",
+      "viewport": "desktop",
+      "bytes": 269843
+    },
+    {
+      "filename": "11-fontes-oficiais-referencias-2026.png",
+      "label": "Fontes oficiais e referências fiscais 2026",
+      "url": "https://quantolab.com.br/metodologia",
+      "selectors": [
+        "heading: Fontes oficiais e referências",
+        "following ul",
+        "following .notice"
+      ],
+      "capturedAt": "2026-09-12T23:57:18.849Z",
+      "viewport": "desktop",
+      "bytes": 109638
+    },
+    {
+      "filename": "12-componentes-em-uso.png",
+      "label": "Sistema — componentes e padrões em uso na calculadora",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:13.423Z",
+      "viewport": "desktop",
+      "note": "Real product UI used as evidence of the design system in production.",
+      "bytes": 186929
+    },
+    {
+      "filename": "13-calculadora-mobile.png",
+      "label": "Calculadora de Salário Líquido — versão mobile calculada",
+      "url": "https://quantolab.com.br/salario-liquido",
+      "selectors": [
+        ".calc-hero",
+        ".calc-grid"
+      ],
+      "capturedAt": "2026-09-12T23:57:20.801Z",
+      "viewport": "mobile",
+      "input": {
+        "salario": 5000,
+        "descontos": 0,
+        "dependentes": 0
+      },
+      "bytes": 81105
+    },
+    {
+      "filename": "14-homepage-cta-final.png",
+      "label": "Homepage — Qual decisão você precisa fazer agora?",
+      "url": "https://quantolab.com.br/",
+      "selectors": [
+        ".lab-close"
+      ],
+      "capturedAt": "2026-09-12T23:57:11.230Z",
+      "viewport": "desktop",
+      "bytes": 81059
+    }
+  ]
+}
