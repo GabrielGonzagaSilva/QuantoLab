@@ -1,0 +1,59 @@
+name: Portfolio Capture
+
+on:
+  push:
+    branches:
+      - portfolio-capture-temp
+    paths:
+      - 'scripts/portfolio-capture.mjs'
+      - '.github/workflows/portfolio-capture.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout capture branch
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-capture-temp
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Capture live QuantoLab
+        run: node scripts/portfolio-capture.mjs
+
+      - name: Upload capture artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: quantolab-portfolio-captures
+          path: |
+            portfolio-captures/
+            quantolab-portfolio-captures.zip
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Publish captures on temporary branch
+        run: |
+          git config user.name "QuantoLab Portfolio Capture"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f portfolio-captures quantolab-portfolio-captures.zip
+          if git diff --cached --quiet; then
+            echo "No capture changes"
+          else
+            git commit -m "Portfolio: capture live production screens [skip ci]"
+            git push origin HEAD:portfolio-capture-temp
+          fi
