@@ -13,7 +13,7 @@ const manifest = {
   generatedAt: new Date().toISOString(),
   source: BASE,
   policy: 'Every image is captured directly from the live production website using Chromium/Playwright. No mockups, reconstructed UI or generated imagery.',
-  captureNote: 'The terms dialog is accepted normally. For isolated component crops, sticky header positioning is neutralized only to prevent the real site header from covering the captured content while Playwright scrolls to it.',
+  captureNote: 'The real terms dialog is accepted normally. For isolated content crops, the sticky header node is temporarily omitted after page load so it does not cover the real content while Playwright scrolls to the capture target.',
   desktop: { viewport: '1440x900', deviceScaleFactor: 2 },
   mobile: { viewport: '390x844', deviceScaleFactor: 2 },
   files: []
@@ -38,8 +38,9 @@ async function ready(page, url) {
   await acceptTerms(page);
 }
 
-async function neutralizeStickyHeader(page) {
-  await page.addStyleTag({ content: 'header.header{position:static!important;top:auto!important;transform:none!important}' });
+async function omitStickyHeader(page) {
+  const header = page.locator('header.header');
+  if (await header.count()) await header.evaluate(el => el.remove());
 }
 
 async function addEntry(filename, page, label, selectors, extra = {}) {
@@ -85,29 +86,25 @@ async function calculateSalary(page) {
 const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, colorScheme: 'dark', locale: 'pt-BR' });
 const page = await desktop.newPage();
 
-// Homepage — live production.
 await ready(page, `${BASE}/`);
 await shotUnion(page, ['header.header', '.lab-hero'], '01-homepage-hero.png', 'Homepage — Hero', 0, { viewport: 'desktop' });
 await shotLocator(page, '.lab-directory', '02-homepage-comece-pela-duvida.png', 'Homepage — Comece pela sua dúvida', { viewport: 'desktop' });
 await shotLocator(page, '.lab-close', '14-homepage-cta-final.png', 'Homepage — Qual decisão você precisa fazer agora?', { viewport: 'desktop' });
 
-// Salary calculator — live inputs and real calculated state.
 await ready(page, `${BASE}/salario-liquido`);
 await fillSalary(page);
 await shotUnion(page, ['.calc-hero', '.trust-row', '.calc-grid'], '03-salario-liquido-preenchida.png', 'Calculadora de Salário Líquido — tela completa preenchida', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await calculateSalary(page);
-await neutralizeStickyHeader(page);
+await omitStickyHeader(page);
 await shotLocator(page, '.calc-grid', '04-salario-liquido-resultado.png', 'Calculadora de Salário Líquido — resultado detalhado com descontos', { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await shotUnion(page, ['.article', '.source-note'], '05-salario-liquido-premissas-fontes.png', 'Salário Líquido — interpretação, premissas e fonte verificável', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await shotLocator(page, '.next-decision', '06-proxima-decisao.png', 'Ferramentas relacionadas / próxima decisão', { viewport: 'desktop' });
 await shotLocator(page, '.calc-grid', '12-componentes-em-uso.png', 'Sistema — componentes e padrões em uso na calculadora', { viewport: 'desktop', note: 'Real production UI used as evidence of reusable patterns.' });
 
-// Full tools catalog — one real production capture covering all four decision domains.
 await ready(page, `${BASE}/ferramentas`);
-await neutralizeStickyHeader(page);
+await omitStickyHeader(page);
 await shotLocator(page, 'main > .shell', '07-catalogo-por-dominio.png', 'Catálogo de ferramentas por domínio — CLT, PJ, Freelancer e Financeiro', { viewport: 'desktop' });
 
-// CLT x PJ — real live form and result.
 await ready(page, `${BASE}/comparador-profissional`);
 await page.locator('#cltSalario').fill('7000');
 await page.locator('#valeTransporte').fill('0');
@@ -118,12 +115,11 @@ await shotUnion(page, ['.calc-hero', '.trust-row', '.calc-grid'], '08-clt-pj-pre
 await page.locator('#calcular').click();
 await page.locator('#clt-pj-result').waitFor({ state: 'visible', timeout: 10000 });
 await page.waitForTimeout(300);
-await neutralizeStickyHeader(page);
+await omitStickyHeader(page);
 await shotLocator(page, '.calc-grid', '09-clt-pj-resultado.png', 'Comparador CLT x PJ — resultado da comparação', { viewport: 'desktop', input: { salarioCLT: 7000, valeRefeicao: 800, outrosBeneficios: 600, simples: 6 } });
 
-// Methodology + official references.
 await ready(page, `${BASE}/metodologia`);
-await neutralizeStickyHeader(page);
+await omitStickyHeader(page);
 await shotUnion(page, ['.legal-hero', '[data-method-review="true"]', '.article > h2:nth-of-type(2)', '.article > p:nth-of-type(3)'], '10-metodologia.png', 'Página de metodologia — princípios e revisão', 0, { viewport: 'desktop' });
 
 const sourceHeading = page.getByRole('heading', { name: 'Fontes oficiais e referências', exact: true });
@@ -140,13 +136,12 @@ const sb = Math.max(...sourceBoxes.map(r => r.y + r.height)) + 12;
 await page.screenshot({ path: path.join(OUT, '11-fontes-oficiais-referencias-2026.png'), clip: { x: sx, y: sy, width: sr - sx, height: sb - sy }, animations: 'disabled' });
 await addEntry('11-fontes-oficiais-referencias-2026.png', page, 'Fontes oficiais e referências fiscais 2026', ['heading: Fontes oficiais e referências', 'following ul', 'following .notice'], { viewport: 'desktop' });
 
-// Mobile real calculated state.
 const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, colorScheme: 'dark', locale: 'pt-BR', isMobile: true, hasTouch: true });
 const mobilePage = await mobile.newPage();
 await ready(mobilePage, `${BASE}/salario-liquido`);
 await fillSalary(mobilePage);
 await calculateSalary(mobilePage);
-await neutralizeStickyHeader(mobilePage);
+await omitStickyHeader(mobilePage);
 await shotUnion(mobilePage, ['.calc-hero', '.trust-row', '.calc-grid'], '13-calculadora-mobile.png', 'Calculadora de Salário Líquido — versão mobile calculada', 0, { viewport: 'mobile', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 
 await desktop.close();
@@ -162,7 +157,7 @@ await fs.writeFile(path.join(OUT, 'README.txt'), [
   'Não há mockups, reconstruções ou imagens geradas por IA.', '',
   'Desktop: viewport 1440×900 com DPR 2 (renderização 2×).',
   'Mobile: viewport 390×844 com DPR 2 (renderização 2×).',
-  'A única preparação de captura é aceitar o modal real de Termos e neutralizar o sticky do header em alguns recortes para impedir que ele cubra o conteúdo durante o scroll automático.', '',
+  'A única preparação de captura é aceitar o modal real de Termos e omitir temporariamente o header sticky em alguns recortes isolados para impedir que ele cubra o conteúdo durante o scroll automático.', '',
   ...manifest.files.map(x => `${x.filename} — ${x.label} — ${x.url}`)
 ].join('\n'), 'utf8');
 execFileSync('zip', ['-r', '-9', 'quantolab-portfolio-captures.zip', 'portfolio-captures'], { stdio: 'inherit' });
