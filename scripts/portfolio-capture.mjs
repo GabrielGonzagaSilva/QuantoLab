@@ -55,6 +55,7 @@ async function shotLocator(page, selector, filename, label, extra = {}) {
 }
 
 async function shotUnion(page, selectors, filename, label, padding = 0, extra = {}) {
+  await page.evaluate(() => window.scrollTo(0, 0));
   const rects = [];
   for (const selector of selectors) {
     const loc = page.locator(selector).first();
@@ -97,7 +98,7 @@ await shotUnion(page, ['.calc-hero', '.trust-row', '.calc-grid'], '03-salario-li
 await calculateSalary(page);
 await omitStickyHeader(page);
 await shotLocator(page, '.calc-grid', '04-salario-liquido-resultado.png', 'Calculadora de Salário Líquido — resultado detalhado com descontos', { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
-await shotUnion(page, ['.article', '.source-note'], '05-salario-liquido-premissas-fontes.png', 'Salário Líquido — interpretação, premissas e fonte verificável', 0, { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
+await shotLocator(page, '.article', '05-salario-liquido-premissas-fontes.png', 'Salário Líquido — interpretação, premissas e explicação verificável', { viewport: 'desktop', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 await shotLocator(page, '.next-decision', '06-proxima-decisao.png', 'Ferramentas relacionadas / próxima decisão', { viewport: 'desktop' });
 await shotLocator(page, '.calc-grid', '12-componentes-em-uso.png', 'Sistema — componentes e padrões em uso na calculadora', { viewport: 'desktop', note: 'Real production UI used as evidence of reusable patterns.' });
 
@@ -129,12 +130,8 @@ const sourcesNotice = sourceHeading.locator('xpath=following-sibling::div[contai
 const sourceBoxes = [];
 for (const loc of [sourceHeading, sourcesList, sourcesNotice]) { const box = await loc.boundingBox(); if (box) sourceBoxes.push(box); }
 if (!sourceBoxes.length) throw new Error('Could not locate methodology sources');
-const sx = Math.max(0, Math.min(...sourceBoxes.map(r => r.x)) - 12);
-const sy = Math.max(0, Math.min(...sourceBoxes.map(r => r.y)) - 12);
-const sr = Math.max(...sourceBoxes.map(r => r.x + r.width)) + 12;
-const sb = Math.max(...sourceBoxes.map(r => r.y + r.height)) + 12;
-await page.screenshot({ path: path.join(OUT, '11-fontes-oficiais-referencias-2026.png'), clip: { x: sx, y: sy, width: sr - sx, height: sb - sy }, animations: 'disabled' });
-await addEntry('11-fontes-oficiais-referencias-2026.png', page, 'Fontes oficiais e referências fiscais 2026', ['heading: Fontes oficiais e referências', 'following ul', 'following .notice'], { viewport: 'desktop' });
+await sourceHeading.screenshot({ path: path.join(OUT, '11-fontes-oficiais-referencias-2026.png'), animations: 'disabled' });
+await addEntry('11-fontes-oficiais-referencias-2026.png', page, 'Fontes oficiais e referências fiscais 2026 — título do bloco', ['heading: Fontes oficiais e referências'], { viewport: 'desktop', note: 'The full methodology capture (10) contains the surrounding source list and context.' });
 
 const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, colorScheme: 'dark', locale: 'pt-BR', isMobile: true, hasTouch: true });
 const mobilePage = await mobile.newPage();
@@ -142,7 +139,7 @@ await ready(mobilePage, `${BASE}/salario-liquido`);
 await fillSalary(mobilePage);
 await calculateSalary(mobilePage);
 await omitStickyHeader(mobilePage);
-await shotUnion(mobilePage, ['.calc-hero', '.trust-row', '.calc-grid'], '13-calculadora-mobile.png', 'Calculadora de Salário Líquido — versão mobile calculada', 0, { viewport: 'mobile', input: { salario: 5000, descontos: 0, dependentes: 0 } });
+await shotLocator(mobilePage, '.calc-grid', '13-calculadora-mobile.png', 'Calculadora de Salário Líquido — versão mobile calculada', { viewport: 'mobile', input: { salario: 5000, descontos: 0, dependentes: 0 } });
 
 await desktop.close();
 await mobile.close();
