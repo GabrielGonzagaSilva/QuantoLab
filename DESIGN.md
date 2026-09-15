@@ -114,8 +114,9 @@ O header funciona como rail sólido de instrumento:
 
 O consentimento de primeira visita é explícito, mas não toma conta da página.
 
-- aparece como painel fixo e compacto, não como modal fullscreen;
-- não usa `aria-modal`, focus trap ou bloqueio de rolagem;
+- aparece como rail/painel compacto no fluxo da página, logo após o header;
+- não sobrepõe conteúdo, controles ou ações da interface;
+- não usa `aria-modal`, focus trap, overlay ou bloqueio de rolagem;
 - o visitante pode navegar e ler antes do aceite;
 - executar uma calculadora exige aceite explícito enquanto a versão atual ainda não foi aceita;
 - tentativa de calcular antes do aceite leva foco ao CTA e explica o requisito em região `aria-live`;
@@ -176,7 +177,7 @@ O consentimento de primeira visita é explícito, mas não toma conta da página
 
 ### Resultado e estados
 
-O painel `.panel.result` é permanente e não usa `hidden` para representar seu estado principal.
+O painel `.panel.result` é permanente e não usa `hidden` para representar seu estado principal em runtime.
 
 - `data-result-state="waiting"`: mostra `Aguardando cálculo`, instrução curta e esconde tabelas/detalhamento;
 - `data-result-state="error"`: mantém painel visível, explica o que precisa ser revisado e mantém o formulário acessível;
