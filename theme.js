@@ -207,32 +207,60 @@
     const path=currentProductPath();
     if(path==='/termos'||path==='/politica-de-privacidade'||storageGet(TERMS_KEY)==='accepted')return;
     if(document.querySelector('.terms-consent'))return;
-    const overlay=make('div','terms-consent');
-    const dialog=make('section','terms-consent__dialog');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','terms-consent-title');dialog.setAttribute('aria-describedby','terms-consent-desc');
-    const eyebrow=make('span','eyebrow','Antes de continuar');
+
+    const consent=make('aside','terms-consent');
+    const panel=make('section','terms-consent__dialog');panel.setAttribute('role','region');panel.setAttribute('aria-labelledby','terms-consent-title');panel.setAttribute('aria-describedby','terms-consent-desc');
+    const eyebrow=make('span','terms-consent__eyebrow','Uso responsável');
     const title=make('h2','', 'Termos de uso e privacidade');title.id='terms-consent-title';
-    const desc=make('p','', 'O QuantoLab fornece estimativas informativas. Ao continuar, você confirma que leu e aceita os Termos de uso e a Política de privacidade.');desc.id='terms-consent-desc';
+    const desc=make('p','', 'Você pode navegar pelo QuantoLab antes de aceitar. Para executar cálculos, confirme que leu e aceita os Termos de uso e a Política de privacidade.');desc.id='terms-consent-desc';
     const links=make('div','terms-consent__links');
-    const terms=make('a','', 'Ler Termos de uso');terms.href='/termos';terms.target='_blank';terms.rel='noopener';
-    const privacy=make('a','', 'Ler Política de privacidade');privacy.href='/politica-de-privacidade';privacy.target='_blank';privacy.rel='noopener';links.append(terms,privacy);
-    const local=make('p','terms-consent__local','Sua aceitação e preferências opcionais são salvas apenas neste navegador.');
+    const terms=make('a','', 'Ler Termos de uso');terms.href='/termos';
+    const privacy=make('a','', 'Ler Política de privacidade');privacy.href='/politica-de-privacidade';links.append(terms,privacy);
+    const local=make('p','terms-consent__local','A aceitação é salva apenas neste navegador. Nenhum valor digitado nas calculadoras faz parte desse registro.');
+    const status=make('p','terms-consent__status','');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
     const accept=make('button','btn','Aceitar e continuar');accept.type='button';accept.dataset.acceptTerms='';
-    dialog.append(eyebrow,title,desc,links,local,accept);overlay.appendChild(dialog);document.body.appendChild(overlay);document.body.classList.add('terms-consent-open');
-    const focusables=[terms,privacy,accept];
-    const trap=event=>{
-      if(event.key==='Escape'){event.preventDefault();accept.focus();return;}
-      if(event.key!=='Tab')return;
-      const first=focusables[0],last=focusables[focusables.length-1];
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    panel.append(eyebrow,title,desc,links,local,status,accept);consent.appendChild(panel);
+    const header=document.querySelector('.header');
+    if(header)header.insertAdjacentElement('afterend',consent);else document.body.prepend(consent);
+
+    const needsGate=()=>storageGet(TERMS_KEY)!=='accepted';
+    const callAttention=()=>{
+      status.textContent='Aceite os Termos de uso e a Política de privacidade para executar o cálculo.';
+      consent.classList.remove('is-attention');void consent.offsetWidth;consent.classList.add('is-attention');
+      accept.focus();
     };
-    dialog.addEventListener('keydown',trap);
+    const calculatorButton=target=>{
+      if(!(target instanceof Element))return null;
+      const trigger=target.closest('button');
+      if(!trigger)return null;
+      if(trigger.id==='calcular')return trigger;
+      if(trigger.matches('[data-tool-form] .btn:not(.btn-secondary)'))return trigger;
+      return null;
+    };
+    const onClick=event=>{
+      if(!needsGate()||!calculatorButton(event.target))return;
+      event.preventDefault();event.stopImmediatePropagation();callAttention();
+    };
+    const onSubmit=event=>{
+      if(!needsGate()||!document.body.classList.contains('calculator-simple'))return;
+      event.preventDefault();event.stopImmediatePropagation();callAttention();
+    };
+    const onKeydown=event=>{
+      if(!needsGate()||event.key!=='Enter'||!document.body.classList.contains('calculator-simple'))return;
+      if(!(event.target instanceof Element)||!event.target.closest('.panel.form,[data-tool-form]'))return;
+      event.preventDefault();event.stopImmediatePropagation();callAttention();
+    };
+    document.addEventListener('click',onClick,true);
+    document.addEventListener('submit',onSubmit,true);
+    document.addEventListener('keydown',onKeydown,true);
+
     accept.addEventListener('click',()=>{
-      storageSet(TERMS_KEY,'accepted');overlay.remove();document.body.classList.remove('terms-consent-open');
+      storageSet(TERMS_KEY,'accepted');
+      document.removeEventListener('click',onClick,true);document.removeEventListener('submit',onSubmit,true);document.removeEventListener('keydown',onKeydown,true);
+      consent.remove();
       window.QuantoLabAnalytics?.track?.('terms_accepted',{version:'2026-08-16'});
       try{window.dispatchEvent(new CustomEvent('quantolab:terms-accepted'));}catch{}
     },{once:true});
-    setTimeout(()=>accept.focus(),0);
   }
 
   window.QuantoLabProfile={

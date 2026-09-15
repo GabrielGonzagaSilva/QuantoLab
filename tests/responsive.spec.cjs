@@ -137,46 +137,64 @@ for (const [viewportName, viewport] of viewports) {
 test.describe('terms consent', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('requires explicit acceptance, exposes legal links and persists locally', async ({ page }) => {
+  test('uses explicit non-modal acceptance, exposes legal links and persists locally', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
-    const dialog = page.locator('.terms-consent__dialog');
+    const panel = page.locator('.terms-consent__dialog');
     const accept = page.locator('[data-accept-terms]');
-    await expect(dialog).toBeVisible();
-    await expect(dialog).toHaveAttribute('role', 'dialog');
-    await expect(dialog).toHaveAttribute('aria-modal', 'true');
+    await expect(panel).toBeVisible();
+    await expect(panel).toHaveAttribute('role', 'region');
+    await expect(panel).not.toHaveAttribute('aria-modal', 'true');
     await expect(page.locator('.terms-consent__links a[href="/termos"]')).toBeVisible();
     await expect(page.locator('.terms-consent__links a[href="/politica-de-privacidade"]')).toBeVisible();
-    await expect(accept).toBeFocused();
+    expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden');
+    await expect(accept).not.toBeFocused();
     await accept.click();
     await expect(page.locator('.terms-consent')).toHaveCount(0);
     await page.reload({ waitUntil: 'networkidle' });
     await expect(page.locator('.terms-consent')).toHaveCount(0);
   });
 
-  test('keeps the local-storage note separated from the CTA and the dialog inside the viewport', async ({ page }) => {
+  test('stays inside the viewport without covering the whole page', async ({ page }) => {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
       await page.setViewportSize(viewport);
       await page.goto('http://127.0.0.1:4173/index.html', { waitUntil: 'networkidle' });
       const layout = await page.evaluate(() => {
-        const dialog = document.querySelector('.terms-consent__dialog').getBoundingClientRect();
-        const note = document.querySelector('.terms-consent__local').getBoundingClientRect();
-        const cta = document.querySelector('[data-accept-terms]').getBoundingClientRect();
+        const host = document.querySelector('.terms-consent').getBoundingClientRect();
+        const panel = document.querySelector('.terms-consent__dialog').getBoundingClientRect();
         return {
-          dialog: { top: dialog.top, right: dialog.right, bottom: dialog.bottom, left: dialog.left },
-          noteBottom: note.bottom,
-          ctaTop: cta.top,
+          host: { top: host.top, right: host.right, bottom: host.bottom, left: host.left, width: host.width, height: host.height },
+          panel: { top: panel.top, right: panel.right, bottom: panel.bottom, left: panel.left },
           width: window.innerWidth,
           height: window.innerHeight,
         };
       });
 
-      expect(layout.ctaTop - layout.noteBottom, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(12);
-      expect(layout.dialog.top, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
-      expect(layout.dialog.left, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
-      expect(layout.dialog.right, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.width + 1);
-      expect(layout.dialog.bottom, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.height + 1);
+      expect(layout.panel.top, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
+      expect(layout.panel.left, JSON.stringify(layout, null, 2)).toBeGreaterThanOrEqual(-1);
+      expect(layout.panel.right, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.width + 1);
+      expect(layout.panel.bottom, JSON.stringify(layout, null, 2)).toBeLessThanOrEqual(layout.height + 1);
+      expect(layout.host.width, JSON.stringify(layout, null, 2)).toBeLessThan(layout.width);
+      expect(layout.host.height, JSON.stringify(layout, null, 2)).toBeLessThan(layout.height * 0.8);
       await page.screenshot({ path: `responsive-artifacts/terms-consent-${viewport.width}.png`, fullPage: true });
     }
+  });
+
+  test('blocks calculation until acceptance but keeps the calculator readable', async ({ page }) => {
+    await page.goto('http://127.0.0.1:4173/salario-liquido.html', { waitUntil: 'networkidle' });
+    const result = page.locator('[data-tool-result]');
+    const calculate = page.getByRole('button', { name: 'Calcular', exact: true });
+    const accept = page.locator('[data-accept-terms]');
+    await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'waiting');
+    await expect(result.locator('[data-result-headline]')).toHaveText('Aguardando cálculo');
+    await calculate.click();
+    await expect(page.locator('.terms-consent__status')).toContainText('Aceite os Termos de uso');
+    await expect(accept).toBeFocused();
+    await expect(result).toHaveAttribute('data-result-state', 'waiting');
+    await accept.click();
+    await calculate.click();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
+    await expect(result.locator('[data-result-headline]')).toContainText('R$');
   });
 
   test('keeps terms and privacy readable before acceptance', async ({ page }) => {
@@ -210,6 +228,22 @@ test.describe('dark-only theme', () => {
   });
 });
 
+test.describe('result state contract', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  for (const route of ['/salario-liquido.html', '/valor-hora.html', '/comparador-profissional.html', '/simulador.html']) {
+    test(`${route} keeps a semantic waiting preview and restores it after reset`, async ({ page }) => {
+      await page.goto(`http://127.0.0.1:4173${route}`, { waitUntil: 'networkidle' });
+      await acceptTermsIfNeeded(page);
+      const result = page.locator('.panel.result').first();
+      await expect(result).toBeVisible();
+      await expect(result).toHaveAttribute('data-result-state', 'waiting');
+      await expect(result.locator('.result-value')).toHaveText('Aguardando cálculo');
+      await expect(result.locator('.result-sub')).toContainText('Preencha os dados');
+    });
+  }
+});
+
 test.describe('decision support', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -235,18 +269,19 @@ test.describe('decision support', () => {
     await page.locator('#simples').fill('6');
     await page.locator('#clt-pj-form').getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(page.locator('#clt-pj-result')).toBeVisible();
+    await expect(page.locator('#clt-pj-result')).toHaveAttribute('data-result-state', 'calculated');
     await expect(page.locator('#pjEquivalente')).toContainText('R$');
     await expect(page.locator('#tabelaPj')).toContainText('Imposto Simples Nacional');
     await expect(page.locator('.source-note')).toContainText('Referências trabalhistas e tributárias de 2026');
   });
 
-  test('rescisão exposes the new result model and official references', async ({ page }) => {
+  test('rescisão exposes the waiting preview and official references', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/simulador.html', { waitUntil: 'networkidle' });
     await acceptTermsIfNeeded(page);
     await expect(page.locator('#rescisao-form')).toBeVisible();
     await expect(page.locator('#rescisao-result')).toBeVisible();
-    const preview = await page.locator('#rescisao-result .result-value').evaluate(el => getComputedStyle(el, '::after').content);
-    expect(preview).toContain('Aguardando cálculo');
+    await expect(page.locator('#rescisao-result')).toHaveAttribute('data-result-state', 'waiting');
+    await expect(page.locator('#rescisao-result .result-value')).toHaveText('Aguardando cálculo');
     await expect(page.locator('#meuCalculo')).toHaveCount(1);
     await expect(page.locator('.source-note')).toContainText('Referências trabalhistas e tributárias de 2026');
   });

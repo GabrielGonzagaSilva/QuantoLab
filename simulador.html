@@ -45,10 +45,10 @@
 <div class="field"><label for="feriasVencidasDias">Férias vencidas</label><span class="field-help">Informe dias adicionais de férias vencidas, quando houver.</span><div class="input-wrap"><input id="feriasVencidasDias" type="number" min="0" max="60" step="1" value="0" inputmode="numeric"><span class="suffix">dias</span></div></div>
 <div class="grid2 action-grid simple-actions"><button id="calcular" class="btn" type="submit">Calcular</button><button id="limpar" class="btn btn-secondary" type="button">Limpar</button></div>
 </form>
-<aside class="panel result" id="rescisao-result" aria-live="polite" hidden tabindex="-1">
-<div class="result-top"><div class="result-kicker">Valor líquido estimado da rescisão</div><div id="totalLiquido" class="result-value">R$ 0,00</div><p id="notice" class="result-sub">Preencha os dados para calcular.</p></div>
+<aside class="panel result" id="rescisao-result" aria-live="polite" data-result-state="waiting" tabindex="-1">
+<div class="result-top"><div class="result-kicker">Valor líquido estimado da rescisão</div><div id="totalLiquido" class="result-value">Aguardando cálculo</div><p id="notice" class="result-sub">Preencha os dados e toque em Calcular para visualizar o resultado.</p></div>
 <div class="result-body">
-<div class="calculator-model">
+<div class="calculator-model" hidden>
 <button class="calculator-model__redo" id="refazer" type="button">Fazer outro cálculo</button>
 <section class="calculator-model__section"><h3>Meu cálculo</h3><div class="calculator-model__summary" id="meuCalculo"></div></section>
 <section class="calculator-model__section"><h3>Resultado</h3><div class="calculator-table-wrap"><table class="calculator-table"><thead><tr><th>Evento</th><th>Valor</th></tr></thead><tbody id="resultadoTabela"></tbody></table></div></section>
