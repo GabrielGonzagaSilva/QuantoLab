@@ -88,15 +88,16 @@ O painel principal usa estado explícito:
 - `data-result-state="error"`: feedback de validação sem esconder o formulário;
 - `data-result-state="calculated"`: resultado real, detalhamento e ações secundárias.
 
-Regra permanente: o painel principal não usa `hidden` para simular preview. Limpar ou escolher `Fazer outro cálculo` volta a `waiting`.
+Regra permanente: o painel principal não usa `hidden` para simular preview em runtime. Limpar ou escolher `Fazer outro cálculo` volta a `waiting`.
 
 `hidden` pode ser usado em subcomponentes realmente ausentes do estado atual, como gráfico opcional ou tabela alternativa.
 
 ### Consentimento
 
-- `.terms-consent` é um rail/painel fixo compacto de primeira visita.
+- `.terms-consent` é um rail/painel compacto de primeira visita inserido no fluxo da página logo após o header.
+- Não sobrepõe o hero, formulário, resultado ou qualquer controle interativo.
 - Não é modal fullscreen.
-- Não usa `aria-modal`, focus trap ou bloqueio de rolagem.
+- Não usa `aria-modal`, focus trap, overlay ou bloqueio de rolagem.
 - O visitante pode navegar e ler sem aceite.
 - Ações de cálculo são bloqueadas até aceite explícito da versão atual.
 - Uma tentativa de calcular antes do aceite apresenta mensagem em `aria-live` e leva foco ao CTA de aceite.
