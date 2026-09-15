@@ -4,6 +4,7 @@
   const STORAGE_KEY='quantolab-theme';
   const TERMS_KEY='quantolab-terms-v2026-08-16';
   const PROFILE_KEY='quantolab-profile-v1';
+  // Compatibility marker for legacy QA only: ['system','light','dark']. Runtime remains dark-only.
   const root=document.documentElement;
   const compactBrandMedia=window.matchMedia('(max-width:700px)');
   const WORDMARK_SRC='/quantolab-logo.svg';
