@@ -1,36 +1,60 @@
 /* QuantoLab · Digital Instrument System · intentionality and anti-template layer */
 
-/* First-visit consent: interruption remains explicit, but without glass / startup-modal styling. */
+/* First-visit consent: explicit acceptance without taking over the product. */
 html body .terms-consent{
-  background:rgba(0,0,0,.82);
+  inset:auto 16px 16px auto;
+  width:min(520px,calc(100vw - 32px));
+  display:block;
+  place-items:initial;
+  padding:0;
+  background:transparent!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
+  pointer-events:none;
 }
 html body .terms-consent__dialog{
-  width:min(100%,540px);
-  border-radius:16px;
+  width:100%;
+  max-height:min(72dvh,620px);
+  padding:20px;
+  border:1px solid var(--border-strong);
+  border-radius:14px;
+  background:var(--surface);
   box-shadow:none!important;
+  pointer-events:auto;
+}
+html body .terms-consent__eyebrow{
+  display:block;
+  margin-bottom:8px;
+  color:var(--accent);
+  font-size:9.5px;
+  font-weight:760;
+  letter-spacing:.08em;
+  text-transform:uppercase;
 }
 html body .terms-consent__dialog>.eyebrow{display:none!important}
-html body .terms-consent__dialog h2{margin-bottom:10px}
+html body .terms-consent__dialog h2{margin-bottom:9px;font-size:clamp(20px,3vw,24px)}
+html body .terms-consent__dialog>p{font-size:12.5px;line-height:1.55}
 html body .terms-consent__links{
-  grid-template-columns:1fr;
-  gap:0;
-  margin:20px 0 16px;
+  grid-template-columns:1fr 1fr;
+  gap:0 18px;
+  margin:16px 0 14px;
   border-top:1px solid var(--border);
   border-bottom:1px solid var(--border);
 }
 html body .terms-consent__links a{
-  min-height:48px;
-  padding:12px 0;
+  min-height:44px;
+  padding:10px 0;
   border:0;
-  border-bottom:1px solid var(--border);
   border-radius:0;
   background:transparent;
+  color:var(--text);
 }
-html body .terms-consent__links a:last-child{border-bottom:0}
-html body .terms-consent__local{padding-top:0;border-top:0}
-html body .terms-consent__dialog>.btn{border-radius:10px}
+html body .terms-consent__local{padding-top:0;border-top:0;font-size:11px!important}
+html body .terms-consent__status{min-height:1.45em;margin-top:8px!important;color:var(--accent)!important;font-size:11px!important;font-weight:650}
+html body .terms-consent__dialog>.btn{min-height:48px;margin-top:12px;border-radius:9px}
+html body .terms-consent.is-attention .terms-consent__dialog{border-color:var(--accent)}
+html body .terms-consent.is-attention .terms-consent__status{animation:consent-attention .32s ease-out}
+@keyframes consent-attention{0%{transform:translateY(2px);opacity:.55}100%{transform:none;opacity:1}}
 
 /* Catalog: behave like an instrument directory, not a wall of interchangeable cards. */
 html body .catalog-hero{
@@ -178,6 +202,17 @@ html body .metric-note::before{box-shadow:none!important}
   }
 }
 @media(max-width:700px){
+  html body .terms-consent{
+    inset:auto 10px 10px 10px;
+    width:auto;
+  }
+  html body .terms-consent__dialog{
+    max-height:min(68dvh,560px);
+    padding:18px;
+    border-radius:12px;
+  }
+  html body .terms-consent__links{grid-template-columns:1fr;gap:0}
+  html body .terms-consent__links a+ a{border-top:1px solid var(--border)}
   html body .catalog-hero{padding-top:38px;padding-bottom:26px}
   html body .catalog-hero h1{font-size:clamp(36px,11vw,48px)}
   html body .journey-section{padding:30px 0 34px}
@@ -198,4 +233,5 @@ html body .metric-note::before{box-shadow:none!important}
   html body .tool-grid--dense .tool-card--compact,
   html body .terms-consent__links a,
   html body .terms-consent__dialog>.btn{transition:none!important}
+  html body .terms-consent.is-attention .terms-consent__status{animation:none!important}
 }
