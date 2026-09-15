@@ -121,8 +121,7 @@ html body .tool-grid--dense .tool-card--compact .tool-link{
   html body .tool-grid--dense .tool-card--compact:hover .tool-link{color:var(--text)}
 }
 
-/* Operate mode: hidden means hidden; do not create a visually present but semantically absent result. */
-html body.calculator-simple .panel.result[hidden]{display:none!important}
+/* Shared interaction states without changing the calculators' permanent pre-calculation preview contract. */
 html body.calculator-simple .input-wrap:has(input[aria-invalid="true"]),
 html body.calculator-simple .input-wrap:has(select[aria-invalid="true"]){
   border-color:#b85c5c!important;
