@@ -16,8 +16,9 @@ async function open(page, route) {
 
 async function expectResultPreview(result) {
   await expect(result).toBeVisible();
-  const preview = await result.locator('.result-value').evaluate(el => getComputedStyle(el, '::after').content);
-  expect(preview).toContain('Aguardando cálculo');
+  await expect(result).toHaveAttribute('data-result-state', 'waiting');
+  await expect(result.locator('.result-value')).toHaveText('Aguardando cálculo');
+  await expect(result.locator('.result-sub')).toContainText('Preencha os dados');
 }
 
 test.describe('calculator result flow on mobile', () => {
@@ -34,13 +35,14 @@ test.describe('calculator result flow on mobile', () => {
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeHidden();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     await expect(result.getByText('Meu cálculo', { exact: true })).toBeVisible();
     await expect(result.getByText('Resultado', { exact: true })).toBeVisible();
     await expect(result.locator('.calculator-table')).toContainText('Salário líquido');
     await expect(result.locator('[data-result-headline]')).not.toHaveText('R$ 0,00');
     await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
     await expect(form).toBeVisible();
-    await expect(result).toBeVisible();
+    await expectResultPreview(result);
   });
 
   test('original freelancer calculator keeps the same permanent preview', async ({ page }) => {
@@ -55,6 +57,7 @@ test.describe('calculator result flow on mobile', () => {
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeHidden();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     await expect(result.getByText('Meu cálculo', { exact: true })).toBeVisible();
     await expect(result.locator('.calculator-table')).toContainText('Valor por hora');
     await result.getByRole('button', { name: 'Fazer outro cálculo' }).click();
@@ -73,6 +76,7 @@ test.describe('calculator result flow on mobile', () => {
     await page.locator('#tool-periodo').fill('2');
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     const visual = result.locator('.calculator-model__visual');
     await expect(visual).toBeVisible();
     await expect(visual.locator('svg')).toBeVisible();
@@ -95,6 +99,7 @@ test.describe('calculator result flow on mobile', () => {
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeHidden();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     await expect(page.locator('#pjEquivalente')).toContainText('R$');
     await expect(page.locator('#tabelaClt')).toContainText('Vale transporte');
     await expect(page.locator('#tabelaClt')).toContainText('Remuneração líquida efetiva');
@@ -116,6 +121,7 @@ test.describe('calculator result flow on mobile', () => {
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeHidden();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     await expect(page.locator('#totalLiquido')).toContainText('R$');
     await expect(page.locator('#resultadoTabela')).toContainText('Multa do FGTS');
     await expect(page.locator('#resultadoTabela')).toContainText('FGTS disponível para saque');
@@ -140,6 +146,7 @@ test.describe('calculator layout on desktop', () => {
     await form.getByRole('button', { name: 'Calcular', exact: true }).click();
     await expect(form).toBeVisible();
     await expect(result).toBeVisible();
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
     formBox = await form.boundingBox();
     resultBox = await result.boundingBox();
     expect(resultBox.x).toBeGreaterThan(formBox.x);
