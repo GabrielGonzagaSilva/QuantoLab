@@ -42,12 +42,17 @@ function buildModel(){
   const outcome=make('section','calculator-model__section');outcome.append(make('h3','','Resultado'),make('div','calculator-table-wrap'));
   const share=make('div','result-share'),shareButton=make('button','btn btn-secondary','Compartilhar resultado'),copyButton=make('button','btn btn-secondary','Copiar link'),status=make('p','result-share__status');shareButton.type=copyButton.type='button';status.setAttribute('aria-live','polite');share.append(shareButton,copyButton,status);
   model.append(redo,mine,outcome,share);body.appendChild(model);result.classList.add('legacy-model-enhanced');
-  redo.addEventListener('click',()=>{result.hidden=true;form.hidden=false;document.body.classList.remove('calculator-result-mode');if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});summaryControls()[0]?.focus({preventScroll:true});}});
+  redo.addEventListener('click',()=>{setWaiting();form.hidden=false;document.body.classList.remove('calculator-result-mode');if(matchMedia('(max-width:760px)').matches){form.scrollIntoView({behavior:'smooth',block:'start'});summaryControls()[0]?.focus({preventScroll:true});}});
   const sharedUrl=()=>{const values={};for(const control of stateControls())values[control.id]=control.type==='checkbox'?control.checked:control.value;try{return `${location.origin}${location.pathname}#s=${btoa(encodeURIComponent(JSON.stringify(values)))}`;}catch{return `${location.origin}${location.pathname}`;}};
   const shareText=()=>`${document.title.replace(' | QuantoLab','')}: ${config.outputs[0] ? document.getElementById(config.outputs[0][1])?.textContent||'' : ''}`;
   copyButton.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(`${shareText()} ${sharedUrl()}`);status.textContent='Link copiado.';setTimeout(()=>status.textContent='',1800);}catch{status.textContent='Não foi possível copiar o link.';}});
   shareButton.addEventListener('click',async()=>{const url=sharedUrl(),text=shareText();if(navigator.share){try{await navigator.share({title:document.title,text,url});}catch{}}else copyButton.click();});
   return model;
+}
+function setWaiting(){
+  const model=buildModel(),value=result.querySelector('.result-value'),sub=result.querySelector('.result-sub');
+  result.hidden=false;result.dataset.resultState='waiting';result.classList.remove('model-active');model.hidden=true;
+  if(value)value.textContent='Aguardando cálculo';if(sub)sub.textContent='Preencha os dados e toque em Calcular para visualizar o resultado.';
 }
 function restore(){
   if(!location.hash.startsWith('#s='))return false;
@@ -64,12 +69,12 @@ function refreshModel(){
   const model=buildModel(),summary=model.querySelector('.calculator-model__summary'),wrap=model.querySelector('.calculator-table-wrap');summary.replaceChildren();
   for(const control of summaryControls()){const row=make('div','calculator-model__summary-row');row.append(make('span','',labelFor(control)),make('strong','',fieldValue(control)));summary.appendChild(row);}
   wrap.replaceChildren();const table=make('table','calculator-table'),thead=document.createElement('thead'),tbody=document.createElement('tbody'),head=document.createElement('tr');head.append(make('th','','Item'),make('th','','Valor'));thead.appendChild(head);
-  for(const [label,id] of config.outputs){const tr=document.createElement('tr'),th=make('th','',label),td=make('td','',document.getElementById(id)?.textContent||'');th.scope='row';tr.append(th,td);tbody.appendChild(tr);}table.append(thead,tbody);wrap.appendChild(table);
+  for(const [label,id] of config.outputs){const tr=document.createElement('tr'),th=make('th','',label),td=make('td','',document.getElementById(id)?.textContent||'');th.scope='row';tr.append(th,td);tbody.appendChild(tr);}table.append(thead,tbody);wrap.appendChild(table);return model;
 }
-function showResult(){refreshModel();result.hidden=false;if(matchMedia('(max-width:760px)').matches){form.hidden=true;document.body.classList.add('calculator-result-mode');result.tabIndex=-1;result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
+function showResult(){const model=refreshModel();result.hidden=false;result.dataset.resultState='calculated';result.classList.add('model-active');model.hidden=false;if(matchMedia('(max-width:760px)').matches){form.hidden=true;document.body.classList.add('calculator-result-mode');result.tabIndex=-1;result.focus({preventScroll:true});result.scrollIntoView({behavior:'smooth',block:'start'});}}
 calculate.textContent='Calcular';
-result.hidden=true;
+setWaiting();
 calculate.addEventListener('click',()=>setTimeout(showResult,0));
-clear?.addEventListener('click',()=>{setTimeout(()=>{result.hidden=true;form.hidden=false;document.body.classList.remove('calculator-result-mode');},0);});
+clear?.addEventListener('click',()=>{setTimeout(()=>{setWaiting();form.hidden=false;document.body.classList.remove('calculator-result-mode');},0);});
 if(restore())setTimeout(()=>calculate.click(),0);
 })();
