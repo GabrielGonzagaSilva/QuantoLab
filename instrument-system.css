@@ -1,0 +1,202 @@
+/* QuantoLab · Digital Instrument System · intentionality and anti-template layer */
+
+/* First-visit consent: interruption remains explicit, but without glass / startup-modal styling. */
+html body .terms-consent{
+  background:rgba(0,0,0,.82);
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html body .terms-consent__dialog{
+  width:min(100%,540px);
+  border-radius:16px;
+  box-shadow:none!important;
+}
+html body .terms-consent__dialog>.eyebrow{display:none!important}
+html body .terms-consent__dialog h2{margin-bottom:10px}
+html body .terms-consent__links{
+  grid-template-columns:1fr;
+  gap:0;
+  margin:20px 0 16px;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+html body .terms-consent__links a{
+  min-height:48px;
+  padding:12px 0;
+  border:0;
+  border-bottom:1px solid var(--border);
+  border-radius:0;
+  background:transparent;
+}
+html body .terms-consent__links a:last-child{border-bottom:0}
+html body .terms-consent__local{padding-top:0;border-top:0}
+html body .terms-consent__dialog>.btn{border-radius:10px}
+
+/* Catalog: behave like an instrument directory, not a wall of interchangeable cards. */
+html body .catalog-hero{
+  padding:clamp(44px,6vw,72px) 0 34px;
+  border-bottom:1px solid var(--border);
+}
+html body .catalog-hero>.eyebrow{display:none!important}
+html body .catalog-hero h1{
+  max-width:850px;
+  margin:0;
+  font-size:clamp(40px,5.4vw,68px);
+  line-height:1;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+}
+html body .catalog-hero .lead{
+  max-width:680px;
+  margin-top:18px;
+  font-size:clamp(15px,1.5vw,18px);
+  line-height:1.6;
+}
+html body .journey-section{padding:38px 0 42px}
+html body .journey-section__head{
+  display:grid;
+  grid-template-columns:minmax(150px,.35fr) minmax(0,1fr);
+  gap:32px;
+  align-items:start;
+  margin-bottom:20px;
+}
+html body .journey-section__head h2{
+  font-size:clamp(25px,3vw,36px);
+  letter-spacing:-.025em;
+}
+html body .journey-section__head p{
+  max-width:580px;
+  padding-top:5px;
+  font-size:13px;
+  line-height:1.6;
+}
+html body .tool-grid--dense{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:32px;
+  row-gap:0;
+  border-top:1px solid var(--border);
+}
+html body .tool-grid--dense .tool-card--compact{
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(150px,.7fr) minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:18px 0;
+  border:0!important;
+  border-bottom:1px solid var(--border)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html body .tool-grid--dense .tool-card--compact .num{display:none!important}
+html body .tool-grid--dense .tool-card--compact h3{
+  margin:0;
+  font-size:15px;
+  line-height:1.3;
+  letter-spacing:-.01em;
+}
+html body .tool-grid--dense .tool-card--compact p{
+  margin:0;
+  color:var(--muted);
+  font-size:11.5px;
+  line-height:1.5;
+}
+html body .tool-grid--dense .tool-card--compact .tool-link{
+  justify-self:end;
+  margin:0;
+  color:var(--muted-2);
+  font-size:10.5px;
+  font-weight:700;
+  white-space:nowrap;
+}
+@media(hover:hover){
+  html body .tool-grid--dense .tool-card--compact:hover{
+    background:var(--surface-soft)!important;
+    border-color:var(--border-strong)!important;
+  }
+  html body .tool-grid--dense .tool-card--compact:hover h3,
+  html body .tool-grid--dense .tool-card--compact:hover .tool-link{color:var(--text)}
+}
+
+/* Operate mode: hidden means hidden; do not create a visually present but semantically absent result. */
+html body.calculator-simple .panel.result[hidden]{display:none!important}
+html body.calculator-simple .input-wrap:has(input[aria-invalid="true"]),
+html body.calculator-simple .input-wrap:has(select[aria-invalid="true"]){
+  border-color:#b85c5c!important;
+  box-shadow:0 0 0 3px rgba(184,92,92,.18)!important;
+}
+html body .btn:disabled,
+html body button:disabled,
+html body [aria-disabled="true"]{
+  opacity:.52;
+  cursor:not-allowed!important;
+  transform:none!important;
+}
+html body [aria-busy="true"]{cursor:progress}
+
+/* Legal/read surfaces: paper-like structure and hairlines instead of nested card stacks. */
+html body .legal-version-card,
+html body .legal-toc,
+html body .legal-document{box-shadow:none!important}
+html body .legal-version-card{border-radius:12px}
+html body .legal-toc{border-radius:12px}
+html body .legal-document{
+  border-left:0;
+  border-right:0;
+  border-radius:0;
+}
+html body .legal-document__intro{background:transparent}
+html body .legal-section__number{
+  width:auto;
+  height:auto;
+  display:block;
+  padding-top:4px;
+  border:0;
+  border-radius:0;
+  background:transparent!important;
+  color:var(--muted-2)!important;
+  font-variant-numeric:tabular-nums;
+}
+html body .legal-document__kicker{color:var(--muted-2)}
+html body .metric-note::before{box-shadow:none!important}
+
+/* Remove the last glass-like mobile action strip from the shared calculator layer. */
+@media(max-width:760px){
+  html body.calculator-simple .simple-actions{
+    background:var(--surface)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+}
+
+@media(max-width:980px){
+  html body .tool-grid--dense{grid-template-columns:1fr}
+  html body .tool-grid--dense .tool-card--compact{
+    grid-template-columns:minmax(170px,.55fr) minmax(0,1fr) auto;
+  }
+}
+@media(max-width:700px){
+  html body .catalog-hero{padding-top:38px;padding-bottom:26px}
+  html body .catalog-hero h1{font-size:clamp(36px,11vw,48px)}
+  html body .journey-section{padding:30px 0 34px}
+  html body .journey-section__head{grid-template-columns:1fr;gap:6px;margin-bottom:16px}
+  html body .journey-section__head p{padding-top:0}
+  html body .tool-grid--dense .tool-card--compact{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:6px 14px;
+    padding:16px 0;
+  }
+  html body .tool-grid--dense .tool-card--compact h3{grid-column:1}
+  html body .tool-grid--dense .tool-card--compact p{grid-column:1 / -1}
+  html body .tool-grid--dense .tool-card--compact .tool-link{grid-column:2;grid-row:1}
+  html body .legal-document{border-radius:0}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html body .tool-grid--dense .tool-card--compact,
+  html body .terms-consent__links a,
+  html body .terms-consent__dialog>.btn{transition:none!important}
+}
