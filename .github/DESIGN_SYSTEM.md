@@ -1,22 +1,24 @@
 # QuantoLab — Design System
 
-Este documento registra o sistema já existente no produto. O código continua sendo a fonte principal de verdade; novas telas devem reutilizar estes padrões antes de criar componentes novos.
+Este documento registra o sistema implementado no produto. O código continua sendo a fonte principal de verdade; novas telas devem reutilizar estes padrões antes de criar componentes novos.
 
 ## Identidade
 
-- Fundo principal claro: `#f6f6f8`.
-- Superfícies: branco e cinzas muito claros.
-- Texto principal: `#1d1d1f`.
-- Acento: lime `#d9ff66`.
-- Tema escuro: fundo `#101012`, superfícies próximas de `#19191c` e texto claro.
-- Tipografia: stack de sistema Apple/Helvetica/Arial já definida em `style.css`.
-- Marca: `quantolab-logo.svg` e `favicon.svg`.
+- Runtime atual: **dark-only**.
+- Canvas principal: preto/carvão (`#09090A`, `#101012`).
+- Superfícies: `#111113`, `#19191C` e `#202024` conforme elevação.
+- Texto: branco e cinzas de alto contraste.
+- Acento: lime `#D9FF66`.
+- Tipografia: `IBM Plex Sans` quando disponível, com fallback Helvetica Neue/Arial.
+- Marca: `quantolab-logo.svg`; símbolo compacto apenas em contextos reduzidos.
 
-O lime é assinatura e deve permanecer pontual: resultado principal, pequenos indicadores, foco e estados de destaque. Não transformar o produto em uma interface predominantemente verde.
+Não existe toggle de tema no runtime. Novos componentes não devem introduzir light mode local. Uma eventual volta de light mode exige decisão explícita de produto e atualização coordenada de tokens, testes e documentação.
 
-## Tokens existentes
+O lime é assinatura e deve permanecer pontual: resultado principal, ação, foco, dado ativo ou estado relevante. Não transformar o produto em uma interface predominantemente verde.
 
-Fonte de verdade: `:root` em `style.css` e overrides em `theme.css`.
+## Tokens
+
+Fonte de verdade: `style.css`, `theme.css`, `dark-only.css` e refinamentos em `instrument-system.css`.
 
 Principais tokens:
 
@@ -38,95 +40,117 @@ Principais tokens:
 - `--radius-md`
 - `--focus`
 
+Bordas e contraste tonal são preferidos a sombras. Glassmorphism, blur decorativo, glow e gradient text não pertencem ao sistema.
+
 ## Layout
 
-- Container principal: `.shell`, largura máxima de 1160 px.
-- Grid de calculadora: `.calc-grid`, formulário + resultado, colapsando para uma coluna em telas menores.
-- Grid geral: `.grid2`, `.tool-grid`, `.card-grid`.
-- Breakpoints consolidados: 980, 700, 520 e 380 px.
-- Mobile não é desktop reduzido: grids viram coluna, resultado deixa de ser sticky, links de navegação são progressivamente reduzidos.
+- Container principal: `.shell`, largura máxima aproximada de 1160 px.
+- Calculadoras: `.calc-grid`, formulário + resultado, recompondo para uma coluna em telas menores.
+- Grids auxiliares: `.grid2`, `.tool-grid`, `.card-grid`.
+- Catálogo de ferramentas usa diretório em linhas, não parede de cards.
+- Mobile não é desktop reduzido: grids mudam de estrutura, resultado deixa de ser sticky e navegação é simplificada.
 
 ## Componentes
 
 ### Header
 
 - `.header`, `.nav`, `.brand`, `.navlinks`.
-- Sticky, translúcido e com blur.
-- Controle de tema global `.theme-toggle` com 44 px de área clicável no mobile.
+- Superfície sólida, sem blur.
+- Wordmark completo em desktop/tablet e símbolo compacto em mobile.
+- Não existe `.theme-toggle` no contrato atual.
 
 ### Botões
 
 - Primário: `.btn`.
 - Secundário: `.btn.btn-secondary`.
-- Altura mínima próxima de 56–58 px nas calculadoras.
-- Não criar novos estilos de CTA sem necessidade funcional.
+- Controles principais mantêm área de toque adequada.
+- Não criar novos estilos de CTA sem necessidade funcional clara.
 
 ### Formulários
 
 - `.field`, `.field-help`, `.input-wrap`, `.prefix`, `.suffix`.
-- Labels sempre associados a inputs.
-- Texto de ajuda permanece visível abaixo do campo nas calculadoras simplificadas.
-- Informações opcionais usam `.optional-choice` e permitem “Não se aplica / não tenho essa informação”.
-- Ajustes avançados usam `.simple-details`, fechados por padrão.
+- Labels associados aos inputs.
+- Help text próximo do campo.
+- Informações opcionais usam disclosure quando necessário.
+- Sticky actions em mobile usam superfície sólida, sem backdrop blur.
 
 ### Resultado
 
-- `.panel.result` é o padrão de resultado principal.
+- `.panel.result` é o painel permanente de resposta.
 - `.result-top` apresenta a resposta essencial.
-- `.result-value` usa o lime como destaque.
-- `.highlight` apresenta a segunda informação mais útil.
+- `.result-value` usa lime como destaque principal.
 - `.result-details` aplica progressive disclosure para composição e premissas.
+- `aria-live="polite"` anuncia mudanças do resultado.
 
-Regra permanente: o preview do painel de resultado deve permanecer visível antes do cálculo, no desktop e no mobile. No estado inicial, deve indicar que está aguardando o cálculo e preservar o espaço do resultado sem exibir tabelas vazias. Após Calcular, o mesmo painel recebe o resultado real. Ao voltar ao formulário ou limpar os campos, o preview continua visível.
+O painel principal usa estado explícito:
 
-Regra: o usuário nunca deve depender de abrir detalhes para descobrir a resposta principal.
+- `data-result-state="waiting"`: preview visível com `Aguardando cálculo`;
+- `data-result-state="error"`: feedback de validação sem esconder o formulário;
+- `data-result-state="calculated"`: resultado real, detalhamento e ações secundárias.
 
-### Cards
+Regra permanente: o painel principal não usa `hidden` para simular preview. Limpar ou escolher `Fazer outro cálculo` volta a `waiting`.
 
-- Ferramentas: `.tool-card`.
-- Conteúdo/apoio: `.card`.
-- Evitar variações cosméticas por jornada. Uma nova ferramenta deve parecer parte do mesmo ecossistema.
+`hidden` pode ser usado em subcomponentes realmente ausentes do estado atual, como gráfico opcional ou tabela alternativa.
+
+### Consentimento
+
+- `.terms-consent` é um rail/painel fixo compacto de primeira visita.
+- Não é modal fullscreen.
+- Não usa `aria-modal`, focus trap ou bloqueio de rolagem.
+- O visitante pode navegar e ler sem aceite.
+- Ações de cálculo são bloqueadas até aceite explícito da versão atual.
+- Uma tentativa de calcular antes do aceite apresenta mensagem em `aria-live` e leva foco ao CTA de aceite.
+- Termos e Privacidade continuam acessíveis antes do aceite.
+- O registro local contém apenas a versão aceita, nunca valores das calculadoras.
+
+### Cards e superfícies editoriais
+
+- `.card` e `.tool-card` só entram quando existe agrupamento funcional real.
+- Evitar nesting de cards, bento genérico e decoração sem função.
+- Páginas legais/editoriais priorizam hairlines, medida de leitura e hierarquia tipográfica.
 
 ### Confiança e avisos
 
 - `.trust-row` para compromissos de confiança.
-- `.notice` para limites, avisos e informações importantes.
-- Publicidade usa `.ad` e suas variações; deve continuar separada visualmente de conteúdo e ação principal.
+- `.notice` para limites e informações importantes.
+- Publicidade usa `.ad` e permanece separada da ação principal.
 
 ### Footer
 
 - `.footer`, `.footer-grid`, `.footer-brand`, `.footer-links`.
-- `.footer-meta` contém copyright, direitos reservados e caráter informativo das ferramentas.
+- `.footer-meta` contém copyright e caráter informativo das ferramentas.
 
 ## Linguagem
 
-- Português direto, sem jargão quando não for necessário.
-- Perguntas nos formulários devem refletir a linguagem do usuário leigo.
-- Explicações curtas e próximas ao campo.
-- Resultado deve responder primeiro “o que isso significa para mim?”.
-- Termos técnicos podem aparecer nos detalhes, acompanhados de contexto.
+- Português direto e específico.
+- Perguntas refletem a linguagem de usuários leigos.
+- Resultado responde primeiro “o que isso significa para mim?”.
+- Termos técnicos aparecem com contexto.
+- Evitar labels genéricos como “Abrir” quando a ação pode ser “Calcular”, “Comparar”, “Projetar” ou “Planejar”.
 
 ## Acessibilidade
 
 Requisitos mínimos permanentes:
 
-- `lang="pt-BR"`.
-- um único `h1` por página.
-- labels associados.
-- foco visível com `:focus-visible`.
-- controles de toque com pelo menos ~44 px no mobile.
-- navegação por teclado.
-- HTML semântico e landmarks nativos.
-- não comunicar estado apenas por cor.
-- contraste compatível com tema claro/escuro.
-- `prefers-reduced-motion` respeitado.
-- `aria-*` somente quando necessário.
-- resultados dinâmicos com `aria-live="polite"` quando aplicável.
+- `lang="pt-BR"`;
+- um único `h1` por página;
+- labels associados;
+- foco visível com `:focus-visible`;
+- controles de toque com pelo menos ~44 px no mobile;
+- navegação por teclado;
+- HTML semântico e landmarks nativos;
+- estado não comunicado apenas por cor;
+- contraste compatível com o tema dark-only;
+- `prefers-reduced-motion` respeitado;
+- `aria-*` apenas quando necessário;
+- resultados dinâmicos com `aria-live="polite"`.
 
 ## Processo para componentes novos
 
 1. Procurar componente existente que resolva o problema.
 2. Reutilizar tokens e espaçamentos atuais.
-3. Criar novo componente apenas se houver necessidade funcional clara.
-4. Validar claro/escuro, teclado, 320–1440 px e regressões.
-5. Adicionar cobertura ao QA quando o componente for estrutural.
+3. Criar componente novo apenas quando houver necessidade funcional clara.
+4. Validar dark-only, teclado e faixas de 320–1440 px.
+5. Validar estados loading/empty/error/success quando aplicável.
+6. Adicionar cobertura ao QA quando o componente for estrutural.
+7. Não reintroduzir glass, blur, cardificação excessiva ou aparência genérica de AI SaaS.
