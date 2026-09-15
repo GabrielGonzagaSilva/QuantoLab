@@ -112,16 +112,16 @@ O header funciona como rail sólido de instrumento:
 
 ### Consentimento de termos
 
-O consentimento de primeira visita é explícito, mas não toma conta da página.
+O consentimento de primeira visita é explícito e informativo, sem bloquear a tarefa principal.
 
 - aparece como rail/painel compacto no fluxo da página, logo após o header;
 - não sobrepõe conteúdo, controles ou ações da interface;
-- não usa `aria-modal`, focus trap, overlay ou bloqueio de rolagem;
-- o visitante pode navegar e ler antes do aceite;
-- executar uma calculadora exige aceite explícito enquanto a versão atual ainda não foi aceita;
-- tentativa de calcular antes do aceite leva foco ao CTA e explica o requisito em região `aria-live`;
+- não usa `aria-modal`, focus trap, foco forçado, overlay ou bloqueio de rolagem;
+- o visitante pode navegar, preencher campos e executar cálculos antes do aceite;
+- a aceitação permanece explícita pelo CTA `Li e aceito os termos`;
 - Termos e Privacidade permanecem acessíveis sem aceite;
-- o registro de aceite fica apenas no navegador e não inclui valores de cálculo.
+- o registro de aceite fica apenas no navegador e não inclui nem envia valores de cálculo;
+- nova versão materialmente relevante deve usar uma nova chave para solicitar aceite novamente.
 
 ## 6. Homepage
 

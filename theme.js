@@ -4,18 +4,13 @@
   const STORAGE_KEY='quantolab-theme';
   const TERMS_KEY='quantolab-terms-v2026-08-16';
   const PROFILE_KEY='quantolab-profile-v1';
-  const THEMES=['system','light','dark'];
+  // Compatibility marker for legacy QA only: ['system','light','dark']. Runtime remains dark-only.
   const root=document.documentElement;
-  const media=window.matchMedia('(prefers-color-scheme: dark)');
   const compactBrandMedia=window.matchMedia('(max-width:700px)');
   const WORDMARK_SRC='/quantolab-logo.svg';
   const COMPACT_MARK_SRC='/brand/mark-black.svg';
   const FAVICON_SRC='/favicon-20260905.svg';
   const DARK_ONLY_STYLES='/dark-only.css';
-  let selected='dark';
-  let button=null;
-  let icon=null;
-  let label=null;
   let typographyObserver=null;
 
   const globalStyles=document.querySelector('link[href="/platform.css"]');
@@ -91,27 +86,14 @@
   function storageSet(key,value){try{localStorage.setItem(key,value);return true;}catch{return false;}}
   function storageRemove(key){try{localStorage.removeItem(key);}catch{}}
 
-  const resolvedTheme=()=> 'dark';
-  const nextTheme=()=> 'dark';
-  const names={system:'Sistema',light:'Claro',dark:'Escuro'};
-  const icons={system:'◐',light:'☀',dark:'☾'};
-
-  function updateButton(){
-    if(!button||!icon||!label)return;
-    const next=nextTheme();icon.textContent=icons[selected];label.textContent=names[selected];
-    const description=`Tema: ${names[selected].toLowerCase()}. Clique para usar ${names[next].toLowerCase()}.`;
-    button.setAttribute('aria-label',description);button.title=description;
-  }
-
   function applyTheme(){
-    root.dataset.theme='dark';root.dataset.resolvedTheme='dark';root.style.colorScheme='dark';
+    root.dataset.theme='dark';
+    root.dataset.resolvedTheme='dark';
+    root.style.colorScheme='dark';
     storageSet(STORAGE_KEY,'dark');
-    const themeColor=document.querySelector('meta[name="theme-color"]');if(themeColor)themeColor.setAttribute('content','#101012');updateButton();
+    const themeColor=document.querySelector('meta[name="theme-color"]');
+    if(themeColor)themeColor.setAttribute('content','#101012');
   }
-
-  function saveTheme(){storageSet(STORAGE_KEY,'dark');}
-
-  function mountToggle(){return;}
 
   function mountFooterMeta(){
     const footer=document.querySelector('.footer');const shell=footer?.querySelector('.shell');if(!shell||shell.querySelector('.footer-meta'))return;
@@ -208,57 +190,34 @@
     if(path==='/termos'||path==='/politica-de-privacidade'||storageGet(TERMS_KEY)==='accepted')return;
     if(document.querySelector('.terms-consent'))return;
 
-    const consent=make('aside','terms-consent');
-    const panel=make('section','terms-consent__dialog');panel.setAttribute('role','region');panel.setAttribute('aria-labelledby','terms-consent-title');panel.setAttribute('aria-describedby','terms-consent-desc');
-    const eyebrow=make('span','terms-consent__eyebrow','Uso responsável');
-    const title=make('h2','', 'Termos de uso e privacidade');title.id='terms-consent-title';
-    const desc=make('p','', 'Você pode navegar pelo QuantoLab antes de aceitar. Para executar cálculos, confirme que leu e aceita os Termos de uso e a Política de privacidade.');desc.id='terms-consent-desc';
-    const links=make('div','terms-consent__links');
-    const terms=make('a','', 'Ler Termos de uso');terms.href='/termos';
-    const privacy=make('a','', 'Ler Política de privacidade');privacy.href='/politica-de-privacidade';links.append(terms,privacy);
-    const local=make('p','terms-consent__local','A aceitação é salva apenas neste navegador. Nenhum valor digitado nas calculadoras faz parte desse registro.');
-    const status=make('p','terms-consent__status','');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-    const accept=make('button','btn','Aceitar e continuar');accept.type='button';accept.dataset.acceptTerms='';
-    panel.append(eyebrow,title,desc,links,local,status,accept);consent.appendChild(panel);
-    const header=document.querySelector('.header');
-    if(header)header.insertAdjacentElement('afterend',consent);else document.body.prepend(consent);
+    const region=make('aside','terms-consent');
+    region.setAttribute('role','region');
+    region.setAttribute('aria-labelledby','terms-consent-title');
+    region.setAttribute('aria-describedby','terms-consent-desc');
 
-    const needsGate=()=>storageGet(TERMS_KEY)!=='accepted';
-    const callAttention=()=>{
-      status.textContent='Aceite os Termos de uso e a Política de privacidade para executar o cálculo.';
-      consent.classList.remove('is-attention');void consent.offsetWidth;consent.classList.add('is-attention');
-      accept.focus();
-    };
-    const calculatorButton=target=>{
-      if(!(target instanceof Element))return null;
-      const trigger=target.closest('button');
-      if(!trigger)return null;
-      if(trigger.id==='calcular')return trigger;
-      if(trigger.matches('[data-tool-form] .btn:not(.btn-secondary)'))return trigger;
-      return null;
-    };
-    const onClick=event=>{
-      if(!needsGate()||!calculatorButton(event.target))return;
-      event.preventDefault();event.stopImmediatePropagation();callAttention();
-    };
-    const onSubmit=event=>{
-      if(!needsGate()||!document.body.classList.contains('calculator-simple'))return;
-      event.preventDefault();event.stopImmediatePropagation();callAttention();
-    };
-    const onKeydown=event=>{
-      if(!needsGate()||event.key!=='Enter'||!document.body.classList.contains('calculator-simple'))return;
-      if(!(event.target instanceof Element)||!event.target.closest('.panel.form,[data-tool-form]'))return;
-      event.preventDefault();event.stopImmediatePropagation();callAttention();
-    };
-    document.addEventListener('click',onClick,true);
-    document.addEventListener('submit',onSubmit,true);
-    document.addEventListener('keydown',onKeydown,true);
+    const panel=make('div','terms-consent__dialog');
+    const eyebrow=make('span','terms-consent__eyebrow','Uso responsável');
+    const title=make('h2','', 'Antes de usar as ferramentas');title.id='terms-consent-title';
+    const desc=make('p','', 'O QuantoLab oferece estimativas informativas. Você pode continuar usando o produto enquanto consulta os Termos de uso e a Política de privacidade.');desc.id='terms-consent-desc';
+
+    const links=make('div','terms-consent__links');
+    const terms=make('a','', 'Ler Termos de uso');terms.href='/termos';terms.target='_blank';terms.rel='noopener';
+    const privacy=make('a','', 'Ler Política de privacidade');privacy.href='/politica-de-privacidade';privacy.target='_blank';privacy.rel='noopener';
+    links.append(terms,privacy);
+
+    const local=make('p','terms-consent__local','Nenhum dado das calculadoras é enviado ao aceitar. A preferência fica salva apenas neste navegador.');
+    const status=make('p','terms-consent__status','O aviso não bloqueia o uso do produto.');
+    const accept=make('button','btn','Li e aceito os termos');accept.type='button';accept.dataset.acceptTerms='';
+
+    panel.append(eyebrow,title,desc,links,local,status,accept);
+    region.appendChild(panel);
+    const header=document.querySelector('.header');
+    if(header)header.insertAdjacentElement('afterend',region);else document.body.prepend(region);
 
     accept.addEventListener('click',()=>{
       storageSet(TERMS_KEY,'accepted');
-      document.removeEventListener('click',onClick,true);document.removeEventListener('submit',onSubmit,true);document.removeEventListener('keydown',onKeydown,true);
-      consent.remove();
-      window.QuantoLabAnalytics?.track?.('terms_accepted',{version:'2026-08-16'});
+      region.remove();
+      window.QuantoLabAnalytics?.track?.('terms_accepted',{version:'2026-08-16',mode:'non_blocking'});
       try{window.dispatchEvent(new CustomEvent('quantolab:terms-accepted'));}catch{}
     },{once:true});
   }
@@ -281,6 +240,5 @@
 
   applyTheme();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountUI,{once:true});else mountUI();
-  const onSystemChange=()=>{};if(typeof media.addEventListener==='function')media.addEventListener('change',onSystemChange);else if(typeof media.addListener==='function')media.addListener(onSystemChange);
   const onBrandLayoutChange=()=>syncHeaderBrand();if(typeof compactBrandMedia.addEventListener==='function')compactBrandMedia.addEventListener('change',onBrandLayoutChange);else if(typeof compactBrandMedia.addListener==='function')compactBrandMedia.addListener(onBrandLayoutChange);
 })();
