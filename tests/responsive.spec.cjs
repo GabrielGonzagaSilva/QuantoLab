@@ -142,7 +142,7 @@ test.describe('terms consent', () => {
     const panel = page.locator('.terms-consent__dialog');
     const accept = page.locator('[data-accept-terms]');
     await expect(panel).toBeVisible();
-    await expect(panel).toHaveAttribute('role', 'region');
+    await expect(page.locator('.terms-consent')).toHaveAttribute('role', 'region');
     await expect(panel).not.toHaveAttribute('aria-modal', 'true');
     await expect(page.locator('.terms-consent__links a[href="/termos"]')).toBeVisible();
     await expect(page.locator('.terms-consent__links a[href="/politica-de-privacidade"]')).toBeVisible();
@@ -179,7 +179,7 @@ test.describe('terms consent', () => {
     }
   });
 
-  test('blocks calculation until acceptance but keeps the calculator readable', async ({ page }) => {
+  test('keeps calculation available before acceptance and preserves explicit consent', async ({ page }) => {
     await page.goto('http://127.0.0.1:4173/salario-liquido.html', { waitUntil: 'networkidle' });
     const result = page.locator('[data-tool-result]');
     const calculate = page.getByRole('button', { name: 'Calcular', exact: true });
@@ -187,14 +187,15 @@ test.describe('terms consent', () => {
     await expect(result).toBeVisible();
     await expect(result).toHaveAttribute('data-result-state', 'waiting');
     await expect(result.locator('[data-result-headline]')).toHaveText('Aguardando cálculo');
-    await calculate.click();
-    await expect(page.locator('.terms-consent__status')).toContainText('Aceite os Termos de uso');
-    await expect(accept).toBeFocused();
-    await expect(result).toHaveAttribute('data-result-state', 'waiting');
-    await accept.click();
+    await expect(page.locator('.terms-consent__status')).toContainText('não bloqueia');
+    await expect(accept).not.toBeFocused();
     await calculate.click();
     await expect(result).toHaveAttribute('data-result-state', 'calculated');
     await expect(result.locator('[data-result-headline]')).toContainText('R$');
+    await expect(page.locator('.terms-consent')).toBeVisible();
+    await accept.click();
+    await expect(page.locator('.terms-consent')).toHaveCount(0);
+    await expect(result).toHaveAttribute('data-result-state', 'calculated');
   });
 
   test('keeps terms and privacy readable before acceptance', async ({ page }) => {
