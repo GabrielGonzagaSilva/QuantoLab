@@ -210,7 +210,8 @@
 
     panel.append(eyebrow,title,desc,links,local,status,accept);
     region.appendChild(panel);
-    document.body.insertBefore(region,document.body.firstChild);
+    const header=document.querySelector('.header');
+    if(header)header.insertAdjacentElement('afterend',region);else document.body.prepend(region);
 
     accept.addEventListener('click',()=>{
       storageSet(TERMS_KEY,'accepted');
