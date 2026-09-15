@@ -219,13 +219,15 @@
     const local=make('p','terms-consent__local','A aceitação é salva apenas neste navegador. Nenhum valor digitado nas calculadoras faz parte desse registro.');
     const status=make('p','terms-consent__status','');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
     const accept=make('button','btn','Aceitar e continuar');accept.type='button';accept.dataset.acceptTerms='';
-    panel.append(eyebrow,title,desc,links,local,status,accept);consent.appendChild(panel);document.body.appendChild(consent);
+    panel.append(eyebrow,title,desc,links,local,status,accept);consent.appendChild(panel);
+    const header=document.querySelector('.header');
+    if(header)header.insertAdjacentElement('afterend',consent);else document.body.prepend(consent);
 
     const needsGate=()=>storageGet(TERMS_KEY)!=='accepted';
     const callAttention=()=>{
       status.textContent='Aceite os Termos de uso e a Política de privacidade para executar o cálculo.';
       consent.classList.remove('is-attention');void consent.offsetWidth;consent.classList.add('is-attention');
-      accept.focus({preventScroll:true});
+      accept.focus();
     };
     const calculatorButton=target=>{
       if(!(target instanceof Element))return null;
