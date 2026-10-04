@@ -12,6 +12,7 @@
   const FAVICON_SRC='/favicon-20260905.svg';
   const DARK_ONLY_STYLES='/dark-only.css';
   const SPRINT5_RUNTIME='/sprint5.js';
+  const SPRINT6_RUNTIME='/sprint6.js';
   let typographyObserver=null;
 
   const globalStyles=document.querySelector('link[href="/platform.css"]');
@@ -32,6 +33,7 @@
   if(!document.querySelector(`script[src="${SPRINT5_RUNTIME}"]`)){
     const sprint5=document.createElement('script');
     sprint5.src=SPRINT5_RUNTIME;
+    sprint5.async=false;
     sprint5.defer=true;
     document.head.appendChild(sprint5);
   }
@@ -213,7 +215,7 @@
     const privacy=make('a','', 'Ler Política de privacidade');privacy.href='/politica-de-privacidade';privacy.target='_blank';privacy.rel='noopener';
     links.append(terms,privacy);
 
-    const local=make('p','terms-consent__local','Nenhum dado das calculadoras é enviado ao aceitar. A preferência fica salva apenas neste navegador.');
+    const local=make('p','terms-consent__local','Os valores das calculadoras continuam no navegador. Ao aceitar, medição técnica e de uso sem valores financeiros pode ser ativada conforme a Política de privacidade.');
     const status=make('p','terms-consent__status','O aviso não bloqueia o uso do produto.');
     const accept=make('button','btn','Li e aceito os termos');accept.type='button';accept.dataset.acceptTerms='';
 
@@ -230,10 +232,15 @@
     },{once:true});
   }
 
+  window.QuantoLabConsent={
+    termsAccepted(){return storageGet(TERMS_KEY)==='accepted';},
+    analyticsAllowed(){return storageGet(TERMS_KEY)==='accepted';}
+  };
+
   window.QuantoLabProfile={
     get(){try{const raw=storageGet(PROFILE_KEY);const parsed=raw?JSON.parse(raw):{};return parsed&&typeof parsed==='object'?parsed:{};}catch{return {}; }},
-    set(value){const safe={};for(const key of ['monthlyIncome','monthlyCosts','hoursDay','daysWeek','taxRate','reserveMonths'])if(Number.isFinite(Number(value?.[key])))safe[key]=Number(value[key]);storageSet(PROFILE_KEY,JSON.stringify(safe));return safe;},
-    clear(){storageRemove(PROFILE_KEY);}
+    set(value){const safe={};for(const key of ['monthlyIncome','monthlyCosts','hoursDay','daysWeek','taxRate','reserveMonths'])if(Number.isFinite(Number(value?.[key])))safe[key]=Number(value[key]);storageSet(PROFILE_KEY,JSON.stringify(safe));window.QuantoLabAnalytics?.track?.('profile_saved',{fields:Object.keys(safe).length});return safe;},
+    clear(){storageRemove(PROFILE_KEY);window.QuantoLabAnalytics?.track?.('profile_cleared');}
   };
 
   window.QuantoLabAnalytics={
@@ -243,6 +250,14 @@
       if(Array.isArray(window.dataLayer))window.dataLayer.push({event:`ql_${name}`,...detail.properties});
     }
   };
+
+  if(!document.querySelector(`script[src="${SPRINT6_RUNTIME}"]`)){
+    const sprint6=document.createElement('script');
+    sprint6.src=SPRINT6_RUNTIME;
+    sprint6.async=false;
+    sprint6.defer=true;
+    document.head.appendChild(sprint6);
+  }
 
   function mountUI(){normalizeSiteTypography();syncHeaderBrand();mountFooterMeta();mountDecisionSupport();mountTermsConsent();window.QuantoLabAnalytics?.track?.('page_view');}
 
