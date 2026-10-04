@@ -47,8 +47,8 @@ jobs:
           cat /tmp/quantolab-http.log
           exit 1
 
-      - name: Audit responsive layouts, calculator flows and Figma handoff contract
-        run: npx playwright test tests/responsive.spec.cjs tests/no-dashes.spec.cjs tests/calculator-model.spec.cjs tests/editorial.spec.cjs tests/sprint5-handoff.spec.cjs --reporter=line --workers=4
+      - name: Audit responsive layouts, calculator flows and V1 handoff/launch contracts
+        run: npx playwright test tests/responsive.spec.cjs tests/no-dashes.spec.cjs tests/calculator-model.spec.cjs tests/editorial.spec.cjs tests/sprint5-handoff.spec.cjs tests/sprint6-launch.spec.cjs --reporter=line --workers=4
 
       - name: Upload responsive screenshots
         if: always()
