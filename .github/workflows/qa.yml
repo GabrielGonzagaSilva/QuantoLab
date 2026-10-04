@@ -2,7 +2,6 @@ name: QuantoLab QA
 
 on:
   push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -61,3 +60,9 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/adsense-readiness-qa.mjs
+
+      - name: Run V1 launch readiness QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/launch-readiness.mjs
