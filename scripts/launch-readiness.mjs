@@ -7,7 +7,7 @@ const fail=message=>failures.push(message);
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const exists=file=>fs.existsSync(path.join(root,file));
 
-for(const file of ['sprint6.js','sprint6.css','theme.js','dark-only.css','politica-de-privacidade.html','.github/workflows/quantolab-synthetic-traffic.yml']){
+for(const file of ['sprint6.js','sprint6.css','theme.js','dark-only.css','politica-de-privacidade.html','_headers','vercel.json','.github/workflows/quantolab-synthetic-traffic.yml']){
   if(!exists(file))fail(`${file}: arquivo obrigatório da Sprint 6 ausente.`);
 }
 
@@ -43,6 +43,12 @@ if(exists('politica-de-privacidade.html')){
   }
 }
 
+for(const file of ['_headers','vercel.json']){
+  if(exists(file)&&!read(file).includes("connect-src 'self' https://vitals.vercel-analytics.com")){
+    fail(`${file}: CSP não permite o endpoint aprovado do Speed Insights.`);
+  }
+}
+
 if(exists('.github/workflows/quantolab-synthetic-traffic.yml')){
   const workflow=read('.github/workflows/quantolab-synthetic-traffic.yml');
   if(/^\s*schedule:/m.test(workflow))fail('Synthetic traffic: cron legado ainda está ativo antes do lançamento.');
@@ -55,4 +61,4 @@ if(failures.length){
   process.exit(1);
 }
 
-console.log('Launch readiness aprovado: polish, consent gate, telemetria sem valores financeiros, privacy disclosure e synthetic traffic manual-only.');
+console.log('Launch readiness aprovado: polish, consent gate, telemetria sem valores financeiros, CSP, privacy disclosure e synthetic traffic manual-only.');
