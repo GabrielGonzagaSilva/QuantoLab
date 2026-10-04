@@ -1,0 +1,257 @@
+/* QuantoLab · Sprint 5 · Figma handoff and runtime parity */
+:root{
+  --ql-container-desktop:1160px;
+  --ql-margin-desktop:140px;
+  --ql-gutter-desktop:24px;
+  --ql-margin-tablet:40px;
+  --ql-margin-tablet-compact:32px;
+  --ql-gutter-tablet:24px;
+  --ql-gutter-tablet-compact:20px;
+  --ql-margin-mobile:20px;
+  --ql-gutter-mobile:16px;
+  --ql-control-min-height:44px;
+}
+
+/* Grid contract: 12 / 8 / 4 columns. Containers stay fluid between documented QA widths. */
+.shell{
+  width:min(var(--ql-container-desktop),calc(100% - 40px));
+  margin-inline:auto;
+}
+
+.ql-grid{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:var(--ql-gutter-desktop);
+}
+
+/* Handoff focus contract */
+:where(a,button,input,select,textarea,summary):focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important;
+}
+
+/* Mobile navigation is created by sprint5.js so every route uses the same interaction contract. */
+.mobile-menu-toggle{
+  display:none;
+  width:44px;
+  min-width:44px;
+  height:44px;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface);
+  color:var(--text);
+  cursor:pointer;
+}
+.mobile-menu-toggle__icon,
+.mobile-menu-toggle__icon::before,
+.mobile-menu-toggle__icon::after{
+  width:18px;
+  height:2px;
+  display:block;
+  border-radius:999px;
+  background:currentColor;
+  transition:transform .16s ease,opacity .16s ease;
+}
+.mobile-menu-toggle__icon{position:relative}
+.mobile-menu-toggle__icon::before,.mobile-menu-toggle__icon::after{content:"";position:absolute;left:0}
+.mobile-menu-toggle__icon::before{top:-6px}
+.mobile-menu-toggle__icon::after{top:6px}
+.mobile-menu-toggle[aria-expanded="true"] .mobile-menu-toggle__icon{background:transparent}
+.mobile-menu-toggle[aria-expanded="true"] .mobile-menu-toggle__icon::before{top:0;transform:rotate(45deg)}
+.mobile-menu-toggle[aria-expanded="true"] .mobile-menu-toggle__icon::after{top:0;transform:rotate(-45deg)}
+.mobile-nav-panel{
+  display:none;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.mobile-nav-panel[hidden]{display:none!important}
+.mobile-nav-panel__inner{
+  width:calc(100% - 40px);
+  margin-inline:auto;
+  display:grid;
+  padding:8px 0 18px;
+}
+.mobile-nav-panel a{
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 4px;
+  border-bottom:1px solid var(--border);
+  color:var(--text);
+  font-size:14px;
+  font-weight:620;
+}
+.mobile-nav-panel a::after{content:"→";color:var(--accent)}
+
+/* Catalog discovery mirrors the Figma Catalog Discovery pattern. */
+.catalog-discovery{
+  margin:28px 0 10px;
+  padding:20px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--surface);
+}
+.catalog-discovery__heading{margin:0;font-size:23px;line-height:1.15;letter-spacing:-.022em}
+.catalog-discovery__intro{max-width:680px;margin:7px 0 16px;color:var(--muted);font-size:13px;line-height:1.55}
+.catalog-search-wrap{position:relative}
+.catalog-search-wrap::before{
+  content:"";
+  position:absolute;
+  left:17px;
+  top:50%;
+  width:14px;
+  height:14px;
+  border:1.5px solid var(--muted);
+  border-radius:50%;
+  transform:translateY(-58%);
+  pointer-events:none;
+}
+.catalog-search-wrap::after{
+  content:"";
+  position:absolute;
+  left:29px;
+  top:31px;
+  width:6px;
+  height:1.5px;
+  border-radius:999px;
+  background:var(--muted);
+  transform:rotate(45deg);
+  transform-origin:left center;
+  pointer-events:none;
+}
+.catalog-search{
+  width:100%;
+  min-height:54px;
+  padding:13px 16px 13px 46px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface-soft);
+  color:var(--text);
+  font-size:16px;
+}
+.catalog-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,255,102,.16)}
+.catalog-discovery__chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.filter-chip{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 14px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer;
+}
+.filter-chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:#101112}
+.catalog-discovery__shortcuts{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.catalog-shortcut{
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:13px;
+  font-weight:650;
+}
+.catalog-shortcut span{color:var(--accent)}
+.catalog-discovery__status{margin:12px 0 0;color:var(--muted);font-size:11.5px;line-height:1.45}
+.catalog-page .journey-section[hidden],.catalog-page .tool-card[hidden]{display:none!important}
+
+/* Local continuity: saved values never become invisible assumptions. */
+.saved-reference-note{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:18px 0 0;
+  padding:13px 16px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--surface-soft);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+.saved-reference-note a{flex:0 0 auto;color:var(--text);font-weight:700}
+
+/* Interactive targets from the DS keep the WCAG/touch baseline in the runtime. */
+.result-share .btn,
+.calculator-tabs button,
+.help-inline-toggle,
+.help-toggle,
+.terms-consent__links a{min-height:var(--ql-control-min-height)}
+
+@media (min-width:1200px){
+  .calculator-simple .calc-grid{grid-template-columns:minmax(0,1.03fr) minmax(340px,.97fr)}
+  .calculator-simple .result{position:sticky;top:86px}
+}
+
+@media (min-width:768px) and (max-width:1199px){
+  :root{
+    --ql-page-margin:clamp(var(--ql-margin-tablet-compact),4.8vw,var(--ql-margin-tablet));
+    --ql-current-gutter:clamp(var(--ql-gutter-tablet-compact),2.4vw,var(--ql-gutter-tablet));
+  }
+  .shell{width:calc(100% - (2 * var(--ql-page-margin)));max-width:none}
+  .ql-grid{grid-template-columns:repeat(8,minmax(0,1fr));gap:var(--ql-current-gutter)}
+  .calculator-simple .calc-grid{grid-template-columns:1fr;gap:18px}
+  .calculator-simple .result{position:static;top:auto}
+  .catalog-discovery__shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tool-grid--dense{grid-template-columns:1fr!important}
+  .decision-card{grid-template-columns:120px minmax(180px,.55fr) minmax(0,1fr)}
+}
+
+@media (max-width:767px){
+  .shell{width:calc(100% - (2 * var(--ql-margin-mobile)));max-width:none}
+  .ql-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--ql-gutter-mobile)}
+  .header .nav{min-height:68px}
+  .header .navlinks{display:none!important}
+  .mobile-menu-toggle{display:inline-flex;margin-left:auto}
+  .mobile-nav-panel{display:block}
+  .brand{max-width:calc(100% - 64px)}
+  .brand img{width:40px!important;height:auto!important}
+  .calculator-simple .calc-grid{grid-template-columns:1fr;gap:12px}
+  .calculator-simple .result{position:static;top:auto}
+  .calculator-simple .input-wrap input,
+  .calculator-simple .input-wrap select{font-size:16px}
+  .catalog-discovery{margin-top:20px;padding:16px}
+  .catalog-discovery__heading{font-size:20px}
+  .catalog-discovery__shortcuts{grid-template-columns:1fr}
+  .catalog-shortcut{min-height:48px}
+  .filter-chip{min-height:44px}
+  .saved-reference-note{align-items:flex-start;flex-direction:column;gap:8px}
+  .saved-reference-note a{min-height:44px;display:inline-flex;align-items:center}
+  .calculator-simple .decision-card{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-height:0;padding:18px 0}
+  .calculator-simple .decision-card__kicker,.calculator-simple .decision-card h3,.calculator-simple .decision-card p{width:100%}
+  .footer-meta{flex-direction:column;gap:10px}
+  .footer-meta__copyright{white-space:normal}
+  .footer-meta__disclaimer{flex:0 1 auto;max-width:none;text-align:left}
+}
+
+@media (max-width:360px){
+  .shell,.mobile-nav-panel__inner{width:calc(100% - 40px)}
+  .catalog-discovery__chips{gap:8px}
+  .filter-chip{padding-inline:12px;font-size:12px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mobile-menu-toggle__icon,.mobile-menu-toggle__icon::before,.mobile-menu-toggle__icon::after{transition:none}
+}
