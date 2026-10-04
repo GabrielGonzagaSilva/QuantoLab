@@ -1,4 +1,6 @@
 @import url('/instrument-system.css');
+@import url('/sprint5.css');
+@import url('/sprint5-fixes.css');
 
 /* QuantoLab · Dark-only guardrails */
 :root{color-scheme:dark}

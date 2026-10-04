@@ -6,11 +6,12 @@
   const PROFILE_KEY='quantolab-profile-v1';
   // Compatibility marker for legacy QA only: ['system','light','dark']. Runtime remains dark-only.
   const root=document.documentElement;
-  const compactBrandMedia=window.matchMedia('(max-width:700px)');
+  const compactBrandMedia=window.matchMedia('(max-width:767px)');
   const WORDMARK_SRC='/quantolab-logo.svg';
   const COMPACT_MARK_SRC='/brand/mark-black.svg';
   const FAVICON_SRC='/favicon-20260905.svg';
   const DARK_ONLY_STYLES='/dark-only.css';
+  const SPRINT5_RUNTIME='/sprint5.js';
   let typographyObserver=null;
 
   const globalStyles=document.querySelector('link[href="/platform.css"]');
@@ -26,6 +27,13 @@
     darkOnly.rel='stylesheet';
     darkOnly.href=DARK_ONLY_STYLES;
     document.head.appendChild(darkOnly);
+  }
+
+  if(!document.querySelector(`script[src="${SPRINT5_RUNTIME}"]`)){
+    const sprint5=document.createElement('script');
+    sprint5.src=SPRINT5_RUNTIME;
+    sprint5.defer=true;
+    document.head.appendChild(sprint5);
   }
 
   function normalizeFavicon(){
