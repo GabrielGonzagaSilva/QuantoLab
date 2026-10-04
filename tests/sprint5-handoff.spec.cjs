@@ -66,8 +66,10 @@ test.describe('Sprint 5 · Figma handoff contract',()=>{
 
   for(const viewport of [
     {name:'320',width:320,height:800},
+    {name:'390',width:390,height:844},
     {name:'480',width:480,height:900},
     {name:'768',width:768,height:1024},
+    {name:'834',width:834,height:1112},
     {name:'1024',width:1024,height:900},
     {name:'1440',width:1440,height:900},
   ]){
