@@ -1,0 +1,77 @@
+/* QuantoLab · Sprint 6 · polish, motion restraint and launch readiness */
+:root{
+  --ql-motion-fast:120ms;
+  --ql-motion-standard:180ms;
+  --ql-ease-out:cubic-bezier(.2,.8,.2,1);
+}
+
+html{scrollbar-gutter:stable}
+::selection{background:var(--accent);color:#101112}
+
+.btn,
+.tool-card,
+.card,
+.catalog-shortcut,
+.filter-chip,
+.mobile-menu-toggle,
+.decision-card,
+.saved-reference-note a,
+.footer-links a,
+.navlinks a{
+  transition:
+    transform var(--ql-motion-fast) var(--ql-ease-out),
+    border-color var(--ql-motion-standard) var(--ql-ease-out),
+    background-color var(--ql-motion-standard) var(--ql-ease-out),
+    color var(--ql-motion-standard) var(--ql-ease-out),
+    opacity var(--ql-motion-standard) var(--ql-ease-out);
+}
+
+.btn:active,
+.catalog-shortcut:active,
+.filter-chip:active,
+.mobile-menu-toggle:active{transform:translateY(1px)}
+
+.result,
+.panel.result{
+  transition:border-color var(--ql-motion-standard) var(--ql-ease-out),background-color var(--ql-motion-standard) var(--ql-ease-out);
+}
+
+.result[aria-live="polite"]:focus-within,
+.panel.result[aria-live="polite"]:focus-within{border-color:color-mix(in srgb,var(--accent) 52%,var(--border))}
+
+.catalog-search::placeholder{color:color-mix(in srgb,var(--muted) 82%,transparent)}
+.catalog-search:focus-visible{box-shadow:0 0 0 3px rgba(217,255,102,.12)}
+
+.mobile-nav-panel__inner a:active{background:var(--surface-soft)}
+
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{transform:translateY(-1px)}
+  .tool-card:hover,
+  .catalog-shortcut:hover,
+  .decision-card:hover{
+    transform:translateY(-2px);
+    border-color:color-mix(in srgb,var(--accent) 42%,var(--border));
+  }
+  .filter-chip:hover:not([aria-pressed="true"]),
+  .mobile-menu-toggle:hover{border-color:color-mix(in srgb,var(--accent) 36%,var(--border))}
+  .navlinks a:hover,
+  .footer-links a:hover,
+  .saved-reference-note a:hover{color:var(--accent)}
+}
+
+@media (max-width:767px){
+  .btn:active,
+  .tool-card:active,
+  .catalog-shortcut:active,
+  .decision-card:active{transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:0s!important;
+  }
+}
