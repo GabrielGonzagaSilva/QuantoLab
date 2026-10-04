@@ -1,13 +1,12 @@
 (()=>{
   'use strict';
 
-  const PROFILE_KEY='quantolab-profile-v1';
   const MOBILE_QUERY='(max-width: 767px)';
   const normalize=value=>(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
   const make=(tag,className,text)=>{const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;};
 
   function readProfile(){
-    try{const value=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch{return {};}
+    try{const value=window.QuantoLabProfile?.get?.()||{};return value&&typeof value==='object'?value:{};}catch{return {};}
   }
 
   function mountMobileNavigation(){
