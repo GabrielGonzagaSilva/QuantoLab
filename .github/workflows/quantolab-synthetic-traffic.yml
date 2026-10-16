@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload synthetic traffic log
         if: always() && steps.plan.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: quantolab-synthetic-${{ github.run_id }}
           path: traffic-logs/
